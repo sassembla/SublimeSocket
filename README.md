@@ -2,15 +2,15 @@
 
 ##from CommandPalette >  
 #### SublimeSocket: on
-**->start WebSocket server on http://localhost:8823**  
+**-> start WebSocket server on http://localhost:8823**  
 please open index.html
 
 #### SublimeSocket: off
-**->not yet work well!! **  
+**-> not yet work well!!**  
 Please restart ST2 for stop WebSocket server.
 
 ##Purpose
-* Enable input some information for ST2 from other process, browser, websocket client.
+* Enable input some information into ST2 from other process, browser, websocket client.
 * From buffer to compiler, direct connection.
 * Control ST2 from web browser.
 
