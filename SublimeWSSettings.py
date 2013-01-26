@@ -1,3 +1,6 @@
+#version 0.0.1
+
+
 #Protocole version	see-> http://tools.ietf.org/html/rfc6455
 VERSION = 13
 
