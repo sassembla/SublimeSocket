@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "SublimeSocket: on",
+        "command": "socketon"
+    },
+    {
+        "caption": "SublimeSocket: off",
+        "command": "socketoff"
+    }
+]
