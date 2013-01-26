@@ -17,5 +17,5 @@ Please restart ST2 for stop WebSocket server.
 ##ToDo
 * Prepare input-api for ST2.
 * Prepare output-api for control the client.
-* Display connect status.
-* Kill Immediately.
+* Add Func:Display connect status.
+* Add Func:Kill Immediately.
