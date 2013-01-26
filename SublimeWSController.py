@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import SublimeWSSettings
+
 from SublimeWSEncoder import *
+from SublimeSocketAPI import *
 
 class SublimeWSController:
 	def __init__(self,client):
@@ -26,29 +28,30 @@ class SublimeWSController:
 		# CONTROLS
 		print "ctrl is ", ctrl['opcode']
 
+ 		# python-switch
 		for case in switch(ctrl['opcode']):
-			if case(0x9): # PING
+			if case(SublimeWSSettings.OP_PING):
 				print '--- PING FRAME ---', repr(self._client.conn)
 				try:
 					bytes = encoder.pong('Application data')
 				except ValueError as error:
-					self._client._WSServer.remove(self._client)
+					self._client._server.remove(self._client)
 					self.kill(1011, 'WSEncoder error: ' + str(error))
 				else:
 					self._client.send(bytes)
 
 				break
 
-			if case(0xA): # PONG
+			if case(SublimeWSSettings.OP_PONG):
 				print '--- PONG FRAME ---', repr(self._client.conn)
 				if len(data):
 					print 'Pong frame datas:', str(data)
 
 				break
 
-			if case(0x8): # CLOSE
+			if case(SublimeWSSettings.OP_CLOSE):
 				print '--- CLOSE FRAME ---', repr(self._client.conn)
-				self._client._WSServer.remove(self._client)
+				self._client._server.remove(self._client)
 				# closing was initiated by server
 				if self._client.hasStatus('CLOSING'):
 					self._client.close()
@@ -57,7 +60,7 @@ class SublimeWSController:
 
 					# close client.
 					self._client.setStatus('CLOSING')
-
+					
 				# the two first bytes MUST contains the exit code, follow optionnaly with text data not shown to clients
 				if len(data) >= 2:
 					code, data = self.array_shift(data,2)
@@ -69,15 +72,20 @@ class SublimeWSController:
 
 				break
 		
-			if case(0x1): # TEXT
+			if case(SublimeWSSettings.OP_TEXT):
 				print '--- TEXT FRAME ---', repr(self._client.conn)
+				
+				if (data.split(SublimeWSSettings.API_DEFINE_DELIM)[0] == SublimeWSSettings.API_PREFIX):
+					api = SublimeSocketAPI()
+					api.parse(data)
+
 				break
 
-			if case(0x0): # CONTINUATION
+			if case(SublimeWSSettings.OP_CONTINUATION):
 				print '--- CONTINUATION FRAME ---', repr(self._client.conn)
 				break
 
-			if case(0x2): # BINARY
+			if case(SublimeWSSettings.OP_BINARY):
 				print '--- BINARY FRAME ---', repr(self._client.conn)
 				break
 
@@ -107,25 +115,3 @@ class SublimeWSController:
 			else:
 				self._client.send(bytes)
 				self._client.close()
-
-
-class switch(object):
-	def __init__(self, value):
-		self.value = value
-		self.fall = False
-
-	def __iter__(self):
-		"""Return the match method once, then stop"""
-		yield self.match
-		raise StopIteration
-
-	def match(self, *args):
-		"""Indicate whether or not to enter a case suite"""
-		if self.fall or not args:
-			return True
-		elif self.value in args: # changed for v1.5, see below
-			self.fall = True
-			return True
-		else:
-			return False
-	

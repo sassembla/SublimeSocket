@@ -2,14 +2,26 @@
 VERSION = 13
 
 #Operation codes
-CONTINUATION = 0x0
-TEXT = 0x1
-BINARY = 0x2
-CLOSE = 0x8
-PING = 0x9
-PONG = 0xA
+OP_CONTINUATION = 0x0
+OP_TEXT = 0x1
+OP_BINARY = 0x2
+OP_CLOSE = 0x8
+OP_PING = 0x9
+OP_PONG = 0xA
 
-OPCODES = (CONTINUATION, TEXT, BINARY, CLOSE, PING, PONG)
+OPCODES = (OP_CONTINUATION, OP_TEXT, OP_BINARY, OP_CLOSE, OP_PING, OP_PONG)
+
+
+#API for Input to ST2 through WebSocket
+API_DEFINE_DELIM = "@"
+API_PREFIX = "sublimesocket"
+API_INPUTIDENTITY = "input/indetity:"
+
+
+#API for Oputput from ST2 through WebSocket
+API_KILLKEY = "killkey:"
+
+
 
 #Closing frame status codes.
 NORMAL_CLOSURE =  1000 # \x03\xe8

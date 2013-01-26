@@ -7,7 +7,6 @@ class SublimeWSDecoder:
 	## Decode on the fly data from SublimeWSClient
 	#  @param client WebSocket Client - we use the read() function to get data bytes
 	def decode(self, client):
-
 		#0                   1                   2                   3
 		#0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 		#+-+-+-+-+-------+-+-------------+-------------------------------+
@@ -42,8 +41,7 @@ class SublimeWSDecoder:
 		rsv2 = b1 >> 5 & 1
 		rsv3 = b1 >> 4 & 1
 		opcode = b1 & 0xf
-		if not opcode in SublimeWSSettings.OPCODES:
-			raise ValueError(1002, 'Wrong opcode.')
+
 
 		# decode second byte
 		b = client.read(1)
@@ -83,16 +81,38 @@ class SublimeWSDecoder:
 			raise ValueError(1011, 'Reading mask key failed.')
 		
 		data = client.read(length)
-
-		if opcode == 0x1:
-			try:
-				if not len(data):
-					raise ValueError(1011, 'Reading data failed.')
 		
-				data = self.unmask(mask_key, str(data))
-				data = data.decode('utf-8')
-			except UnicodeError:
-			  raise ValueError(1003, 'Client text datas MUST be UTF-8 encoded.')
+		# python-switch
+		for case in switch(opcode):
+			if case(SublimeWSSettings.OP_PING):
+				break
+
+			if case(SublimeWSSettings.OP_PONG):
+				break
+
+			if case(SublimeWSSettings.OP_CLOSE):
+				break
+		
+			if case(SublimeWSSettings.OP_TEXT):
+				try:
+					if not len(data):
+						raise ValueError(1011, 'Reading data failed.')
+			
+					data = self.unmask(mask_key, str(data))
+					data = data.decode('utf-8')
+				except UnicodeError:
+				  raise ValueError(1003, 'Client text datas MUST be UTF-8 encoded.')
+				break
+
+			if case(SublimeWSSettings.OP_CONTINUATION):
+				break
+
+			if case(SublimeWSSettings.OP_BINARY):
+				break
+
+			if case(): # default, could also just omit condition or 'if True'
+				print "default,,, should not be"
+
 
 		ctrl = {
 			'fin': fin,
@@ -116,3 +136,24 @@ class SublimeWSDecoder:
 		for i in xrange(len(j)):
 			j[i] ^= m[i % 4]
 		return j.tostring()
+
+class switch(object):
+	def __init__(self, value):
+		self.value = value
+		self.fall = False
+
+	def __iter__(self):
+		"""Return the match method once, then stop"""
+		yield self.match
+		raise StopIteration
+
+	def match(self, *args):
+		"""Indicate whether or not to enter a case suite"""
+		if self.fall or not args:
+			return True
+		elif self.value in args: # changed for v1.5, see below
+			self.fall = True
+			return True
+		else:
+			return False
+	

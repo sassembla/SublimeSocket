@@ -62,7 +62,7 @@ class SublimeWSClient:
 		while self.hasStatus('CONNECTING') and len(line)<1024:
 			c = self.receive(1)
 			line.append(c)
-			#print 'readlineheader: ', line
+			# print 'readlineheader: ', line
 			if c == "\n":
 				break
 		return "".join(line)
@@ -147,13 +147,13 @@ class SublimeWSClient:
 			self.setStatus('OPEN')
 			while self.hasStatus('OPEN'):
 				try:
-					ctrl, data = decoder.decode(self)
+					print "self is ", self
+					(ctrl, data) = decoder.decode(self)
 				except ValueError as (closing_code, message):
 					if self.hasStatus('OPEN'): # context can change...
 						self._controller.kill(closing_code,'WSDecoder::'+str(message))
 					break
 				else:
-					print '--- INCOMING DATAS ---'
 					self._controller.run(ctrl, data)
 
 	## Send an unicast frame
