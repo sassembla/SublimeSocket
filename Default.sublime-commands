@@ -6,7 +6,7 @@
     
     {
         "caption": "SublimeSocket: on > open preference",
-        "command": "onthenopenpref"
+        "command": "on_then_openpref"
     },
 
     {

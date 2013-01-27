@@ -15,18 +15,14 @@ class Socketon(sublime_plugin.TextCommand):
         thread = SublimeSocketThread(host, port)
         thread.start()
 
-class Onthenopenpref(sublime_plugin.TextCommand):
+class On_then_openpref(sublime_plugin.TextCommand):
     def run(self, edit):
         Socketon.startServer()
         Openpreference.openSublimeSocketPreference()
 
 class Socketoff(sublime_plugin.TextCommand):
     def run(self, edit):
-        print "off.... not yet impl. プロセスを殺そう。 Threadを殺せればベスト。"
-
-    def kill(self):
-        os.killpg(self.process.pid, signal.SIGTERM)
-        
+        print "off.... not yet impl. I hate 'grobal' in Python."
 
 # threading
 class SublimeSocketThread(threading.Thread):
