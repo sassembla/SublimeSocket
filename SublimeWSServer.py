@@ -44,6 +44,7 @@ class SublimeWSServer:
 			self.clients.remove(client)
 			client.close()
 
+		self.listening = False
 		self.socket.close()		
 
 	## connect to KeyValueStore

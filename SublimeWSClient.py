@@ -174,3 +174,4 @@ class SublimeWSClient:
 			self.setStatus('CLOSED')
 			self.conn.close()
 
+

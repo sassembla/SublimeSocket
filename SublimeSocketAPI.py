@@ -6,8 +6,10 @@ import difflib
 from SublimeWSEncoder import *
 
 #API for Input to ST2 through WebSocket
-API_DEFINE_DELIM = "@"
 API_PREFIX = "sublimesocket"
+API_DEFINE_DELIM = "@"
+API_CONCAT_DELIM = ">"
+API_COMMAND_PARAMS_DELIM = ":"# only first ":" will be evaluated as delimiter.
 
 API_INPUTIDENTITY = "inputIdentity"
 API_KILLSERVER    = "killServer"
@@ -21,12 +23,11 @@ class SublimeSocketAPI:
 		self.encoder = SublimeWSEncoder()
 
 	def parse(self, data, client):
-		commands = data.split('>')
+		commands = data.split(API_CONCAT_DELIM)
 
     # command and param  e.g		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
-
 		for commandIdentityAndParams in commands :
-			command_params = commandIdentityAndParams.split(':', 1)
+			command_params = commandIdentityAndParams.split(API_COMMAND_PARAMS_DELIM, 1)
 			command = command_params[0]
 
 			params = ''
@@ -39,12 +40,10 @@ class SublimeSocketAPI:
 				if case(API_INPUTIDENTITY):
 					# callback to client as kill-id of myself
 					clientId = params["id"]
-
 					self.server.setKV("clientId", str(clientId))
 					break
 
 				if case(API_KILLSERVER):
-					client.close()
 					self.server.killServerSelf()
 					break
 
