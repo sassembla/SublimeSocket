@@ -2,11 +2,10 @@
 import SublimeWSSettings
 
 from SublimeWSEncoder import *
-from SublimeSocketAPI import *
 
 class SublimeWSController:
-	def __init__(self,client):
-		self._client = client
+	def __init__(self, client):
+		self.client = client
 
 	## Pop n bytes
 	#  @param bytes Bytes to shift.
@@ -22,44 +21,40 @@ class SublimeWSController:
 	#  @param data Decoded data, text or binary.
 	def run(self, ctrl, data):
 
-		print '--- CONTROLLER ---', repr(self._client.conn)
+		print '--- CONTROLLER ---', repr(self.client.conn)
 		encoder = SublimeWSEncoder()
-
-		# CONTROLS
-		print "ctrl is ", ctrl['opcode']
 
  		# python-switch
 		for case in switch(ctrl['opcode']):
 			if case(SublimeWSSettings.OP_PING):
-				print '--- PING FRAME ---', repr(self._client.conn)
+				print '--- PING FRAME ---', repr(self.client.conn)
 				try:
 					bytes = encoder.pong('Application data')
 				except ValueError as error:
-					self._client._server.remove(self._client)
-					self.kill(1011, 'WSEncoder error: ' + str(error))
+					self.client.server.remove(self.client)
 				else:
-					self._client.send(bytes)
+					self.client.send(bytes)
 
 				break
 
 			if case(SublimeWSSettings.OP_PONG):
-				print '--- PONG FRAME ---', repr(self._client.conn)
+				print '--- PONG FRAME ---', repr(self.client.conn)
 				if len(data):
 					print 'Pong frame datas:', str(data)
 
 				break
 
 			if case(SublimeWSSettings.OP_CLOSE):
-				print '--- CLOSE FRAME ---', repr(self._client.conn)
-				self._client._server.remove(self._client)
+				print '--- CLOSE FRAME ---', repr(self.client.conn)
+				self.client.server.remove(self.client)
 				# closing was initiated by server
-				if self._client.hasStatus('CLOSING'):
-					self._client.close()
+				if self.client.hasStatus('CLOSING'):
+					self.client.close()
 				# closing was initiated by client
-				if self._client.hasStatus('OPEN'):
+				if self.client.hasStatus('OPEN'):
 
 					# close client.
-					self._client.setStatus('CLOSING')
+					self.client.setStatus('CLOSING')
 					
 				# the two first bytes MUST contains the exit code, follow optionnaly with text data not shown to clients
 				if len(data) >= 2:
@@ -73,25 +68,22 @@ class SublimeWSController:
 				break
 		
 			if case(SublimeWSSettings.OP_TEXT):
-				print '--- TEXT FRAME ---', repr(self._client.conn)
+				print '--- TEXT FRAME ---', repr(self.client.conn)
 				
-				# # # # # #
-				# run api #
-				# # # # # # 
-				if (data.split(SublimeWSSettings.API_DEFINE_DELIM)[0] == SublimeWSSettings.API_PREFIX):
-					api = SublimeSocketAPI()
+				headerAndParam = data.split(SublimeWSSettings.API_DEFINE_DELIM)
 
-					# set api block
-					api.parse(data.split(SublimeWSSettings.API_DEFINE_DELIM)[1])
+				# run api or not
+				if (headerAndParam[0] == SublimeWSSettings.API_PREFIX):
+					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 
 				break
 
 			if case(SublimeWSSettings.OP_CONTINUATION):
-				print '--- CONTINUATION FRAME ---', repr(self._client.conn)
+				print '--- CONTINUATION FRAME ---', repr(self.client.conn)
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
-				print '--- BINARY FRAME ---', repr(self._client.conn)
+				print '--- BINARY FRAME ---', repr(self.client.conn)
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
@@ -100,23 +92,3 @@ class SublimeWSController:
 	## Send a ping
 	def ping(self):
 		print '--- PING (CONTROLLER) ---'
-
-	## Force to close the connection
-	#  @param code Closing code according to RFC. Default is 1000 (NORMAL_CLOSURE).
-	#  @param error Error message to append on closing frame. Default is empty.
-	def kill(self, code=1000, error=''):
-		print '--- KILL (CONTROLLER)  ---', repr(self._client.conn)
-		if not self._client.hasStatus('CLOSED'):
-			encoder = SublimeWSEncoder()
-			data = struct.pack('!H', code)
-			if len(error):
-				print "エラーが出てる ", error
-				data += error
-			print '--- KILL FRAME ---', code, error, repr(self._client.conn)
-			try:
-				bytes = encoder.close(data)
-			except ValueError as error:
-				self._client.close()
-			else:
-				self._client.send(bytes)
-				self._client.close()

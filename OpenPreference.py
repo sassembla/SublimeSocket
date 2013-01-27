@@ -33,9 +33,6 @@ class Openpreference(sublime_plugin.TextCommand):
     preferenceFilePath = "tmp/preference.html"
     preferencePath = currentPackagePath + preferenceFilePath
 
-    # /Users/SOMEONMEMAYBEYOU/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tmp/preference.html
-    print "preferencePath ", preferencePath
-
     # generate preference
     file = open(preferencePath, 'w')
     file.write(html)

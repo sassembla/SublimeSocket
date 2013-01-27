@@ -22,7 +22,9 @@ class On_then_openpref(sublime_plugin.TextCommand):
 
 class Socketoff(sublime_plugin.TextCommand):
     def run(self, edit):
-        print "off.... not yet impl. I hate 'grobal' in Python."
+        print "off.... not yet implimented standalone. I hate 'grobal' in Python. Plase use preference > Kill Button"
+        
+
 
 # threading
 class SublimeSocketThread(threading.Thread):

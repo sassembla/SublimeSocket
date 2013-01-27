@@ -2,6 +2,12 @@ TODO
 Killスイッチつけるべ
 	HTMLから、close時に文字列渡し、が出来るならそれで。
 
+Serverが最上位になる
+	あたりまえっちゃああたりまえ。値を残すとしたらそのへんなんで、clientからsetするとかloadするとか。
+	タイマー系持つのもServerだな。
+	殺される根っこもServer。
+	sublimeへのブリッジを持つのもServer。とすると、APIはServer周りにあった方が良いのでは。Client無視できそう。
+
 InputAPIの整理
 	range系やってみんべ。
 	セットしてそのまま実行するような機構
@@ -11,9 +17,6 @@ OutputAPIの整理
 	外部からのrequestも可能なので、InputAPIの拡張と言える。
 	pushで押し付ける設定を外部から注入されれば、定期的に叩き付けることが可能。
 	shakehandが済んだらOK、という。
-
-BufferをHTMLに渡してみよう！！
-	定期的に送付するスイッチつけよう！！
 
 プロジェクト全体を送る
 	Bufferのリストを作って送る、とかかな、、

@@ -3,7 +3,7 @@ import threading, hashlib, base64
 import SublimeWSSettings
 from SublimeWSDecoder import *
 from SublimeWSController import *
-
+import uuid
 
 class SublimeWSClient:
 	CONNECTION_STATUS = {
@@ -16,11 +16,13 @@ class SublimeWSClient:
 	## Constructor
 	#  @param server WebSocket Server object attached to client.
 	def __init__(self,server):
-		self._server = server
+		self.server = server
 		self.conn = ''
 		self.addr = ''
 		self.setStatus('CLOSED')
-		self._controller = SublimeWSController(self)
+		self.cont = SublimeWSController(self)
+		self.clientId = uuid.uuid4()
+
 
 	## Set current connection status
 	#  @param status Status of the socket. Can be 'CONNECTING', 'OPEN', 'CLOSING' or 'CLOSED'.
@@ -41,7 +43,7 @@ class SublimeWSClient:
 		bytes = self.conn.recv(bufsize)
 		if not bytes:
 			print 'Client left', repr(self.conn)
-			self._server.remove(self)
+			self.server.remove(self)
 			self.close()
 			return ''
 		return bytes
@@ -139,7 +141,7 @@ class SublimeWSClient:
 		try:
 			self.hanshake()
 		except ValueError as error:
-			self._server.remove(self)
+			self.server.remove(self)
 			self.close()
 			raise ValueError('Client rejected: ' + str(error))
 		else:
@@ -147,18 +149,17 @@ class SublimeWSClient:
 			self.setStatus('OPEN')
 			while self.hasStatus('OPEN'):
 				try:
-					print "self is ", self
 					(ctrl, data) = decoder.decode(self)
 				except ValueError as (closing_code, message):
-					if self.hasStatus('OPEN'): # context can change...
-						self._controller.kill(closing_code,'WSDecoder::'+str(message))
+					if self.hasStatus('OPEN'):
+						self.cont.kill(closing_code,'WSDecoder::'+str(message))
 					break
 				else:
-					self._controller.run(ctrl, data)
+					self.cont.run(ctrl, data)
 
 	## Send an unicast frame
 	#  @param bytes Bytes to send.
-	def send(self,bytes):
+	def send(self, bytes):
 		if not self.hasStatus('CLOSED'):
 			print '--- SEND UNICAST ---', repr(self.conn), repr(bytes), '[', str(len(bytes)), ']'
 			lock = threading.Lock()
