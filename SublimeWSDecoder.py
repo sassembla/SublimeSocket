@@ -121,9 +121,7 @@ class SublimeWSDecoder:
 			'rsv2': rsv2,
 			'rsv3': rsv3,
 		}
-
-		print 'after decode:', repr(ctrl), repr(data)
-
+		
 		return ctrl, data
 
 	## Unmask datas

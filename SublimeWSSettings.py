@@ -85,7 +85,7 @@ PREFERENCE_HTML = """<!DOCTYPE html>
             _WS.s.send(message);
           }
         },
-        close: function () {
+        close: function () {//no one call
           _WS.write('GOODBYE !');
           _WS.s.close();
         }
@@ -102,9 +102,9 @@ PREFERENCE_HTML = """<!DOCTYPE html>
     &nbsp;
     <input type="button" value="Send"  onclick="_WS.send(document.getElementById('input').value);"/>
     &nbsp;
-    <input type="button" value="Close"  onclick="_WS.close();"/>
-    &nbsp;
     <input type="button" value="Kill"  onclick="_WS.send('sublimesocket@killServer');"/>
+    &nbsp;
+    <input type="button" value="Mirror"  onclick="_WS.send('sublimesocket@mirrorConsole');"/>
     <br/>
     <div id="output" style="max-height:300px;overflow:auto"></div>
   </body>

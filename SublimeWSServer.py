@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sublime, sublime_plugin
+
 import socket, threading, string, time
 from SublimeWSClient import *
 from SublimeSocketAPI import *
@@ -10,7 +12,7 @@ class SublimeWSServer:
 		self.socket = ''
 		self.listening = False
 		self.kvs = KVS()
-		self.api = SublimeSocketAPI(self, "なにか")
+		self.api = SublimeSocketAPI(self)
 
 	def start(self, host, port):
 		self.socket = socket.socket()

@@ -1,21 +1,25 @@
 # WebSocket server for ST2.
+###### version 0.5.0
 
 ##from CommandPalette >  
-#### SublimeSocket: on
-**-> start WebSocket server on http://localhost:8823**  
-please open index.html
-
-#### SublimeSocket: off
+##### SublimeSocket: on
+**-> start WebSocket server on http://localhost:8823**
+##### SublimeSocket: on > open preference(testing)
+**-> server on then show SublimeSocket's preference.**  
+##### SublimeSocket: open preference
+**-> show SublimeSocket's preference.**  
+##### SublimeSocket: off
 **-> not yet work well!!**  
-Please restart ST2 for stop WebSocket server.
+Please restart ST2 manually. or use preferences's kill button.
+
+
 
 ##Purpose
-* Enable input some information into ST2 from other process, browser, websocket client.
-* From buffer to compiler, direct connection.
-* Control ST2 from web browser.
+* Enable control ST2 from other process, browser, websocket clients.
+* Remove all heavy-process running with ST2. More light, little power.
+
 
 ##ToDo
-* Prepare input-api for ST2.
+* Prepare input-api for ST2.(almost listed)
 * Prepare output-api for control the client.
 * Add Func:Display connect status.
-* Add Func:Kill Immediately.

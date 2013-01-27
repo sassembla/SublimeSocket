@@ -160,16 +160,14 @@ class SublimeWSClient:
 	#  @param bytes Bytes to send.
 	def send(self, bytes):
 		if not self.hasStatus('CLOSED'):
-			print '--- SEND UNICAST ---', repr(self.conn), repr(bytes), '[', str(len(bytes)), ']'
+			print 'SEND TO:', self.clientId, "/via", repr(self.conn), repr(bytes), '[', str(len(bytes)), ']'
 			lock = threading.Lock()
 			lock.acquire()
 			self.conn.send(bytes)
 			lock.release()
-			print 'unicast send finished'
 
 	## Close connection (don't forget to remove client from WebSocket Server first !)
 	def close(self):
-		print '--- CLOSE (CLIENT) ---', repr(self.conn)
 		if not self.hasStatus('CLOSED'):
 			self.setStatus('CLOSED')
 			self.conn.close()
