@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import SublimeWSSettings
+import json
 
 ## API Parse the action
 class SublimeSocketAPI:
 	def parse(self, data):
 		
 		print "parse start! ", data
-
+		a = json.dumps(data)
+		print "a is ", a
 
 
 

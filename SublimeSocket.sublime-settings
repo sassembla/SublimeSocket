@@ -2,5 +2,8 @@
 	"schema_version": "1.0",
 
 	"host" : "127.0.0.1",
-	"port" : 8823
+	"port" : 8823,
+
+	"preference browser" : "Safari.app"
+
 }

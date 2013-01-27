@@ -3,6 +3,17 @@
         "caption": "SublimeSocket: on",
         "command": "socketon"
     },
+    
+    {
+        "caption": "SublimeSocket: on > open preference",
+        "command": "onthenopenpref"
+    },
+
+    {
+        "caption": "SublimeSocket: open preference",
+        "command": "openpreference"
+    },
+
     {
         "caption": "SublimeSocket: off",
         "command": "socketoff"

@@ -75,9 +75,14 @@ class SublimeWSController:
 			if case(SublimeWSSettings.OP_TEXT):
 				print '--- TEXT FRAME ---', repr(self._client.conn)
 				
+				# # # # # #
+				# run api #
+				# # # # # # 
 				if (data.split(SublimeWSSettings.API_DEFINE_DELIM)[0] == SublimeWSSettings.API_PREFIX):
 					api = SublimeSocketAPI()
-					api.parse(data)
+
+					# set api block
+					api.parse(data.split(SublimeWSSettings.API_DEFINE_DELIM)[1])
 
 				break
 
