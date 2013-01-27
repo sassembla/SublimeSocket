@@ -43,7 +43,6 @@ class SublimeWSClient:
 		bytes = self.conn.recv(bufsize)
 		if not bytes:
 			print 'Client left', repr(self.conn)
-			self.server.remove(self)
 			self.close()
 			return ''
 		return bytes

@@ -5,6 +5,13 @@ import json
 import difflib
 from SublimeWSEncoder import *
 
+#API for Input to ST2 through WebSocket
+API_DEFINE_DELIM = "@"
+API_PREFIX = "sublimesocket"
+
+API_INPUTIDENTITY = "inputIdentity"
+API_KILLSERVER    = "killServer"
+
 
 ## API Parse the action
 class SublimeSocketAPI:
@@ -14,48 +21,37 @@ class SublimeSocketAPI:
 		self.encoder = SublimeWSEncoder()
 
 	def parse(self, data, client):
-		commands = data.split('/')
+		commands = data.split('>')
 
-		firstCommand = commands[0]# e.g		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
-		commandIdentityAndParams = firstCommand.split(':', 1)
+    # command and param  e.g		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 
-		command = commandIdentityAndParams[0]
-		params = json.loads(commandIdentityAndParams[1])
+		for commandIdentityAndParams in commands :
+			command_params = commandIdentityAndParams.split(':', 1)
+			command = command_params[0]
 
-		if (command == SublimeWSSettings.API_INPUTIDENTITY):
-			print "match,,,"
-		else:
-			s = difflib.SequenceMatcher(a=command, b=SublimeWSSettings.API_INPUTIDENTITY)
-			for block in s.get_matching_blocks():
-				print "match at a[%d] and b[%d] of length %d" % block
-			
-		# python-switch
-		for case in switch(command):
-			
-			if case(SublimeWSSettings.API_INPUTIDENTITY):
-				# callback to client as kill-id of myself
-				clientId = params["id"]
+			params = ''
+			if 1 < len(command_params):
+				params = json.loads(command_params[1])
 
-				self.server.setKV("clientId", str(clientId))
-				
-				# bytes = self.encoder.text(str(self.clientId), mask=0)
-				# client.send(bytes)
+      # ネストとかする前提で、順にパースする
+      # python-switch
+			for case in switch(command):
+				if case(API_INPUTIDENTITY):
+					# callback to client as kill-id of myself
+					clientId = params["id"]
 
-				break
+					self.server.setKV("clientId", str(clientId))
+					break
 
-			if case("kill"):
-				# client.serverをなんとかすれば終了できる！！
+				if case(API_KILLSERVER):
+					client.close()
+					self.server.killServerSelf()
+					break
 
-				break
-			if case():
-				print "unknown command"
-				break
-
-
-
-
-
-
+				if case():
+					print "unknown command"
+					break
+					
 
 class switch(object):
 	def __init__(self, value):

@@ -41,6 +41,7 @@ class SublimeWSServer:
 	## kill server. with all connection(maybe some bugs include. will not be close immediately, at least 1 reload need,,)
 	def killServerSelf(self):
 		for client in self.clients:
+			self.clients.remove(client)
 			client.close()
 
 		self.socket.close()		
@@ -59,17 +60,6 @@ class SublimeWSServer:
 	## input to sublime from server
 	def controlSublime(self):
 		print "will control sublime"
-
-	## Remove the client from clients list
-	def remove(self, client):
-		if client in self.clients:
-			print 'client left:', repr(client.conn)
-			self.clients.remove(client)
-
-	## kill serverself
-	def kill(self):
-		print "will be killed"
-		
 
 ## key-value pool
 class KVS:

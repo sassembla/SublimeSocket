@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import SublimeWSSettings
-
+import SublimeSocketAPI
 from SublimeWSEncoder import *
 
 class SublimeWSController:
@@ -70,10 +70,10 @@ class SublimeWSController:
 			if case(SublimeWSSettings.OP_TEXT):
 				print '--- TEXT FRAME ---', repr(self.client.conn)
 				
-				headerAndParam = data.split(SublimeWSSettings.API_DEFINE_DELIM)
+				headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
 
 				# run api or not
-				if (headerAndParam[0] == SublimeWSSettings.API_PREFIX):
+				if (headerAndParam[0] == SublimeSocketAPI.API_PREFIX):
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 
 				break
