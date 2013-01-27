@@ -52,7 +52,6 @@ class SublimeWSServer:
 	## connect to KeyValueStore
 	def setKV(self, key, value):
 		self.kvs.setKeyValue(key, value)
-		print "socket is ,,, ", self.socket
 
 	def getV(self, key):
 		value = self.kvs.get(key)
@@ -62,6 +61,7 @@ class SublimeWSServer:
 	## input to sublime from server
 	def controlSublime(self):
 		print "will control sublime"
+		
 
 ## key-value pool
 class KVS:

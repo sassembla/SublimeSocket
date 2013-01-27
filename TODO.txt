@@ -1,16 +1,33 @@
 TODO
-	とありますが、めんどくなったら最小限で切り上げるかも。
+	とありますが、めんどくなったら自分の欲しい最小限で切り上げるかも。
+
 
 TimerEvent ほか、SS上で動くもの
 	アイデアベースで、要る機能から作る。
 	TimerEvent
+		setInterval(interval)	-return timerId
+		timerList							-return timerIds
+		remove(timerId)
+
 	BufferPool
+		filled
+		updated
+		bufferList
+
+	KVS	(Redisとか、本家からちょっと要素もらう)
+		set
+		get
+		clear
+
+	TranslateFilter
+		???
 
 
 TranslateFilterの追加
-	任意のストリーム　＞　アクション変換が可能なようにしたい。
+	任意のストリーム　＞　アクション変換を可能にする機構を、作成してさらに外部化したい。
 	具体的には、外部コンパイラの吐き出したメッセージストリームを、
 		特定のST2APIに翻訳する、中継機(TranslateFilter)を足し引き可能にしたい。できるだけ動的に。
+		outsideにあっても、insideにあってもいい。
 
 
 Sequence式の書式
@@ -19,6 +36,7 @@ Sequence式の書式
 	sublimesocket@コマンド:{JSONPARAM}>コマンド2:{JSONPARAM}>コマンド3:{JSONPARAM}>,,
 	
 	とかが可能。シーケンシャルな処理を実行するようにセットできる
+	TimerEventとかは、そこから先のSequenceをすべて吸収して繰り返す。
 
 
 OutputAPIの整理
@@ -30,8 +48,13 @@ OutputAPIの整理
 
 やりたいけどどうやったらいいか判らないもの
 	Consoleの内容をそのまま送る
-	printとかを使っての出力は可能だけど、めんどいし、、
+		printとかを使っての出力は可能だけど、めんどいし、、
 
+	サジェストからのアクション
+		出来るのかな、、まあがんばらなくても良いや。
+
+
+以下メモ
 
 概念区分け
 	outside/inside OOOOO
