@@ -1,5 +1,5 @@
 # WebSocket server for ST2.
-###### version 0.5.0
+###### version 0.1.0
 
 ##from CommandPalette >  
 ##### SublimeSocket: on
@@ -14,7 +14,7 @@ Please restart ST2 manually. or use preferences's kill button.
 
 
 
-##Purpose
+##Purpose/Motivation
 * Enable control ST2 from other process, browser, websocket clients.
 * Remove all heavy-process running with ST2. More light, little power.
 
@@ -23,3 +23,4 @@ Please restart ST2 manually. or use preferences's kill button.
 * Prepare input-api for ST2.(almost listed)
 * Prepare output-api for control the client.
 * Add Func:Display connect status.
+* and more. see ToDo.txt(Jp)

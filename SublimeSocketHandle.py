@@ -7,7 +7,7 @@ class Socketon(sublime_plugin.TextCommand):
     def run(self, edit):
         self.startServer()
         
-    # @classmethod
+    @classmethod
     def startServer(self):
         host = sublime.load_settings("SublimeSocket.sublime-settings").get('host')
         port = sublime.load_settings("SublimeSocket.sublime-settings").get('port')

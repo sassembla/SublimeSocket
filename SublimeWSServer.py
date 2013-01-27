@@ -52,7 +52,6 @@ class SublimeWSServer:
 	## connect to KeyValueStore
 	def setKV(self, key, value):
 		self.kvs.setKeyValue(key, value)
-
 		print "socket is ,,, ", self.socket
 
 	def getV(self, key):
