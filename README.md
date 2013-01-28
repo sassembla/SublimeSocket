@@ -7,7 +7,7 @@
 ###from CommandPalette >  
 ##### SublimeSocket: on
 **-> start WebSocket server on http://localhost:8823**
-##### SublimeSocket: on > open preference(testing)
+##### SublimeSocket: on > open preference
 **-> server on then show SublimeSocket's preference.**  
 ##### SublimeSocket: open preference
 **-> show SublimeSocket's preference.**  
