@@ -40,22 +40,22 @@
         },
 
         onOpen: function () {
-          _WS.write('CONNECTED');
+          _WS.writeLog('<span class="label label-success">Connected</span>');
 
           //call api then get callback
           _WS.s.send('sublimesocket@inputIdentity:{\"id\":\"'+uuid+'\"}');
         },
 
         onClose: function () {
-          _WS.write('DISCONNECTED');
+          _WS.writeLog('<span class="label label-important">RESPONSE:DISCONNECTED</span>');
         },
 
         onMessage: function (e) {
-          _WS.write('<span style="color: blue;">RESPONSE: ' + e.data+'</span>');
+          _WS.writeLog('<span class="label label-info">RESPONSE: ' + e.data + '</span>');
         },
 
         onError: function (e) {
-          _WS.write('<span style="color: red;">ERROR:</span> ' + e.data);
+          _WS.writeLog('<span style="color: red;">ERROR:</span> ' + e.data);
         },
 
 
@@ -63,7 +63,7 @@
         /*
         write textlist
         */
-        write: function (message) {
+        writeLog: function (message) {
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
             p.innerHTML = message.toString();
@@ -73,12 +73,12 @@
           if (!message.length) {
             alert('Empty message not allowed !');
           } else {
-            _WS.write('SEND: ' + message);
+            _WS.writeLog('<span class="label label-info">SEND: ' + message + '</span>');
             _WS.s.send(message);
           }
         },
         close: function () {//no one call
-          _WS.write('GOODBYE !');
+          _WS.writeLog('<span class="label">CLOSED</span>');
           _WS.s.close();
         }
       };
@@ -93,32 +93,39 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script src="../resource/js/bootstrap.min.js"></script>
       
-      <div id="header" class="span12">
-        <h2>SublimeSocket Test Console</h2>
+      <div id="header">
+        <h2 class="offset1">SublimeSocket Test Console</h2>
       </div>
 
-      <div class="row-fluid">
-        <div class="input-append span9">
-          <input class="span9" id="send" type="text" value="" />
-          <button class="btn" type="button" onclick="_WS.send(document.getElementById('send').value);"/>show dialog</button>
+      <div class="row offset1">
+        <div class="input-append">
+          <input class="span7" id="send" type="text" value="" />
+          <button class="btn" type="button" onclick="_WS.send(document.getElementById('send').value);"/>input</button>
+          <button type="submit" class="btn btn-danger" onclick="_WS.send('sublimesocket@killServer');"> 
+          Stop
+          </button>
+
         </div>
-        <div class="span9">
-          <select multiple="multiple" class="span9" onchange="setter.set(this[this.selectedIndex].value)">
-            
+        
+        <div class="">
+          <select multiple="multiple" class="span9 offset2" onchange="setter.set(this[this.selectedIndex].value)">
 
             <option>ss@eval:["sublime.message_dialog('show dialog from WebSocket Client')"]</option>
             <option>window testing</option>
             <option>view testing</option>
             <option>range testing</option>
-            <option>timer testing</option>
-
 
           </select>
         </div>
-        <button type="submit" class="btn btn-danger" onclick="_WS.send('sublimesocket@killServer');"> Stop </button>
+        
+        
         
       </div>
-      <div id="output"></div>
+      
     </div>
+    
+    <div id="output" class="offset2 span7"></div>
+
+
   </body>
 </html>
