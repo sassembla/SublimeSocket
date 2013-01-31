@@ -11,7 +11,7 @@ from SublimeWSEncoder import *
 API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"
-API_CONCAT_DELIM = ">"
+API_CONCAT_DELIM = "->"
 API_COMMAND_PARAMS_DELIM = ":"# only first ":" will be evaluated as delimiter.
 
 API_INPUTIDENTITY = "inputIdentity"
