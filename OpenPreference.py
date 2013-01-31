@@ -21,22 +21,28 @@ class Openpreference(sublime_plugin.TextCommand):
     host = sublime.load_settings("SublimeSocket.sublime-settings").get('host')
     port = sublime.load_settings("SublimeSocket.sublime-settings").get('port')
     
-    # prepare html contents
-    html = SublimeWSSettings.PREFERENCE_HTML
-    
-    # replace host:port
-    html = html.replace('SUBLIME_HOST', host)
-    html = html.replace('SUBLIME_PORT', str(port))
 
     # create path of Preference.html
     currentPackagePath = sublime.packages_path() + "/SublimeSocket/"
+    originalHtmlPath = "resource/source.html"
+    originalPath = currentPackagePath + originalHtmlPath
+
     preferenceFilePath = "tmp/preference.html"
     preferencePath = currentPackagePath + preferenceFilePath
 
+    # prepare html contents
+    htmlFile = open(originalPath, 'r')
+    html = htmlFile.read()
+    htmlFile.close()
+        
+    # replace host:port
+    html = html.replace(SublimeWSSettings.SS_HOST_REPLACE, host)
+    html = html.replace(SublimeWSSettings.SS_PORT_REPLACE, str(port))
+
     # generate preference
-    file = open(preferencePath, 'w')
-    file.write(html)
-    file.close()
+    outputFile = open(preferencePath, 'w')
+    outputFile.write(html)
+    outputFile.close()
     
     # set Target-App to open Preference.htnl
     targetAppPath = sublime.load_settings("SublimeSocket.sublime-settings").get('preference browser')

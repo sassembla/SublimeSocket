@@ -9,13 +9,19 @@ from SublimeWSEncoder import *
 
 #API for Input to ST2 through WebSocket
 API_PREFIX = "sublimesocket"
+API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"
 API_CONCAT_DELIM = ">"
 API_COMMAND_PARAMS_DELIM = ":"# only first ":" will be evaluated as delimiter.
 
 API_INPUTIDENTITY = "inputIdentity"
 API_KILLSERVER    = "killServer"
-API_MIRRORCONSOLE	= "mirrorConsole"
+
+API_TIMEREVENT		= "timerEvent"
+
+API_EVAL					= "eval"
+
+API_TEST					= "test"
 
 
 ## API Parse the action
@@ -25,6 +31,8 @@ class SublimeSocketAPI:
 		self.encoder = SublimeWSEncoder()
 
 	def parse(self, data, client):
+		print "data is ", data
+		
 		commands = data.split(API_CONCAT_DELIM)
 
     # command and param  e.g		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
@@ -39,7 +47,6 @@ class SublimeSocketAPI:
       # python-switch
 			for case in switch(command):
 				if case(API_INPUTIDENTITY):
-					# callback to client as kill-id of myself
 					clientId = params["id"]
 					self.server.setKV("clientId", str(clientId))
 					break
@@ -48,35 +55,41 @@ class SublimeSocketAPI:
 					self.server.killServerSelf()
 					break
 
-				if case(API_MIRRORCONSOLE):
-					# testing
-					sublime.set_timeout(lambda: self.test(), 0)
+				if case(API_TIMEREVENT):
+					#残りのタスクを内包して、非同期で抜ける。
+					print "params ", params
+					# どんな分散をするか、
+					# self.timerEventSetIntreval()
+					break 
 
+				if case(API_TEST):
+					sublime.set_timeout(lambda: self.test(), 0)
 					break
 
+				if case(API_EVAL):
+					evalResults = sublime.set_timeout(lambda: self.sublimeEval(params), 0)
+					# client.send(evalResults)
+					break
 				if case():
 					print "unknown command"
 					break
 
-	def test(self):
-		print "function test Start"
 
+	# evaluate strings. params is array. 
+	def sublimeEval(self, params):
 		# SUBLIME series
-		# sublime.Region(0,10)#no errorで動く。が、効果は不明。
-		# sublime.status_message("canyouseeme?")#OK
-		# sublime.message_dialog("new connection approaching")#OK
-
+		# sublime.Region
+		# sublime.status_message("can you see me?")
+		# sublime.message_dialog("new connection approaching")
 		# sublime.ok_cancel_dialog
 		# sublime.load_settings
 		# sublime.save_settings
-
 		# sublime.windows()	#[<sublime.Window object at 0x115f11d70>]
 		# sublime.active_window() #<sublime.Window object at 0x115f11d70>
 		# sublime.packages_path() #/Users/sassembla/Library/Application Support/Sublime Text 2/Packages
 		# sublime.installed_packages_path() #/Users/sassembla/Library/Application Support/Sublime Text 2/Installed Packages
-		# sublime.get_clipboard() #OK
-		# sublime.set_clipboard("hereComesDaredevil") #OK
-
+		# sublime.get_clipboard() 
+		# sublime.set_clipboard("hereComesDaredevil") 
 		# score_selector
 		# run_command
 		# log_commands
@@ -85,15 +98,12 @@ class SublimeSocketAPI:
 		# platform
 		# arch
 
-
 		# WINDOW series
 		window = sublime.active_window()
 		# id()	
 		# new_file()	
 		# open_file(file_name, <flags>)	View	
-
-		# window.active_view() #<sublime.View object at 0x10b768a60>
-
+		# active_view() #<sublime.View object at 0x10b768a60>
 		# active_view_in_group(group)	View	Returns the currently edited view in the given group.
 		# views()	[View]	Returns all open views in the window.
 		# views_in_group(group)	[View]	Returns all open views in the given group.
@@ -111,7 +121,7 @@ class SublimeSocketAPI:
 
 
 		# VIEW series
-		view = window.active_view()
+		active_view = window.active_view()
 		# id()	int	Returns a number that uniquely identifies this view.
 		# buffer_id()	int	Returns a number that uniquely identifies the buffer underlying this view.
 		# file_name()	String	The full name file the file associated with the buffer, or None if it doesn't exist on disk.
@@ -155,12 +165,10 @@ class SublimeSocketAPI:
 		# show(point, <show_surrounds>)	None	Scroll the view to show the given point.
 		# show(region, <show_surrounds>)	None	Scroll the view to show the given region.
 		# show(region_set, <show_surrounds>)	None	Scroll the view to show the given region set.
-
-		# view.show_at_center(20) #OK
-		
+		# show_at_center(point) 
 		# show_at_center(region)	None	Scroll the view to center on the region.
 		# visible_region()	Region	Returns the currently visible area of the view.
-		view.viewport_position()#	(0.0, 646.0) Vector	Returns the offset of the viewport in layout coordinates.
+		# viewport_position()#	(0.0, 646.0) Vector	Returns the offset of the viewport in layout coordinates.
 		# set_viewport_position(vector, <animate<)	None	Scrolls the viewport to the given layout position.
 		# viewport_extent()	vector	Returns the width and height of the viewport.
 		# layout_extent()	vector	Returns the width and height of the layout.
@@ -168,11 +176,7 @@ class SublimeSocketAPI:
 		# layout_to_text(vector)	point	Converts a layout position to a text position
 		# line_height()	real	Returns the light height used in the layout
 		# em_width()	real	Returns the typical character width used in the layout
-
-		# regions = []
-		# regions.append(sublime.Region(0,100))
-		# view.add_regions("hereC", regions, "comment")	#OK comment以外にもアイコンとかも有るらしい。何それ凄い。
-
+		# add_regions("hereC", regions, "comment")	 comment以外にもアイコンとかも有る
 		# get_regions(key)	[regions]	Return the regions associated with the given key, if any
 		# erase_regions(key)	None	Removed the named regions
 		# set_status(key, value)	None	Adds the status key to the view. The value will be displayed in the status bar, in a comma separated list of all status values, ordered by key. Setting the value to the empty string will clear the status.
@@ -198,7 +202,8 @@ class SublimeSocketAPI:
 
 
 		# REGION series
-		region = sublime.Region(100,200)#こいつは、Region単位のコンストラクタなんだな。
+		regions = []
+		# region = sublime.Region(100,200)
 		# begin()	int	Returns the minimum of a and b.
 		# end()	int	Returns the maximum of a and b.
 		# size()	int	Returns the number of characters spanned by the region. Always >= 0.
@@ -222,6 +227,16 @@ class SublimeSocketAPI:
 
 		# EVENTLISTENER and the other Base Class series ...no needs
 
+		### EVALUATE ###
+		results = []
+		for executable in params:
+			print executable
+			result = eval(executable)
+			if result == None:
+				result = "None"
+			results.append(executable+" = "+result)
+
+		return results
 
 class switch(object):
 	def __init__(self, value):

@@ -21,7 +21,7 @@ class SublimeWSController:
 	#  @param data Decoded data, text or binary.
 	def run(self, ctrl, data):
 		encoder = SublimeWSEncoder()
-
+		print "run data is ",data
  		# python-switch
 		for case in switch(ctrl['opcode']):
 			if case(SublimeWSSettings.OP_PING):
@@ -34,10 +34,14 @@ class SublimeWSController:
 				break
 		
 			if case(SublimeWSSettings.OP_TEXT):
+				print "data source = ",data
 				headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
+				
+				print "data source0 = ",headerAndParam[0]
+				print "data source1 = ",headerAndParam[1]
 
 				# run api or not
-				if (headerAndParam[0] == SublimeSocketAPI.API_PREFIX):
+				if (headerAndParam[0] == SublimeSocketAPI.API_PREFIX or headerAndParam[0] == SublimeSocketAPI.API_PREFIX_SUB):
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 
 				break

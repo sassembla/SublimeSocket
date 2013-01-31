@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SublimeSocket Preferences</title>
+    <meta charset="UTF-8" />
+    <link href="../resource/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript">
+      
+
+      //generage uuid for SublimeSocket api
+      var uuid = (function(){
+          var S4 = function() {
+              return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+          }   
+          return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4() +S4());
+      })();
+
+      var setter = {
+        set : function (input) {
+          //set params
+          document.getElementById('send').value = input;
+        }
+        
+      }
+      
+      var _WS = {
+
+        //websoket port (will be replaced by SublimeSocket plugin)
+        uri: 'ws://SUBLIMESOCKET_HOST:SUBLIMESOCKET_PORT/',
+        
+        ws: null,
+
+        init : function (e) {
+          _WS.s = new WebSocket(_WS.uri);
+          _WS.s.onopen = function (e) { _WS.onOpen(e); };
+          _WS.s.onclose = function (e) { _WS.onClose(e); };
+          _WS.s.onmessage = function (e) { _WS.onMessage(e); };
+          _WS.s.onerror = function (e) { _WS.onError(e); };
+        },
+
+        onOpen: function () {
+          _WS.write('CONNECTED');
+
+          //call api then get callback
+          _WS.s.send('sublimesocket@inputIdentity:{\"id\":\"'+uuid+'\"}');
+        },
+
+        onClose: function () {
+          _WS.write('DISCONNECTED');
+        },
+
+        onMessage: function (e) {
+          _WS.write('<span style="color: blue;">RESPONSE: ' + e.data+'</span>');
+        },
+
+        onError: function (e) {
+          _WS.write('<span style="color: red;">ERROR:</span> ' + e.data);
+        },
+
+
+        //Methods
+        /*
+        write textlist
+        */
+        write: function (message) {
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.innerHTML = message.toString();
+            document.getElementById('output').appendChild(p);
+        },
+        send: function (message) {
+          window.alert("showww "+message)
+          if (!message.length) {
+            alert('Empty message not allowed !');
+          } else {
+            _WS.write('SEND: ' + message);
+            _WS.s.send(message);
+          }
+        },
+        close: function () {//no one call
+          _WS.write('GOODBYE !');
+          _WS.s.close();
+        }
+      };
+
+      window.addEventListener('load', _WS.init, false);
+
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script src="../resource/js/bootstrap.min.js"></script>
+      
+      <div id="header" class="span12">
+        <h2>SublimeSocket Test Console</h2>
+      </div>
+
+      <div class="row-fluid">
+        <div class="input-append span9">
+          <input class="span9" id="send" type="text" value="" />
+          <button class="btn" type="button" onclick="_WS.send(document.getElementById('send').value);"/>show dialog</button>
+        </div>
+        <div class="span9">
+          <select multiple="multiple" class="span9" onchange="setter.set(this[this.selectedIndex].value)">
+            
+
+            <option>ss@eval:["sublime.message_dialog('show dialog from WebSocket Client')"]</option>
+            <option>window testing</option>
+            <option>view testing</option>
+            <option>range testing</option>
+            <option>timer testing</option>
+
+
+          </select>
+        </div>
+        <button type="submit" class="btn btn-danger" onclick="_WS.send('sublimesocket@killServer');"> Stop </button>
+        
+      </div>
+      <div id="output"></div>
+    </div>
+  </body>
+</html>
