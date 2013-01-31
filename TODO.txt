@@ -3,8 +3,8 @@ TODO
 
 
 TimerEvent ほか、SS上で動くもの
-	アイデアベースで、要る機能から作る。
-	TimerEvent
+	アイデアベースで、要る機能から作る。Filters
+	TimeEvent
 		setInterval(interval)	-return timerId
 		timerList							-return timerIds
 		remove(timerId)
@@ -14,9 +14,11 @@ TimerEvent ほか、SS上で動くもの
 		updated
 		bufferList
 
-	KVS	(Redisとか、本家からちょっと要素もらう)
-		set
-		get
+	KeyValueStore
+		set(key,value)
+		get(key)
+		keys
+		remove(key)
 		clear
 
 	TranslateFilter
