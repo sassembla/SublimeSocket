@@ -151,7 +151,8 @@ class SublimeWSClient:
 					(ctrl, data) = decoder.decode(self)
 				except ValueError as (closing_code, message):
 					if self.hasStatus('OPEN'):
-						self.cont.kill(closing_code,'WSDecoder::'+str(message))
+						print "there is no kill yet.", closing_code, message
+						# self.cont.kill(closing_code,'WSDecoder::'+str(message))
 					break
 				else:
 					self.cont.run(ctrl, data)
