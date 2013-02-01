@@ -108,6 +108,9 @@ class SublimeWSDecoder:
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
+
+				
+
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
