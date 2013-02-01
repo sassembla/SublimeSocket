@@ -36,9 +36,6 @@ class SublimeWSController:
 			if case(SublimeWSSettings.OP_TEXT):
 				print "data source = ",data
 				headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
-				
-				print "data source0 = ",headerAndParam[0]
-				print "data source1 = ",headerAndParam[1]
 
 				# run api or not
 				if (headerAndParam[0] == SublimeSocketAPI.API_PREFIX or headerAndParam[0] == SublimeSocketAPI.API_PREFIX_SUB):
@@ -50,6 +47,7 @@ class SublimeWSController:
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
+				print "data is bin", data
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
