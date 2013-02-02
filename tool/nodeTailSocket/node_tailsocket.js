@@ -12,10 +12,10 @@ ws.on('open', function() {});
 
 tail.on("line", function(data) {
 	
-	// apiModifiedData = "eval:[\"sublime.message_dialog('"+data+"')\"]"
-	apiModifiedData = 
+	apiModifiedData = "eval:[\"sublime.message_dialog('"+data+"')\"]"
+	// apiModifiedData = 
 
-	
+
 	//json
 	var str = {"mp" : apiModifiedData};
 	
