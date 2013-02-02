@@ -42,7 +42,6 @@ class SublimeWSDecoder:
 		rsv3 = b1 >> 4 & 1
 		opcode = b1 & 0xf
 
-
 		# decode second byte
 		b = client.read(1)
 		if not len(b):
@@ -73,7 +72,7 @@ class SublimeWSDecoder:
 			length_bytes = b
 			length = struct.unpack("!Q", length_bytes)[0]
 
-		#print 'data length:', length
+		print 'data length:', length
 
 		# decode mask key
 		mask_key = client.read(4)
@@ -108,9 +107,8 @@ class SublimeWSDecoder:
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
-
-				
-
+				# unmask
+				data = self.unmask(mask_key, str(data))
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
