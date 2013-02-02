@@ -52,6 +52,9 @@ class SublimeWSController:
 			if case(SublimeWSSettings.OP_BINARY):
 
 				# use messagepack-python(EXPERIMENTAL)
+				# no api check.
+
+				
 				# how can I compose 'imports' and dependencies in Python ..?
 
 				msgpackF = MsgpackFilter()
