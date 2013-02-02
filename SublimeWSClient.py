@@ -69,8 +69,9 @@ class SublimeWSClient:
 		return "".join(line)
 
 	## Send handshake according to RFC
-	def hanshake(self):
+	def handshake(self):
 		headers = {}
+		
 		# Ignore first line with GET
 		line = self.readlineheader()
 		while self.hasStatus('CONNECTING'):
@@ -83,13 +84,17 @@ class SublimeWSClient:
 				raise ValueError('Invalid line in header.')
 			if line == '\r\n':
 				break
+			
 			# take care with strip !
 			# >>> import string;string.whitespace
 			# '\t\n\x0b\x0c\r '
+			
 			line = line.strip()
+
 			# take care with split !
 			# >>> a='key1:value1:key2:value2';a.split(':',1)
 			# ['key1', 'value1:key2:value2']
+			
 			kv = line.split(':', 1)
 			if len(kv) == 2:
 				key, value = kv
@@ -138,11 +143,12 @@ class SublimeWSClient:
 		self.addr = addr
 		self.setStatus('CONNECTING')
 		try:
-			self.hanshake()
+			self.handshake()
 		except ValueError as error:
-			self.server.remove(self)
-			self.close()
-			raise ValueError('Client rejected: ' + str(error))
+			print "should kill", error
+			# self.server.remove(self)
+			# self.close()
+			# raise ValueError('Client rejected: ' + str(error))
 		else:
 			decoder = SublimeWSDecoder()
 			self.setStatus('OPEN')

@@ -3,6 +3,11 @@ import SublimeWSSettings
 import SublimeSocketAPI
 from SublimeWSEncoder import *
 
+import sys
+sys.path.append("./filter")
+from MsgpackFilter import MsgpackFilter
+
+
 class SublimeWSController:
 	def __init__(self, client):
 		self.client = client
@@ -33,27 +38,45 @@ class SublimeWSController:
 				break
 		
 			if case(SublimeWSSettings.OP_TEXT):
-				headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
 
-				# run api or not
-				if (headerAndParam[0] == SublimeSocketAPI.API_PREFIX or headerAndParam[0] == SublimeSocketAPI.API_PREFIX_SUB):
+				#check if API or not
+				if (self.isApi(data)):
+					headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
-
 				break
 
 			if case(SublimeWSSettings.OP_CONTINUATION):
+				print "continuation...(not yet do anything)"
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
-				
 
-				
+				# use messagepack-python(EXPERIMENTAL)
+				# how can I compose 'imports' and dependencies in Python ..?
+
+				msgpackF = MsgpackFilter()
+				unpacked = headerAndParam = msgpackF.decode(data)
+
+				# key-value array arrived here.
+				print "unpacked", unpacked
+
+				# unpacked 
+				self.client.server.callAPI(unpacked, self.client.clientId)
 
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
 				print "default,,, should not be"
 
+
+	## Check API-adoptable or not
+	def isApi(self, data):
+		headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
+		return headerAndParam[0] == SublimeSocketAPI.API_PREFIX or headerAndParam[0] == SublimeSocketAPI.API_PREFIX_SUB
+		
 	## Send a ping
 	def ping(self):
 		print '--- PING (CONTROLLER) ---'
+
+
+

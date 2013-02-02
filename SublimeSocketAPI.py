@@ -10,6 +10,7 @@ from SublimeWSEncoder import *
 #API for Input to ST2 through WebSocket
 API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
+
 API_DEFINE_DELIM = "@"
 API_CONCAT_DELIM = "->"
 API_COMMAND_PARAMS_DELIM = ":"# only first ":" will be evaluated as delimiter.
@@ -32,10 +33,11 @@ class SublimeSocketAPI:
 
 	def parse(self, data, client):
 		print "data is ", data
-		
+
+		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(API_CONCAT_DELIM)
 
-    # command and param  e.g		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
+    # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
 			command_params = commandIdentityAndParams.split(API_COMMAND_PARAMS_DELIM, 1)
 			command = command_params[0]
@@ -75,7 +77,7 @@ class SublimeSocketAPI:
 					break
 
 
-	# evaluate strings. params is array. 
+	# evaluate strings
 	def sublimeEval(self, params):
 		# SUBLIME series
 		# sublime.Region
@@ -234,7 +236,7 @@ class SublimeSocketAPI:
 			result = eval(executable)
 			if result == None:
 				result = "None"
-			results.append(executable+" = "+result)
+			results.append(executable+" = "+result+"	/")
 
 		return results
 
