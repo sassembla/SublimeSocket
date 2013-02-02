@@ -39,7 +39,7 @@ function filterAndGenerateAPI (data) {
 	  }
 
 	  //only linenum... set dotmark on the error line.
-		return "eval:[\"regions.append(active_view.line("+dataArray[3]+"))\", \"active_view.add_regions('error', regions, 'error', 'dot')\"]";
+	  return "eval:[\"self.setLineFromTo("+dataArray[3]+",lines)\",\"regions.append(active_view.line(lines[0]))\",\"active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)\"]";
 	}
 	if (data.split(":").length - 1 == 2) {
 		//return "eval:[\"sublime.status_message('"+data+"')\"]";
