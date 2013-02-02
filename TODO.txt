@@ -23,6 +23,11 @@ TimerEvent ほか、SS上で動くもの
 	TranslateFilter
 		???
 
+	MessagePack
+		ちょうどよくハッカソンあったので積んでみた。
+		bufferとか、重量の有る物を外部に出すときに使用したい。
+		今のところmsgpackブランチのみOn。
+		
 
 TranslateFilterの追加
 	任意のストリーム　＞　アクション変換を可能にする機構を、作成してさらに外部化したい。

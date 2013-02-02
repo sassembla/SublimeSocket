@@ -127,8 +127,8 @@ class SublimeWSEncoder:
 		else:
 			raise ValueError('Frame too large')
 
-		#print repr(bytes)
-		print 'data=', data
+		# print repr(bytes)
+		# print 'data=', data
 
 		ctrl = (fin, rsv1, rsv2, rsv3, opcode, mask_key, data)
 		

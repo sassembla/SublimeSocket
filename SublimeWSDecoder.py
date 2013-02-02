@@ -72,8 +72,6 @@ class SublimeWSDecoder:
 			length_bytes = b
 			length = struct.unpack("!Q", length_bytes)[0]
 
-		print 'data length:', length
-
 		# decode mask key
 		mask_key = client.read(4)
 		if not len(mask_key):
