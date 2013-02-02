@@ -102,6 +102,8 @@ class SublimeSocketAPI:
 
 		# WINDOW series
 		window = sublime.active_window()
+		self.window = window
+
 		# id()	
 		# new_file()	
 		# open_file(file_name, <flags>)	View	
@@ -124,6 +126,7 @@ class SublimeSocketAPI:
 
 		# VIEW series
 		active_view = window.active_view()
+		self.view = active_view
 		# id()	int	Returns a number that uniquely identifies this view.
 		# buffer_id()	int	Returns a number that uniquely identifies the buffer underlying this view.
 		# file_name()	String	The full name file the file associated with the buffer, or None if it doesn't exist on disk.
@@ -227,6 +230,10 @@ class SublimeSocketAPI:
 		# clear_on_change(key)	None	Remove all callbacks registered with the given key.
 		
 
+		# ## SPECIALS ##
+		lines = []
+
+
 		# EVENTLISTENER and the other Base Class series ...no needs
 
 		### EVALUATE ###
@@ -239,6 +246,20 @@ class SublimeSocketAPI:
 			results.append(executable+" = "+result+"	/")
 
 		return results
+
+	## change lineCount to wordCount that is, includes the target-line index.
+	def setLineFromTo(self, lineCount, lineArray):
+		# Convert from 1 based to a 0 based line number
+		line = int(lineCount) - 1
+		print "line	", line
+		# Negative line numbers count from the end of the buffer
+		if line < 0:
+			lines, _ = self.view.rowcol(self.view.size())
+			line = lines + line + 1
+
+		pt = self.view.text_point(line, 0)
+		lineArray.append(pt)
+
 
 class switch(object):
 	def __init__(self, value):
