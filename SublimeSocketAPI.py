@@ -6,24 +6,9 @@ import json
 
 import difflib
 from SublimeWSEncoder import *
+import SublimeSocketAPISettings
 
-#API for Input to ST2 through WebSocket
-API_PREFIX = "sublimesocket"
-API_PREFIX_SUB = "ss"
-
-API_DEFINE_DELIM = "@"
-API_CONCAT_DELIM = "->"
-API_COMMAND_PARAMS_DELIM = ":"# only first ":" will be evaluated as delimiter.
-
-API_INPUTIDENTITY = "inputIdentity"
-API_KILLSERVER    = "killServer"
-
-API_TIMEREVENT		= "timerEvent"
-
-API_EVAL					= "eval"
-
-API_TEST					= "test"
-
+from PythonSwitch import *
 
 ## API Parse the action
 class SublimeSocketAPI:
@@ -35,11 +20,11 @@ class SublimeSocketAPI:
 		print "data is ", data
 
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
-		commands = data.split(API_CONCAT_DELIM)
+		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
 
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
-			command_params = commandIdentityAndParams.split(API_COMMAND_PARAMS_DELIM, 1)
+			command_params = commandIdentityAndParams.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
 			command = command_params[0]
 
 			params = ''
@@ -47,28 +32,33 @@ class SublimeSocketAPI:
 				params = json.loads(command_params[1])
 
       # python-switch
-			for case in switch(command):
-				if case(API_INPUTIDENTITY):
+			for case in PythonSwitch(command):
+				if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
 					clientId = params["id"]
 					self.server.setKV("clientId", str(clientId))
 					break
 
-				if case(API_KILLSERVER):
+				if case(SublimeSocketAPISettings.API_KILLSERVER):
 					self.server.killServerSelf()
 					break
 
-				if case(API_TIMEREVENT):
+				if case(SublimeSocketAPISettings.API_TIMEREVENT):
 					#残りのタスクを内包して、非同期で抜ける。
 					print "params ", params
 					# どんな分散をするか、
 					# self.timerEventSetIntreval()
 					break 
+				if case(SublimeSocketAPISettings.API_EVENTLISTEN):
+					# 特定のイベントを受けて、値を実行する
+					eventListenResults = sublime.set_timeout(lambda: self.eventListen(params), 0)
 
-				if case(API_TEST):
+					break
+
+				if case(SublimeSocketAPISettings.API_TEST):
 					sublime.set_timeout(lambda: self.test(), 0)
 					break
 
-				if case(API_EVAL):
+				if case(SublimeSocketAPISettings.API_EVAL):
 					evalResults = sublime.set_timeout(lambda: self.sublimeEval(params), 0)
 					# client.send(evalResults)
 					break
@@ -76,8 +66,46 @@ class SublimeSocketAPI:
 					print "unknown command"
 					break
 
+	## set/remove eventListener : emit 
+	# The event will reach every-view that included by the window.
+	def eventListen(self, params):
+		print "params is ", params
 
-	# evaluate strings
+		# on_new(view)	None	Called when a new buffer is created.
+		# on_clone(view)	None	Called when a view is cloned from an existing one.
+		# on_load(view)	None	Called when the file is finished loading.
+		# on_close(view)	None	Called when a view is closed (note, there may still be other views into the same buffer).
+		# on_pre_save(view)	None	Called just before a view is saved.
+		# on_post_save(view)	None	Called after a view has been saved.
+		# on_modified(view)	None	Called after changes have been made to a view.
+		# on_selection_modified(view)	None	Called after the selection has been modified in a view.
+		# on_activated(view)	None	Called when a view gains input focus.
+		# on_deactivated(view)	None	Called when a view loses input focus.
+		# on_query_context(view, key, operator, operand, match_all)	bool or None	Called when determining to trigger a key binding with the given context key. If the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None.
+		# 	operator is one of:
+		# 	sublime.OP_EQUAL. Is the value of the context equal to the operand?
+		# 	sublime.OP_NOT_EQUAL. Is the value of the context not equal to the operand?
+		# 	sublime.OP_REGEX_MATCH. Does the value of the context match the regex given in operand?
+		# 	sublime.OP_NOT_REGEX_MATCH. Does the value of the context not match the regex given in operand?
+		# 	sublime.OP_REGEX_CONTAINS. Does the value of the context contain a substring matching the regex given in operand?
+		# 	sublime.OP_NOT_REGEX_CONTAINS. Does the value of the context not contain a substring matching the regex given in operand?
+		# 	match_all should be used if the context relates to the selections: does every selection have to match (match_all = True), or is at least one matching enough (match_all = Fals)?
+		
+		keys = params.keys()
+		events = ["on_modified"]
+
+		eventObservationArray = {}
+
+		valid_events = set(keys) & set(events)
+		for eventIdentity in valid_events:
+			eventObservationArray[eventIdentity] = params[eventIdentity]
+			
+		self.server.setKV("eventListen", eventObservationArray)
+		
+
+	## evaluate strings
+	# Not only eval.
+	# Set environment parameters from reading KVS
 	def sublimeEval(self, params):
 		# SUBLIME series
 		# sublime.Region
@@ -102,6 +130,8 @@ class SublimeSocketAPI:
 
 		# WINDOW series
 		window = sublime.active_window()
+
+		# set default
 		self.window = window
 
 		# id()	
@@ -126,7 +156,10 @@ class SublimeSocketAPI:
 
 		# VIEW series
 		active_view = window.active_view()
+
+		# set default
 		self.view = active_view
+		
 		# id()	int	Returns a number that uniquely identifies this view.
 		# buffer_id()	int	Returns a number that uniquely identifies the buffer underlying this view.
 		# file_name()	String	The full name file the file associated with the buffer, or None if it doesn't exist on disk.
@@ -208,6 +241,7 @@ class SublimeSocketAPI:
 
 		# REGION series
 		regions = []
+
 		# region = sublime.Region(100,200)
 		# begin()	int	Returns the minimum of a and b.
 		# end()	int	Returns the maximum of a and b.
@@ -230,7 +264,8 @@ class SublimeSocketAPI:
 		# clear_on_change(key)	None	Remove all callbacks registered with the given key.
 		
 
-		# ## SPECIALS ##
+		# ## SPECIAL DEFINES ##
+		# The "eval" cannot  create values. Use these params as "you defined these params".
 		lines = []
 
 
@@ -247,8 +282,11 @@ class SublimeSocketAPI:
 
 		return results
 
-	## change lineCount to wordCount that is, includes the target-line index.
-	def setLineFromTo(self, lineCount, lineArray):
+	## change lineCount to wordCount that is, includes the target-line index at SublimeText.
+	def getLineCount_And_SetToArray(self, lineCount, lineArray):
+		#check the namespace of inputted param
+		len(lineArray)
+
 		# Convert from 1 based to a 0 based line number
 		line = int(lineCount) - 1
 		print "line	", line
@@ -258,26 +296,6 @@ class SublimeSocketAPI:
 			line = lines + line + 1
 
 		pt = self.view.text_point(line, 0)
+
+		#store params to local param.
 		lineArray.append(pt)
-
-
-class switch(object):
-	def __init__(self, value):
-		self.value = value
-		self.fall = False
-
-	def __iter__(self):
-		"""Return the match method once, then stop"""
-		yield self.match
-		raise StopIteration
-
-	def match(self, *args):
-		"""Indicate whether or not to enter a case suite"""
-		if self.fall or not args:
-			return True
-		elif self.value in args: # changed for v1.5, see below
-			self.fall = True
-			return True
-		else:
-			return False
-	
