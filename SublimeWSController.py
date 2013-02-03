@@ -24,7 +24,7 @@ class SublimeWSController:
 	def run(self, ctrl, data):
 		encoder = SublimeWSEncoder()
  		# python-switch
-		for case in switch(ctrl['opcode']):
+		for case in PythonSwitch(ctrl['opcode']):
 			if case(SublimeWSSettings.OP_PING):
 				break
 
@@ -38,7 +38,7 @@ class SublimeWSController:
 
 				#check if API or not
 				if (self.isApi(data)):
-					headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
+					headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM)
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 				break
 
@@ -56,8 +56,8 @@ class SublimeWSController:
 
 	## Check API-adoptable or not
 	def isApi(self, data):
-		headerAndParam = data.split(SublimeSocketAPI.API_DEFINE_DELIM)
-		return headerAndParam[0] == SublimeSocketAPI.API_PREFIX or headerAndParam[0] == SublimeSocketAPI.API_PREFIX_SUB
+		headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM)
+		return headerAndParam[0] == SublimeSocketAPISettings.API_PREFIX or headerAndParam[0] == SublimeSocketAPISettings.API_PREFIX_SUB
 		
 	## Send a ping
 	def ping(self):

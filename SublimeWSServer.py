@@ -4,6 +4,11 @@ import sublime, sublime_plugin
 import socket, threading, string, time
 from SublimeWSClient import *
 from SublimeSocketAPI import *
+import SublimeSocketAPISettings
+
+from PythonSwitch import *
+
+SERVER_INTERVAL_SEC = 1000
 
 class SublimeWSServer:
 
@@ -21,7 +26,12 @@ class SublimeWSServer:
 		
 		self.socket.listen(0)
 		
-		print 'SublimeSocket WebSocketServing started @ ', host, ':', port
+		print '\n', 'SublimeSocket WebSocketServing started @ ', host, ':', port, "\n"
+
+
+		# start serverControlIntervals
+		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
+
 
 		self.listening = True
 		while self.listening:
@@ -34,6 +44,23 @@ class SublimeWSServer:
 			
 			threading.Thread(target = client.handle, args = (conn,addr)).start()
 			
+
+	## interval
+	def intervals(self):
+		# check KVS for "eventListen", and the other APIs.
+
+		debugArray = []
+		
+		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:
+			v = self.getV(key)
+			
+
+		sublime.set_timeout(lambda: sublime.status_message("params:\n".join(debugArray)), 0)
+
+		# loop
+		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
+
+		
 	## api 
 	def callAPI(self, apiData, clientId):
 		currentClient = [client for client in self.clients if client.clientId == clientId][0]
@@ -55,7 +82,7 @@ class SublimeWSServer:
 
 	def getV(self, key):
 		value = self.kvs.get(key)
-		print "val ==== ", value
+		# print "val ==== ", value
 		return value
 
 	## input to sublime from server
@@ -63,28 +90,17 @@ class SublimeWSServer:
 		print "will control sublime"
 		
 
+
+
 ## key-value pool
 class KVS:
 	## set
 	def setKeyValue(self, key, value):
-		print "key_", key, ":value_", value
+		# print "key_", key, ":value_", value
+		return ""
 
 	## get
 	def get(self, key):
-		print "key_", key
+		# print "key_", key
 		return ""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

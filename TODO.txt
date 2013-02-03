@@ -13,7 +13,7 @@ TimerEvent ほか、SS上で動くもの
 		updated
 		bufferList
 
-	KeyValueStore
+	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
 		set(key,value)
 		get(key)
 		keys
@@ -23,7 +23,16 @@ TimerEvent ほか、SS上で動くもの
 	TranslateFilter
 		???
 
-	MessagePack
+	Kick
+		observe何か
+			まだ形が決まらないな。
+
+	eval エラーハンドリング
+		エラー出たとき封印せねば。
+
+	eval 変数の定義を自力でできるのか？→無理。名前が異なるヤツを数種類用意しておくんだなー。
+
+	MessagePack:DONE
 		ちょうどよくハッカソンあったので積んでみた。
 		bufferとか、重量の有る物を外部に出すときに使用したい。
 		今のところmsgpackブランチのみOn。
@@ -36,6 +45,12 @@ TranslateFilterの追加
 		うーーーーんどうすれば。
 		音楽のシーケンサみたいな感じに追加したいが、ClassにしてArrayの連続の中に差し込むとかそういうのかな、、めんどい。
 
+
+ファイルの識別を行わないとな。
+	targetSettingみたいなのを行ってからrepl、で良い気がする。
+	それで、セット先のviewの有無が決まる。
+	開いてないファイルとかもあり得る。
+	evalでの対象を分けてやれば良いか。
 
 Sequence式の書式
 	どこかに記録を作らないと参照できない。ある程度固めたら書く。
