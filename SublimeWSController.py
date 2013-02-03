@@ -2,10 +2,7 @@
 import SublimeWSSettings
 import SublimeSocketAPI
 from SublimeWSEncoder import *
-
-import sys
-sys.path.append("./filter")
-from MsgpackFilter import MsgpackFilter
+import SublimeSocketAPISettings
 
 
 class SublimeWSController:
@@ -50,22 +47,7 @@ class SublimeWSController:
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
-
-				# use messagepack-python(EXPERIMENTAL)
-				# no api check.
-
-				
-				# how can I compose 'imports' and dependencies in Python ..?
-
-				msgpackF = MsgpackFilter()
-				unpacked = headerAndParam = msgpackF.decode(data)
-
-				# key-value array arrived here.
-				print "unpacked", unpacked
-
-				# unpacked 
-				self.client.server.callAPI(unpacked, self.client.clientId)
-
+				# see msgpack branch
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
