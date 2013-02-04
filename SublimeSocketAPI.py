@@ -50,8 +50,7 @@ class SublimeSocketAPI:
 					break 
 				if case(SublimeSocketAPISettings.API_EVENTLISTEN):
 					# 特定のイベントを受けて、値を実行する
-					eventListenResults = sublime.set_timeout(lambda: self.eventListen(params), 0)
-
+					self.eventListen(params)
 					break
 
 				if case(SublimeSocketAPISettings.API_TEST):
@@ -66,11 +65,15 @@ class SublimeSocketAPI:
 					print "unknown command"
 					break
 
-	## set/remove eventListener : emit 
+
+	## run API with interval.
+	def runOnInterval(self, key):
+		print "runOnInterval", key
+
+		
+	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.
 	def eventListen(self, params):
-		print "params is ", params
-
 		# on_new(view)	None	Called when a new buffer is created.
 		# on_clone(view)	None	Called when a view is cloned from an existing one.
 		# on_load(view)	None	Called when the file is finished loading.
@@ -100,6 +103,7 @@ class SublimeSocketAPI:
 		for eventIdentity in valid_events:
 			eventObservationArray[eventIdentity] = params[eventIdentity]
 			
+		# update
 		self.server.setKV("eventListen", eventObservationArray)
 		
 
@@ -299,3 +303,9 @@ class SublimeSocketAPI:
 
 		#store params to local param.
 		lineArray.append(pt)
+
+
+		
+
+
+
