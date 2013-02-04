@@ -3,10 +3,12 @@ import sublime, sublime_plugin
 
 import SublimeWSSettings
 import json
-
+import os
 import difflib
 from SublimeWSEncoder import *
 import SublimeSocketAPISettings
+import subprocess
+import shlex
 
 from PythonSwitch import *
 
@@ -16,8 +18,9 @@ class SublimeSocketAPI:
 		self.server = server
 		self.encoder = SublimeWSEncoder()
 
+	## Parse the API command via WebSocket
 	def parse(self, data, client):
-		print "data is ", data
+		# print "data is ", data
 
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
@@ -31,49 +34,94 @@ class SublimeSocketAPI:
 			if 1 < len(command_params):
 				params = json.loads(command_params[1])
 
-      # python-switch
-			for case in PythonSwitch(command):
-				if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
-					clientId = params["id"]
-					self.server.setKV("clientId", str(clientId))
-					break
+			self.runAPI(command, params)
 
-				if case(SublimeSocketAPISettings.API_KILLSERVER):
-					self.server.killServerSelf()
-					break
 
-				if case(SublimeSocketAPISettings.API_TIMEREVENT):
-					#残りのタスクを内包して、非同期で抜ける。
-					print "params ", params
-					# どんな分散をするか、
-					# self.timerEventSetIntreval()
-					break 
-				if case(SublimeSocketAPISettings.API_EVENTLISTEN):
-					# 特定のイベントを受けて、値を実行する
-					self.eventListen(params)
-					break
+	## run the specified API with JSON parameters. Dict or Array of JSON.
+	def runAPI(self, command, params):
+  	# python-switch
+		for case in PythonSwitch(command):
+			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
+				clientId = params["id"]
+				self.server.setKV("clientId", str(clientId))
+				break
 
-				if case(SublimeSocketAPISettings.API_TEST):
-					sublime.set_timeout(lambda: self.test(), 0)
-					break
+			if case(SublimeSocketAPISettings.API_KILLSERVER):
+				self.server.killServerSelf()
+				break
 
-				if case(SublimeSocketAPISettings.API_EVAL):
-					evalResults = sublime.set_timeout(lambda: self.sublimeEval(params), 0)
-					# client.send(evalResults)
-					break
-				if case():
-					print "unknown command"
-					break
+			if case(SublimeSocketAPISettings.API_TIMEREVENT):
+				#残りのタスクを内包して、非同期で抜ける。
+				print "params ", params
+				# どんな分散をするか、
+				# self.timerEventSetIntreval()
+				break
+
+			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
+				# set listener to KVS for observing the event occured
+				self.eventListen(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_SET_KVSTOREEVENT):
+				self.setKVStoredEvent(params)
+				break
+
+			# if case(SublimeSocketAPISettings.API_RUNSHELL):
+			# 	self.runShell(params)
+			# 	break
+
+			if case(SublimeSocketAPISettings.API_OUTPUT):
+				self.output(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_TEST):
+				sublime.set_timeout(lambda: self.test(), 0)
+				break
+
+			if case(SublimeSocketAPISettings.API_EVAL):
+				evalResults = sublime.set_timeout(lambda: self.sublimeEval(params), 0)
+				# client.send(evalResults)
+				break
+
+			if case():
+				print "unknown command", command
+				break
 
 
 	## run API with interval.
 	def runOnInterval(self, key):
 		print "runOnInterval", key
 
-		
+
+	## set event onto KVS
+	def setKVStoredEvent(self, params):
+		print "setKVStoredEvent", params
+		self.server.setKV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT, params)
+
+
+	# ## run shellScript
+	# # params is array that will be evaluated as commandline marameters.
+	# def runShell(self, params):
+	# 	runnable = ' '.join(params)
+	# 	if len(runnable):
+			
+	# 		# print "runnable", runnable
+	# 		self.process = subprocess.Popen(shlex.split(runnable.encode('utf8')), stdout=subprocess.PIPE, preexec_fn=os.setsid)
+	# 		for line in self.process.stdout:
+	# 			print line
+
+  ## output to the remote WebSocket client[TESTING]
+  # params is dict. {target:targetIdentifier, param:websocketparameters}
+	def output(self, params):
+		print "params", params
+		pass
+
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.
+	# KVS-key is SublimeSocketAPISettings.API_EVENTLISTEN
+	# KVS-value is Dictionary {eventListener:emitSetting}
 	def eventListen(self, params):
+		print "eventListen", params
 		# on_new(view)	None	Called when a new buffer is created.
 		# on_clone(view)	None	Called when a view is cloned from an existing one.
 		# on_load(view)	None	Called when the file is finished loading.
@@ -95,16 +143,16 @@ class SublimeSocketAPI:
 		# 	match_all should be used if the context relates to the selections: does every selection have to match (match_all = True), or is at least one matching enough (match_all = Fals)?
 		
 		keys = params.keys()
-		events = ["on_modified"]
-
 		eventObservationArray = {}
 
-		valid_events = set(keys) & set(events)
+		# check acceptable event
+		valid_events = set(keys) & set(SublimeSocketAPISettings.LISTEN_EVENTS)
 		for eventIdentity in valid_events:
 			eventObservationArray[eventIdentity] = params[eventIdentity]
 			
+
 		# update
-		self.server.setKV("eventListen", eventObservationArray)
+		self.server.setKV(SublimeSocketAPISettings.API_EVENTLISTEN, eventObservationArray)
 		
 
 	## evaluate strings

@@ -30,7 +30,7 @@ class SublimeWSServer:
 
 
 		# start serverControlIntervals
-		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
+		# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
 
 		self.listening = True
 		while self.listening:
@@ -52,7 +52,7 @@ class SublimeWSServer:
 			pass
 			# self.api.runOnInterval(self.getV(key))
 
-		sublime.set_timeout(lambda: sublime.status_message("params:\n".join(debugArray)), 0)
+		# sublime.set_timeout(lambda: sublime.status_message("params:\n".join(debugArray)), 0)
 		
 		# loop
 		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
@@ -72,27 +72,43 @@ class SublimeWSServer:
 		self.listening = False
 		self.socket.close()		
 
+
+
+	## input to sublime from server
+	def fireKVStoredEvent(self, eventName):
+		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:
+			if not isinstance(self.getV(key), dict):
+				return
+
+			if self.getV(key).has_key(eventName):
+
+				# print "getV", self.getV(key)#{'on_modified': u'runShell2013/02/04 23:01:51'}
+				eventKey = self.getV(key)[eventName]# array, [0] is API, others are parameters.
+
+				# print "API_SET_KVSTOREEVENT", self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT)
+				if self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT).has_key(eventKey):
+					
+					commandAndParams = self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT)[eventKey]
+					# print "commandAndParams", commandAndParams
+					self.api.runAPI(commandAndParams[0], commandAndParams[1:])	
+
+
 	## connect to KeyValueStore
 	def setKV(self, key, value):
-		print "should update!"
+		print "should update! if same key is on, already"
 		self.kvs.setKeyValue(key, value)
+
 
 	def getV(self, key):
 		value = self.kvs.get(key)
-		# print "val ==== ", value
 		return value
-
-	## input to sublime from server
-	def controlSublime(self):
-		print "will control sublime"
 		
-
-
 
 ## key-value pool
 class KVS:
 	def __init__(self):
 		self.keyValueDict = {}
+
 
 	## set
 	def setKeyValue(self, key, value):
@@ -102,6 +118,7 @@ class KVS:
 	## get
 	def get(self, key):
 		if not self.keyValueDict.has_key(key):
+			print "key not found",key
 			return ""
 		return self.keyValueDict[key]
 
