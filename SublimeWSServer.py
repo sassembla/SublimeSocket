@@ -8,7 +8,7 @@ import SublimeSocketAPISettings
 
 from PythonSwitch import *
 
-SERVER_INTERVAL_SEC = 1000
+SERVER_INTERVAL_SEC = 2000
 
 class SublimeWSServer:
 
@@ -32,7 +32,6 @@ class SublimeWSServer:
 		# start serverControlIntervals
 		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
 
-
 		self.listening = True
 		while self.listening:
 			(conn, addr) = self.socket.accept()
@@ -48,18 +47,15 @@ class SublimeWSServer:
 	## interval
 	def intervals(self):
 		# check KVS for "eventListen", and the other APIs.
-
-		debugArray = []
 		
 		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:
-			v = self.getV(key)
-			
+			pass
+			# self.api.runOnInterval(self.getV(key))
 
 		sublime.set_timeout(lambda: sublime.status_message("params:\n".join(debugArray)), 0)
-
+		
 		# loop
 		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
-
 		
 	## api 
 	def callAPI(self, apiData, clientId):
@@ -78,6 +74,7 @@ class SublimeWSServer:
 
 	## connect to KeyValueStore
 	def setKV(self, key, value):
+		print "should update!"
 		self.kvs.setKeyValue(key, value)
 
 	def getV(self, key):
@@ -94,13 +91,17 @@ class SublimeWSServer:
 
 ## key-value pool
 class KVS:
+	def __init__(self):
+		self.keyValueDict = {}
+
 	## set
 	def setKeyValue(self, key, value):
-		# print "key_", key, ":value_", value
-		return ""
+		self.keyValueDict[key] = value
+		return self.keyValueDict[key]
 
 	## get
 	def get(self, key):
-		# print "key_", key
-		return ""
+		if not self.keyValueDict.has_key(key):
+			return ""
+		return self.keyValueDict[key]
 
