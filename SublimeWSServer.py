@@ -118,7 +118,7 @@ class KVS:
 	## get
 	def get(self, key):
 		if not self.keyValueDict.has_key(key):
-			print "key not found",key
+			# print "key not found",key
 			return ""
 		return self.keyValueDict[key]
 
