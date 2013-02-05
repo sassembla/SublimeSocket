@@ -2,7 +2,7 @@
 var WebSocket = require('ws');
 
 var assert = require('assert');
-var msgpack = require('msgpack');
+// var msgpack = require('msgpack');
 var ws = new WebSocket('ws://127.0.0.1:8823/');
 
 Tail = require('tail').Tail;
@@ -21,51 +21,41 @@ prefix_error = "Error:";
 
 function filterAndGenerateAPI (data) {
 
-	if (data.lastIndexOf(prefix_errorheader_compile, 0) == 0) {
-		return "eval:[\"sublime.status_message('"+data+"')\"]";
-	}
-	if (data.lastIndexOf(prefix_error, 0) == 0) {
-		return "eval:[\"sublime.message_dialog('"+data+"')\"]";
-	}
+	// if (data.lastIndexOf(prefix_errorheader_compile, 0) == 0) {
+	// 	return "eval:[\"sublime.status_message('"+data+"')\"]";
+	// }
+	// if (data.lastIndexOf(prefix_error, 0) == 0) {
+	// 	return "eval:[\"sublime.message_dialog('"+data+"')\"]";
+	// }
 
-	if (data.lastIndexOf(prefix_file, 0) == 0) {
+	// if (data.lastIndexOf(prefix_file, 0) == 0) {
 
-		data = data.replace("(", "");
-		data = data.replace(")", "");
-		dataArray = data.split(" ");
+	// 	data = data.replace("(", "");
+	// 	data = data.replace(")", "");
+	// 	dataArray = data.split(" ");
 		
-		for (var i in dataArray) {
-	  	dataArray[i] = dataArray[i].replace(/:/, "");
-	  }
+	// 	for (var i in dataArray) {
+	//   	dataArray[i] = dataArray[i].replace(/:/, "");
+	//   }
 
-	  //only linenum... set dotmark on the error line.
-	  return "eval:[\"self.setLineFromTo("+dataArray[3]+",lines)\",\"regions.append(active_view.line(lines[0]))\",\"active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)\"]";
-	}
-	if (data.split(":").length - 1 == 2) {
-		//return "eval:[\"sublime.status_message('"+data+"')\"]";
-	}
-
-	return "";
+	//   //only linenum... set dotmark on the error line.
+	//   return "eval:[\"self.getLineCount_And_SetToArray("+dataArray[3]+",lines)\",\"regions.append(active_view.line(lines[0]))\",\"active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)\"]";
+	// }
+	// if (data.split(":").length - 1 == 2) {
+	// 	//return "eval:[\"sublime.status_message('"+data+"')\"]";
+	// }
+	var json = '{"source":"' + data + '"}';
+	var parsed = JSON.parse(json);
+	return "ss@filter:" + JSON.stringify(parsed);
 }
 
 ws.on('open', function() {});
 
 tail.on("line", function(message) {
-	// console.log("original					"+data);
-
+	console.log("original	"+message);
 	apiModifiedData = filterAndGenerateAPI(message);
-
-	if (apiModifiedData == "") return;
-
-	console.log("\napiModifiedData "+apiModifiedData+"\n");
-	//json
-	var str = {"mp" : apiModifiedData};
 	
-	//msgpack
-	var bin = msgpack.pack(str);
-  var arraybuffer = new Uint8Array(bin);
-
-  ws.send(arraybuffer.buffer, {binary: true});//default mask:true(ws sets implicitly, from client to server) 
+ 	ws.send(apiModifiedData);
 });
 
 ws.on('message', function(data, flags) {});

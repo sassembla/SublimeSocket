@@ -22,6 +22,9 @@ class SublimeWSController:
 	#  @param ctrl Control dictionnary for data.
 	#  @param data Decoded data, text or binary.
 	def run(self, ctrl, data):
+
+		print "data", data.encode("utf-8")
+
 		encoder = SublimeWSEncoder()
  		# python-switch
 		for case in PythonSwitch(ctrl['opcode']):
@@ -38,7 +41,7 @@ class SublimeWSController:
 
 				#check if API or not
 				if (self.isApi(data)):
-					headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM)
+					headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM, 1)
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 				break
 
@@ -47,6 +50,7 @@ class SublimeWSController:
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
+				print "is binary", data
 				# see msgpack branch
 				break
 
@@ -56,7 +60,7 @@ class SublimeWSController:
 
 	## Check API-adoptable or not
 	def isApi(self, data):
-		headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM)
+		headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM, 1)
 		return headerAndParam[0] == SublimeSocketAPISettings.API_PREFIX or headerAndParam[0] == SublimeSocketAPISettings.API_PREFIX_SUB
 		
 	## Send a ping
