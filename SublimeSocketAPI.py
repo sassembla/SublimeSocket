@@ -162,11 +162,18 @@ class SublimeSocketAPI:
 
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
-		# 正規表現でがしがしやるところ
 
-		for pattern in filterPatternsArray[filterName]:
+		print "filterPatternsArray", filterPatternsArray
+
+		for pattern in filterPatternsArray:
 			# regx key filterSource
-			print "filterぶんまわるはず", pattern
+			print "filterぶんまわるはず", pattern, "/filterSource", filterSource
+			# -----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll
+			# Compilation failed: 1 error(s), 0 warnings
+			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
+			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
+
+
 		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
 
 
