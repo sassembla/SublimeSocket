@@ -10,6 +10,7 @@ from PythonSwitch import *
 
 SERVER_INTERVAL_SEC = 2000
 
+
 class SublimeWSServer:
 
 	def __init__(self):
@@ -73,7 +74,13 @@ class SublimeWSServer:
 		self.socket.close()		
 
 
-
+	## return the filter has been defined or not
+	def isFilterDefined(self, filterName):
+		filterDict = self.getV(SublimeSocketAPISettings.API_DEFINEFILTER)
+		if filterName in filterDict:
+			return True
+		return False
+		
 	## input to sublime from server
 	def fireKVStoredEvent(self, eventName):
 		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:

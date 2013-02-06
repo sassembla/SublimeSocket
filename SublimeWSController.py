@@ -23,7 +23,7 @@ class SublimeWSController:
 	#  @param data Decoded data, text or binary.
 	def run(self, ctrl, data):
 
-		print "data", data.encode("utf-8")
+		# print "data", data
 
 		encoder = SublimeWSEncoder()
  		# python-switch
@@ -38,7 +38,6 @@ class SublimeWSController:
 				break
 		
 			if case(SublimeWSSettings.OP_TEXT):
-
 				#check if API or not
 				if (self.isApi(data)):
 					headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM, 1)
