@@ -76,11 +76,12 @@ class SublimeWSServer:
 
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
-		filterDict = self.getV(SublimeSocketAPISettings.API_DEFINEFILTER)
-		if filterName in filterDict:
-			return True
+		if self.isExistOnKVS(SublimeSocketAPISettings.API_DEFINEFILTER):
+			filterDict = self.kvs.get(SublimeSocketAPISettings.API_DEFINEFILTER)
+			if filterName in filterDict:
+				return True
 		return False
-		
+			
 	## input to sublime from server
 	def fireKVStoredEvent(self, eventName):
 		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:
@@ -100,16 +101,24 @@ class SublimeWSServer:
 					self.api.runAPI(commandAndParams[0], commandAndParams[1:])	
 
 
-	## connect to KeyValueStore
+	## put key-value onto KeyValueStore
 	def setKV(self, key, value):
 		print "should update! if same key is on, already"
 		self.kvs.setKeyValue(key, value)
 
-
 	def getV(self, key):
 		value = self.kvs.get(key)
 		return value
-		
+	
+	def isExistOnKVS(self, key):
+		if self.kvs.get(key):
+			print "isExistOnKVS true", self.kvs.get(key)
+			return True
+			
+		else:
+			print "isExistOnKVS false", self.kvs.get(key)
+			return False
+
 
 ## key-value pool
 class KVS:
@@ -124,8 +133,6 @@ class KVS:
 
 	## get
 	def get(self, key):
-		if not self.keyValueDict.has_key(key):
-			# print "key not found",key
-			return ""
-		return self.keyValueDict[key]
+		if self.keyValueDict.has_key(key):
+			return self.keyValueDict[key]
 

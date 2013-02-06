@@ -128,16 +128,20 @@ class SublimeSocketAPI:
 			print "no filterName key."
 			return
 
+		# load defined filters
+		filterNameAndPatternsArray = {}
+
+		if self.server.isExistOnKVS(SublimeSocketAPISettings.API_DEFINEFILTER):
+			filterNameAndPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)
+
+		print "loaded filterNameAndPatternsArray:", filterNameAndPatternsArray
+
 		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
-		filterPatterns = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
-		# この時点で配列に入ったkey-value
-		print "filterPatterns", filterPatterns
+		# key = filterName, value = the match patterns of filter.
+		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
-		regexplines = {"from":"to"}
-		filterKeyValuesMap = {filterName:regexplines}
-
-		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterKeyValuesMap)
+		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
 
 	## filteri. matching -> run API with interval
 	def filter(self, params):
@@ -156,14 +160,13 @@ class SublimeSocketAPI:
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
 		# print "filterName", filterName, "	/filterSource",filterSource
 
-		# get filter key-valuesMap
-		filterKeyValuesMap = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
+		# get filter key-values array
+		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
 		# 正規表現でがしがしやるところ
 
-		for key in filterKeyValuesMap:
+		for pattern in filterPatternsArray[filterName]:
 			# regx key filterSource
-			# print "filterぶんまわるはず", key
-
+			print "filterぶんまわるはず", pattern
 		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
 
 
