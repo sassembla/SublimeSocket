@@ -39,6 +39,9 @@ class SublimeSocketAPI:
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params):
+
+		evalResults = "empty"
+  	
   	# python-switch
 		for case in PythonSwitch(command):
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
@@ -55,6 +58,16 @@ class SublimeSocketAPI:
 				print "params ", params
 				# どんな分散をするか、
 				# self.timerEventSetIntreval()
+				break
+				
+			if case(SublimeSocketAPISettings.API_DEFINEFILTER):
+				# define filter
+				self.defineFilter(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_FILTER):
+				# run filter
+				self.filter(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
@@ -74,13 +87,8 @@ class SublimeSocketAPI:
 				self.output(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_TEST):
-				sublime.set_timeout(lambda: self.test(), 0)
-				break
-
 			if case(SublimeSocketAPISettings.API_EVAL):
-				evalResults = sublime.set_timeout(lambda: self.sublimeEval(params), 0)
-				# client.send(evalResults)
+				sublime.set_timeout(lambda: self.sublimeEval(params), 0)
 				break
 
 			if case():
@@ -98,7 +106,6 @@ class SublimeSocketAPI:
 		print "setKVStoredEvent", params
 		self.server.setKV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT, params)
 
-
 	# ## run shellScript
 	# # params is array that will be evaluated as commandline marameters.
 	# def runShell(self, params):
@@ -110,11 +117,55 @@ class SublimeSocketAPI:
 	# 		for line in self.process.stdout:
 	# 			print line
 
-  ## output to the remote WebSocket client[TESTING]
-  # params is dict. {target:targetIdentifier, param:websocketparameters}
-	def output(self, params):
-		print "params", params
-		pass
+
+	## Define the filter and 
+	def defineFilter(self, params):
+		print "defineFilter", params
+
+		# ここで、ファイルの読み出しを行う。
+		# check filter name
+		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
+			print "no filterName key."
+			return
+
+		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
+		filterPatterns = params[SublimeSocketAPISettings.FILTER_PATTERNS]
+
+		# この時点で配列に入ったkey-value
+		print "filterPatterns", filterPatterns
+
+		regexplines = {"from":"to"}
+		filterKeyValuesMap = {filterName:regexplines}
+
+		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterKeyValuesMap)
+
+	## filteri. matching -> run API with interval
+	def filter(self, params):
+		# check filter name
+		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
+			print "no filterName key."
+			return
+
+		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
+
+		# check filterName exists or not
+		if not self.server.isFilterDefined(filterName):
+			print "please define filter before　using. requested filterName is :", filterName
+			return
+
+		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
+		# print "filterName", filterName, "	/filterSource",filterSource
+
+		# get filter key-valuesMap
+		filterKeyValuesMap = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
+		# 正規表現でがしがしやるところ
+
+		for key in filterKeyValuesMap:
+			# regx key filterSource
+			# print "filterぶんまわるはず", key
+
+		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
+
 
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.
@@ -320,7 +371,6 @@ class SublimeSocketAPI:
 		# The "eval" cannot  create values. Use these params as "you defined these params".
 		lines = []
 
-
 		# EVENTLISTENER and the other Base Class series ...no needs
 
 		### EVALUATE ###
@@ -332,7 +382,8 @@ class SublimeSocketAPI:
 				result = "None"
 			results.append(executable+" = "+result+"	/")
 
-		return results
+		# return result
+		# client.send(results)
 
 	## change lineCount to wordCount that is, includes the target-line index at SublimeText.
 	def getLineCount_And_SetToArray(self, lineCount, lineArray):

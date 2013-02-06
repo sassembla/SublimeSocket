@@ -44,7 +44,7 @@ function filterAndGenerateAPI (data) {
 	// if (data.split(":").length - 1 == 2) {
 	// 	//return "eval:[\"sublime.status_message('"+data+"')\"]";
 	// }
-	var json = '{"source":"' + data + '"}';
+	var json = '{"filterName":"sampleFilter_sample","filterSource":"' + data + '"}';
 	var parsed = JSON.parse(json);
 	return "ss@filter:" + JSON.stringify(parsed);
 }
