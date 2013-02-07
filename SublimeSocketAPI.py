@@ -39,7 +39,8 @@ class SublimeSocketAPI:
 				params = json.loads(command_params[1])
 
 			self.runAPI(command, params, client)
-
+		
+		client.send("1234")
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, client=None):
