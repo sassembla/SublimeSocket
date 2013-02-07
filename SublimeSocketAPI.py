@@ -3,12 +3,16 @@ import sublime, sublime_plugin
 
 import SublimeWSSettings
 import json
-import os
-import difflib
+
 from SublimeWSEncoder import *
 import SublimeSocketAPISettings
-import subprocess
-import shlex
+
+# import subprocess
+# import shlex
+# import os
+# import difflib
+import re
+
 
 from PythonSwitch import *
 
@@ -34,11 +38,11 @@ class SublimeSocketAPI:
 			if 1 < len(command_params):
 				params = json.loads(command_params[1])
 
-			self.runAPI(command, params)
+			self.runAPI(command, params, client)
 
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
-	def runAPI(self, command, params):
+	def runAPI(self, command, params, client=None):
 
 		evalResults = "empty"
   	
@@ -68,6 +72,7 @@ class SublimeSocketAPI:
 			if case(SublimeSocketAPISettings.API_FILTER):
 				# run filter
 				self.filter(params)
+				client.send("evalResults")
 				break
 
 			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
@@ -76,6 +81,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_SET_KVSTOREEVENT):
+				# set event to listener
 				self.setKVStoredEvent(params)
 				break
 
@@ -172,6 +178,13 @@ class SublimeSocketAPI:
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
+			try:
+				m = re.match(r"(-----\w+)", "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll")
+				print "m is ", m
+			except Exception as e:
+				print "error",e
+				
+
 
 
 		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
