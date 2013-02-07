@@ -40,8 +40,6 @@ class SublimeSocketAPI:
 
 			self.runAPI(command, params, client)
 		
-		client.send("1234")
-
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, client=None):
 
@@ -73,7 +71,8 @@ class SublimeSocketAPI:
 			if case(SublimeSocketAPISettings.API_FILTER):
 				# run filter
 				self.filter(params)
-				client.send("evalResults")
+				buf = self.encoder.text("test!!!", mask=0)
+				client.send(buf)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVENTLISTEN):

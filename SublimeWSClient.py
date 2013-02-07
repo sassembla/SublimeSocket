@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import threading, hashlib, base64
 import SublimeWSSettings
+
 from SublimeWSDecoder import *
+
 from SublimeWSController import *
 import uuid
 
@@ -40,9 +42,11 @@ class SublimeWSClient:
 	## Real socket bytes reception
 	#  @param bufsize Buffer size to return.
 	def receive(self, bufsize):
+		
 		bytes = self.conn.recv(bufsize)
+		print "bytes", repr(bytes)
 		if not bytes:
-			print 'Client left', repr(self.conn)
+			print 'Client left with no bytes', repr(self.conn)
 			self.close()
 			return ''
 		return bytes
