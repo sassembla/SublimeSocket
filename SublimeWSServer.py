@@ -63,7 +63,6 @@ class SublimeWSServer:
 		currentClient = [client for client in self.clients if client.clientId == clientId][0]
 		self.api.parse(apiData, currentClient)
 		
-
 	## kill server. with all connection(maybe some bugs include. will not be close immediately, at least 1 reload need,,)
 	def killServerSelf(self):
 		for client in self.clients:
