@@ -70,8 +70,9 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_FILTER):
 				# run filter
-				self.filter(params)
-				buf = self.encoder.text("test!!!", mask=0)
+				result = self.filter(params)
+
+				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
 				break
 
@@ -178,15 +179,26 @@ class SublimeSocketAPI:
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
+			
 			try:
-				m = re.match(r"(-----\w+)", "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll")
-				print "m is ", m
-			except Exception as e:
-				print "error",e
+				(key, value) = pattern.items()[0]
 				
+				print "key is", key, pattern.items()
+				
+				src = """re.match(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
+				
+				print "src",src
+				match = eval(src)
+				# :の有無で変化する。
+				# r"(-----\w+)" で、<Match:match.group() '-----CompilerOutput', groups=match.groups()=('-----CompilerOutput',)>
+				if match:
+					print '<Match: %r, groups=%r>' % (match.group(), match.groups())
+					
+				result = "DONE!"
+			except Exception as e:
+				result = "error"
 
-
-
+		return result
 		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
 
 

@@ -44,7 +44,6 @@ class SublimeWSClient:
 	def receive(self, bufsize):
 		
 		bytes = self.conn.recv(bufsize)
-		print "bytes", repr(bytes)
 		if not bytes:
 			print 'Client left with no bytes', repr(self.conn)
 			self.close()

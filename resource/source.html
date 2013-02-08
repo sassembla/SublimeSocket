@@ -51,7 +51,7 @@
         },
 
         onMessage: function (e) {
-          _WS.writeLog('<span class="label label-info">RESPONSE: ' + e.data + '</span>');
+          _WS.writeLog('<span class="label label-warning">RESPONSE: ' + e.data + '</span>');
         },
 
         onError: function (e) {
@@ -109,7 +109,7 @@
         
         <div class="">
           <select multiple="multiple" class="span9 offset2" onchange="setter.set(this[this.selectedIndex].value)">
-            <option>ss@defineFilter:{"filterName":"sampleFilter_sample","filterPatterns":[{"a":"b"}]}->filter:{"filterName":"sampleFilter_sample","filterSource":"aaaaaa"}</option>
+            <option>ss@defineFilter:{"filterName":"sampleFilter_sample","filterPatterns":[{"-----CompilerOutp":"b"}]}->filter:{"filterName":"sampleFilter_sample","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
             <option>ss@eventListen:{"on_modified":"runShell2013/02/04 23:01:51"}->setKVStoreEvent:{"runShell2013/02/04 23:01:51":["output",{"target":"id","param":"parameters"}]}</option>
             <option>ss@eval:["sublime.message_dialog('show dialog from WebSocket Client')"]</option>
             <option>window testing</option>
