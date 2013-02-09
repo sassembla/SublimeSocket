@@ -24,7 +24,7 @@ class SublimeSocketAPI:
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client):
-		print "parse sourceData is ", data
+		# print "parse sourceData is ", data
 
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
