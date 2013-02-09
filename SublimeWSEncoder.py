@@ -77,10 +77,12 @@ class SublimeWSEncoder:
 			fin = 0x1
 
 		if (opcode == 0x1):
-			print 'before encode: part 1 ', data
-		else:
-			print 'before encode: part 2', repr(data)
-
+			# print 'before encode: part 1 ', data
+			pass
+		else:			
+			# print 'before encode: part 2', repr(data)
+			pass
+			
 		if opcode == 0x1:
 			try:
 			    data.encode('utf-8')

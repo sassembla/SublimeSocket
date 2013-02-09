@@ -20,6 +20,7 @@ FILTER_PATTERNS		= "filterPatterns"
 API_FILTER				= "filter"
 FILTER_NAME				= "filterName"
 FILTER_SOURCE			= "filterSource"
+FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
 API_EVENTLISTEN		= "eventListen"
 LISTEN_EVENTS			= ["on_modified"]

@@ -24,10 +24,11 @@ class SublimeSocketAPI:
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client):
-		# print "data is ", data
+		print "parse sourceData is ", data
 
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
+
 
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
@@ -40,7 +41,6 @@ class SublimeSocketAPI:
 
 			self.runAPI(command, params, client)
 		
-		client.send("1234")
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, client=None):
@@ -71,9 +71,12 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_FILTER):
-				# run filter
-				self.filter(params)
-				client.send("evalResults")
+				# run filtering
+				result = self.runFiltering(params)
+
+				# return result
+				buf = self.encoder.text(result, mask=0)
+				client.send(buf)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
@@ -110,7 +113,6 @@ class SublimeSocketAPI:
 
 	## set event onto KVS
 	def setKVStoredEvent(self, params):
-		print "setKVStoredEvent", params
 		self.server.setKV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT, params)
 
 	# ## run shellScript
@@ -125,11 +127,10 @@ class SublimeSocketAPI:
 	# 			print line
 
 
-	## Define the filter and 
+	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
 		print "defineFilter", params
 
-		# ここで、ファイルの読み出しを行う。
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -148,10 +149,12 @@ class SublimeSocketAPI:
 		# key = filterName, value = the match patterns of filter.
 		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
+
+		# store
 		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
 
-	## filteri. matching -> run API with interval
-	def filter(self, params):
+	## filtering. matching -> run API with interval
+	def runFiltering(self, params):
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -171,25 +174,89 @@ class SublimeSocketAPI:
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
 
 		print "filterPatternsArray", filterPatternsArray
-
+		results = []
 		for pattern in filterPatternsArray:
 			# regx key filterSource
-			print "filterぶんまわるはず", pattern, "/filterSource", filterSource
+			
 			# -----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
+			
 			try:
-				m = re.match(r"(-----\w+)", "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll")
-				print "m is ", m
-			except Exception as e:
-				print "error",e
+				(key, executables) = pattern.items()[0]
+				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
+				# print "src is", src
+
+				# regexp match
+				searched = eval(src)
 				
+				if searched:
+					
+					print "searched.group()",searched.group()
+					print "searched.groups()",searched.groups()
+					
+					patternIndex = 0
+					# execute
+					for executableSource in executables:
 
+						# check includes API-runnable. Then run.
+						if executableSource.startswith(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM):
+							executable = executableSource.replace(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM, "")
 
+							command_params = executable.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
+							command = command_params[0]
 
-		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
+							params = ''
+							if 1 < len(command_params):
+								# replace parameter-strings to desired.
+								paramsSource = command_params[1]
 
+								# before	eval:["sublime.message_dialog('groups[0]')"]
+								# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
+
+								# get array that is source of value
+								paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
+
+								# print "paramsIndexies", paramsIndexies
+
+								# convert to values
+								mapped = []
+								for index in paramsIndexies:
+									mapped.append(searched.groups()[index])
+
+								# print "mapped", mapped
+
+								replaced_paramsSource = paramsSource
+								
+								# replace
+								i = 0
+								for index in paramsIndexies:
+									replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
+									i = i + 1
+
+								# print "replaced_paramsSource", replaced_paramsSource
+					
+								# JSON parameterize
+								params = json.loads(replaced_paramsSource)
+
+							self.runAPI(command, params)
+						else:
+							print "else, ",executableSource
+
+				results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
+				patternIndex = patternIndex + 1
+			except Exception as e:
+				return "filter error", str(e)
+		
+		# return succeded signal
+		return str("".join(results))
+
+		
+	def ssStatusMessage(self, message):
+		# stack messages then show sequently.
+		sublime.set_timeout(lambda: sublime.status_message(message), 0)
+	
 
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.
