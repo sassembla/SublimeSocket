@@ -69,8 +69,8 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_FILTER):
-				# run filter
-				result = self.filter(params)
+				# run filtering
+				result = self.runFiltering(params)
 
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
@@ -128,7 +128,6 @@ class SublimeSocketAPI:
 	def defineFilter(self, params):
 		print "defineFilter", params
 
-		# ここで、ファイルの読み出しを行う。
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -150,8 +149,8 @@ class SublimeSocketAPI:
 		# store
 		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
 
-	## filteri. matching -> run API with interval
-	def filter(self, params):
+	## filtering. matching -> run API with interval
+	def runFiltering(self, params):
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -174,7 +173,7 @@ class SublimeSocketAPI:
 
 		for pattern in filterPatternsArray:
 			# regx key filterSource
-			print "filterぶんまわるはず", pattern, "/filterSource", filterSource
+			
 			# -----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
@@ -182,16 +181,16 @@ class SublimeSocketAPI:
 			
 			try:
 				(key, executables) = pattern.items()[0]
-				src = """re.match(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
+				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
+				print "src is", src
 
 				# regexp match
-				match = eval(src)
-
+				searched = eval(src)
 				
-				if match:
+				if searched:
 					
-					print "match.group()",match.group()
-					print "match.groups()",match.groups()
+					print "searched.group()",searched.group()
+					print "searched.groups()",searched.groups()
 					
 					# execute
 					for executableSource in executables:
@@ -209,11 +208,26 @@ class SublimeSocketAPI:
 								paramsSource = command_params[1]
 
 								# before	eval:["sublime.message_dialog('groups[0]')"]
-								# after		eval:["sublime.message_dialog('THE_VALUE_OF_match.groups()[0]')"]
+								# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
 
-								re.sub(r'groups[(.?)]', 'match.groups()[¥1]', paramsSource)
+								# get array that is source of value
+								re_paramsSource = re.search(r'(groups\[.*?\])', paramsSource)
 
-								print "paramsSource", paramsSource
+								# 
+								# for conv in re_paramsSource.group().split(","):
+								# 	print "conv", conv
+
+								# convert to values
+
+								if re_paramsSource:
+									print "hereCome", re_paramsSource.group()
+									print "hereComes", re_paramsSource.groups()
+								
+									
+								# replace
+								# re_paramsSource = re.sub(r'groups\[([0-9].+?)\]', r'match.groups()[\1]', paramsSource)
+
+								# print "re_paramsSource", re_paramsSource
 
 								# JSON parameterize
 								# params = json.loads(paramsSource)
