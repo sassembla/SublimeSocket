@@ -211,23 +211,24 @@ class SublimeSocketAPI:
 								# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
 
 								# get array that is source of value
-								re_paramsSource = re.search(r'(groups\[.*?\])', paramsSource)
+								paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
 
-								# 
-								# for conv in re_paramsSource.group().split(","):
-								# 	print "conv", conv
+								print "paramsIndexies", paramsIndexies
 
 								# convert to values
+								mapped = []
+								for index in paramsIndexies:
+									mapped.append(searched.groups()[index])
 
-								if re_paramsSource:
-									print "hereCome", re_paramsSource.group()
-									print "hereComes", re_paramsSource.groups()
-								
-									
+								print "mapped", mapped
+
 								# replace
-								# re_paramsSource = re.sub(r'groups\[([0-9].+?)\]', r'match.groups()[\1]', paramsSource)
+								i = 0
+								for index in paramsIndexies:
+									replaced_paramsSource = re.sub('groups['+index+']', ""+mapped[i], paramsSource)
+									i = i + 1
 
-								# print "re_paramsSource", re_paramsSource
+								print "replaced_paramsSource", replaced_paramsSource
 
 								# JSON parameterize
 								# params = json.loads(paramsSource)
