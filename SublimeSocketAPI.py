@@ -72,11 +72,7 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_FILTER):
 				# run filtering
-				result = self.runFiltering(params)
-
-				# return result
-				buf = self.encoder.text(result, mask=0)
-				client.send(buf)
+				result = self.runFiltering(params, client)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
@@ -167,7 +163,7 @@ class SublimeSocketAPI:
 		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
 
 	## filtering. matching -> run API with interval
-	def runFiltering(self, params):
+	def runFiltering(self, params, client):
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -199,7 +195,7 @@ class SublimeSocketAPI:
 			try:
 				(key, executables) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				# print "src is", src
+				print "src is", src
 
 				# regexp match
 				searched = eval(src)
@@ -257,13 +253,18 @@ class SublimeSocketAPI:
 						else:
 							print "else, ",executableSource
 
-				results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
-				patternIndex = patternIndex + 1
+					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
+					patternIndex = patternIndex + 1
 			except Exception as e:
 				return "filter error", str(e)
 		
 		# return succeded signal
-		return str("".join(results))
+		ret = str("".join(results))
+		if ret: 
+			buf = self.encoder.text(ret, mask=0)
+			client.send(buf)
+		else:
+			print "no message"
 
 		
 	def ssStatusMessage(self, message):

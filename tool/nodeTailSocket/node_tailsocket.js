@@ -16,40 +16,22 @@ prefix_errorheader_compile = "Compilation failed:";
 //(Filename: Assets/ApplicationControl/ApplicationController.cs Line: 26)
 prefix_file = "(Filename:"
 
-
 prefix_error = "Error:";
 
 function filterAndGenerateAPI (data) {
-
-	// if (data.lastIndexOf(prefix_errorheader_compile, 0) == 0) {
-	// 	return "eval:[\"sublime.status_message('"+data+"')\"]";
-	// }
-	// if (data.lastIndexOf(prefix_error, 0) == 0) {
-	// 	return "eval:[\"sublime.message_dialog('"+data+"')\"]";
-	// }
-
-	// if (data.lastIndexOf(prefix_file, 0) == 0) {
-
-	// 	data = data.replace("(", "");
-	// 	data = data.replace(")", "");
-	// 	dataArray = data.split(" ");
-		
-	// 	for (var i in dataArray) {
-	//   	dataArray[i] = dataArray[i].replace(/:/, "");
-	//   }
-
-	//   //only linenum... set dotmark on the error line.
-	//   return "eval:[\"self.getLineCount_And_SetToArray("+dataArray[3]+",lines)\",\"regions.append(active_view.line(lines[0]))\",\"active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)\"]";
-	// }
-	// if (data.split(":").length - 1 == 2) {
-	// 	//return "eval:[\"sublime.status_message('"+data+"')\"]";
-	// }
-	var json = '{"filterName":"sampleFilter_sample","filterSource":"' + data + '"}';
+	var json = '{"filterName":"unity","filterSource":"' + data + '"}';
 	var parsed = JSON.parse(json);
 	return "ss@filter:" + JSON.stringify(parsed);
 }
 
-ws.on('open', function() {});
+ws.on('open', function() {
+	console.log("OPENED");
+	
+	// set Unity Filter,,,,toooooo hard to code.
+	// var json = '{"filterName":"unity","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":["filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}';
+	// var parsed = JSON.parse(json);
+	// ws.send("ss@defineFilter:"+JSON.stringify(parsed));
+});
 
 tail.on("line", function(message) {
 	console.log("original	"+message);
@@ -58,4 +40,7 @@ tail.on("line", function(message) {
  	ws.send(apiModifiedData);
 });
 
-ws.on('message', function(data, flags) {});
+ws.on('message', function(data, flags) {
+	console.log("input:"+data);
+
+});

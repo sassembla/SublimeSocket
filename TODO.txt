@@ -46,6 +46,10 @@ TimerEvent ほか、SS上で動くもの
 √	TranslateFilterの概念追加
 	√defineFilter -> runFilter
 
+RunSetting/TestRun
+	必要。ファイル位置を読み込ませて、書いてあるのを順に実行する。改行とtabは無視される。
+	runSettings
+
 
 viewファイルの識別を行わないとな。
 	targetSettingみたいなのを行ってからrepl、で良い気がする。
