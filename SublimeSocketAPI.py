@@ -98,7 +98,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_EVAL):
-				sublime.set_timeout(lambda: self.sublimeEval(params), 0)
+				sublime.set_timeout(lambda: self.sublimeEval(params, client), 0)
 				break
 
 			if case():
@@ -300,7 +300,7 @@ class SublimeSocketAPI:
 	## evaluate strings
 	# Not only eval.
 	# Set environment parameters from reading KVS
-	def sublimeEval(self, params):
+	def sublimeEval(self, params, client=None):
 		# SUBLIME series
 		# sublime.Region
 		# sublime.status_message("can you see me?")
@@ -467,15 +467,17 @@ class SublimeSocketAPI:
 		### EVALUATE ###
 		results = []
 		for executable in params:
-			print executable
+			# print executable
 			result = eval(executable)
 			if result == None:
 				result = "None"
-			results.append(executable+" = "+result+"	/")
+			results.append(executable+" = "+str(result)+"	/")
 
-		# return result
-		# client.send(results)
-
+		
+		if (client):
+			buf = self.encoder.text(str("".join(results)), mask=0)
+			client.send(buf)
+		
 	## change lineCount to wordCount that is, includes the target-line index at SublimeText.
 	def getLineCount_And_SetToArray(self, lineCount, lineArray):
 		#check the namespace of inputted param
