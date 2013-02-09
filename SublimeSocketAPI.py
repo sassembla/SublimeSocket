@@ -24,7 +24,7 @@ class SublimeSocketAPI:
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client):
-		# print "data is ", data
+		print "parse sourceData is ", data
 
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
@@ -182,7 +182,7 @@ class SublimeSocketAPI:
 			try:
 				(key, executables) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				print "src is", src
+				# print "src is", src
 
 				# regexp match
 				searched = eval(src)
@@ -213,14 +213,14 @@ class SublimeSocketAPI:
 								# get array that is source of value
 								paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
 
-								print "paramsIndexies", paramsIndexies
+								# print "paramsIndexies", paramsIndexies
 
 								# convert to values
 								mapped = []
 								for index in paramsIndexies:
 									mapped.append(searched.groups()[index])
 
-								print "mapped", mapped
+								# print "mapped", mapped
 
 								replaced_paramsSource = paramsSource
 								
@@ -230,7 +230,7 @@ class SublimeSocketAPI:
 									replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
 									i = i + 1
 
-								print "replaced_paramsSource", replaced_paramsSource
+								# print "replaced_paramsSource", replaced_paramsSource
 					
 								# JSON parameterize
 								params = json.loads(replaced_paramsSource)
