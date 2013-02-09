@@ -11,6 +11,7 @@ API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
+
 API_INPUTIDENTITY = "inputIdentity"
 API_KILLSERVER		=	"killServer"
 
@@ -20,6 +21,7 @@ FILTER_PATTERNS		= "filterPatterns"
 API_FILTER				= "filter"
 FILTER_NAME				= "filterName"
 FILTER_SOURCE			= "filterSource"
+FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
 API_EVENTLISTEN		= "eventListen"
 LISTEN_EVENTS			= ["on_modified"]

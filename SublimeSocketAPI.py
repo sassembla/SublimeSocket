@@ -110,7 +110,6 @@ class SublimeSocketAPI:
 
 	## set event onto KVS
 	def setKVStoredEvent(self, params):
-		print "setKVStoredEvent", params
 		self.server.setKV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT, params)
 
 	# ## run shellScript
@@ -125,7 +124,7 @@ class SublimeSocketAPI:
 	# 			print line
 
 
-	## Define the filter and 
+	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
 		print "defineFilter", params
 
@@ -148,6 +147,7 @@ class SublimeSocketAPI:
 		# key = filterName, value = the match patterns of filter.
 		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
+		# store
 		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
 
 	## filteri. matching -> run API with interval
@@ -181,26 +181,62 @@ class SublimeSocketAPI:
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
 			
 			try:
-				(key, value) = pattern.items()[0]
-				
-				print "key is", key, pattern.items()
-				
+				(key, executables) = pattern.items()[0]
 				src = """re.match(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				
-				print "src",src
+
+				# regexp match
 				match = eval(src)
-				# :の有無で変化する。
-				# r"(-----\w+)" で、<Match:match.group() '-----CompilerOutput', groups=match.groups()=('-----CompilerOutput',)>
+
+				
 				if match:
-					print '<Match: %r, groups=%r>' % (match.group(), match.groups())
 					
+					print "match.group()",match.group()
+					print "match.groups()",match.groups()
+					
+					# execute
+					for executableSource in executables:
+
+						# check includes API-runnable. Then run.
+						if executableSource.startswith(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM):
+							executable = executableSource.replace(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM, "")
+
+							command_params = executable.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
+							command = command_params[0]
+
+							params = ''
+							if 1 < len(command_params):
+								# replace parameter-strings to desired.
+								paramsSource = command_params[1]
+
+								# before	eval:["sublime.message_dialog('groups[0]')"]
+								# after		eval:["sublime.message_dialog('THE_VALUE_OF_match.groups()[0]')"]
+
+								re.sub(r'groups[(.?)]', 'match.groups()[¥1]', paramsSource)
+
+								print "paramsSource", paramsSource
+
+								# JSON parameterize
+								# params = json.loads(paramsSource)
+								
+
+							self.runAPI(command, params)
+						else:
+							print "else, ",executableSource
+
+
 				result = "DONE!"
+				
 			except Exception as e:
+				print "error!", e
 				result = "error"
 
 		return result
 		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
 
+	def ssStatusMessage(self, message):
+		# stack messages then show sequently.
+		sublime.set_timeout(lambda: sublime.status_message(message), 0)
+	
 
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.

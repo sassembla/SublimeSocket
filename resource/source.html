@@ -99,7 +99,7 @@
 
       <div class="row offset1">
         <div class="input-append">
-          <input class="span7" id="send" type="text" value="" />
+          <input class="span9" id="send" type="text" value="" />
           <button class="btn" type="button" onclick="_WS.send(document.getElementById('send').value);"/>input</button>
           <button type="submit" class="btn btn-danger" onclick="_WS.send('sublimesocket@killServer');"> 
           Stop
@@ -107,9 +107,9 @@
 
         </div>
         
-        <div class="">
+        <div>
           <select multiple="multiple" class="span9 offset2" onchange="setter.set(this[this.selectedIndex].value)">
-            <option>ss@defineFilter:{"filterName":"sampleFilter_sample","filterPatterns":[{"-----CompilerOutp":"b"}]}->filter:{"filterName":"sampleFilter_sample","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
+            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":["b", "filterRunnable_eval:[\"sublime.message_dialog('groups[0]')\"]"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
             <option>ss@eventListen:{"on_modified":"runShell2013/02/04 23:01:51"}->setKVStoreEvent:{"runShell2013/02/04 23:01:51":["output",{"target":"id","param":"parameters"}]}</option>
             <option>ss@eval:["sublime.message_dialog('show dialog from WebSocket Client')"]</option>
             <option>window testing</option>
