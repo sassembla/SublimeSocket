@@ -170,7 +170,7 @@ class SublimeSocketAPI:
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
 
 		print "filterPatternsArray", filterPatternsArray
-
+		results = []
 		for pattern in filterPatternsArray:
 			# regx key filterSource
 			
@@ -192,6 +192,7 @@ class SublimeSocketAPI:
 					print "searched.group()",searched.group()
 					print "searched.groups()",searched.groups()
 					
+					patternIndex = 0
 					# execute
 					for executableSource in executables:
 
@@ -239,16 +240,15 @@ class SublimeSocketAPI:
 						else:
 							print "else, ",executableSource
 
-
-				result = "DONE!"
-				
+				results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
+				patternIndex = patternIndex + 1
 			except Exception as e:
-				print "error!", e
-				result = "error"
+				return "filter error", str(e)
+		
+		# return succeded signal
+		return str("".join(results))
 
-		return result
-		# む、画面への反映ロジックのところおもしろいぞ！？　filterのファイル単位化での反映とかが必要かも。intervalでいいのかな。。
-
+		
 	def ssStatusMessage(self, message):
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
