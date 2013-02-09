@@ -84,17 +84,17 @@ class SublimeSocketAPI:
 				self.eventListen(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_SET_KVSTOREEVENT):
+			if case(SublimeSocketAPISettings.API_SETEVENT):
 				# set event to listener
-				self.setKVStoredEvent(params)
+				self.setEvent(params)
 				break
 
 			# if case(SublimeSocketAPISettings.API_RUNSHELL):
 			# 	self.runShell(params)
 			# 	break
 
-			if case(SublimeSocketAPISettings.API_OUTPUT):
-				self.output(params)
+			if case(SublimeSocketAPISettings.API_OUTPUTMESSAGE):
+				self.outputMessage(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVAL):
@@ -112,8 +112,9 @@ class SublimeSocketAPI:
 
 
 	## set event onto KVS
-	def setKVStoredEvent(self, params):
-		self.server.setKV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT, params)
+	def setEvent(self, params):
+		self.server.setKV(SublimeSocketAPISettings.API_SETEVENT, params)
+
 
 	# ## run shellScript
 	# # params is array that will be evaluated as commandline marameters.
@@ -126,6 +127,18 @@ class SublimeSocketAPI:
 	# 		for line in self.process.stdout:
 	# 			print line
 
+
+	## emit message to client.
+	# broadcast messages if no-"target" key.
+	def outputMessage(self, params):
+		buf = self.encoder.text("output:"+str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+		# if params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET):
+		# 	print "not yet applied this keyword. for output."
+		# else:
+
+		clients = self.server.clients
+		for client in clients:
+			client.send(buf)
 
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):

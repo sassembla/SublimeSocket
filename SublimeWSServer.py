@@ -6,6 +6,8 @@ from SublimeWSClient import *
 from SublimeSocketAPI import *
 import SublimeSocketAPISettings
 
+import json
+
 from PythonSwitch import *
 
 SERVER_INTERVAL_SEC = 2000
@@ -82,6 +84,7 @@ class SublimeWSServer:
 				return True
 		return False
 			
+
 	## input to sublime from server
 	def fireKVStoredEvent(self, eventName):
 		for key in SublimeSocketAPISettings.INTERVAL_DEPEND_APIS:
@@ -93,18 +96,20 @@ class SublimeWSServer:
 				# print "getV", self.getV(key)#{'on_modified': u'runShell2013/02/04 23:01:51'}
 				eventKey = self.getV(key)[eventName]# array, [0] is API, others are parameters.
 
-				# print "API_SET_KVSTOREEVENT", self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT)
-				if self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT).has_key(eventKey):
+				# print "API_SETEVENT", self.getV(SublimeSocketAPISettings.API_SETEVENT)
+				if self.getV(SublimeSocketAPISettings.API_SETEVENT).has_key(eventKey):
 					
-					commandAndParams = self.getV(SublimeSocketAPISettings.API_SET_KVSTOREEVENT)[eventKey]
-					# print "commandAndParams", commandAndParams
-					self.api.runAPI(commandAndParams[0], commandAndParams[1:])	
+					commandAndParams = self.getV(SublimeSocketAPISettings.API_SETEVENT)[eventKey]
+					# print "commandAndParams", commandAndParams[1]
+
+					self.api.runAPI(commandAndParams[0], commandAndParams[1])	
 
 
 	## put key-value onto KeyValueStore
 	def setKV(self, key, value):
 		print "should update! if same key is on, already"
 		self.kvs.setKeyValue(key, value)
+
 
 	def getV(self, key):
 		value = self.kvs.get(key)

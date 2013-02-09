@@ -25,11 +25,13 @@ FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 API_EVENTLISTEN		= "eventListen"
 LISTEN_EVENTS			= ["on_modified"]
 
-API_SET_KVSTOREEVENT			= "setKVStoreEvent"
+API_SETEVENT			= "setEvent"
 
 # API_RUNSHELL			= "runShell" # not so sweet
 
-API_OUTPUT				= "output"
+API_OUTPUTMESSAGE	= "outputMessage"
+OUTPUT_TARGET			= "target"
+OUTPUT_MESSAGE		= "message"
 
 API_TIMEREVENT		= "timerEvent"
 

@@ -1,8 +1,14 @@
-# WebSocket server for ST2.
-###### version 0.1.1
+# SublimeSocket
+###### version 0.1.2
+WebSocket server for ST2 with In/Out functions to control SublimeText API.
 
-##Demo
-[http://www.youtube.com/watch?v=JGBRNrKjrtE](http://www.youtube.com/watch?v=JGBRNrKjrtE)
+
+
+##Demo movie
+[Remote control](http://www.youtube.com/watch?v=JGBRNrKjrtE)
+
+[Work with Unity](http://www.youtube.com/watch?v=JSdpa_LXa8c&feature=youtu.be)
+
 
 ###from CommandPalette >  
 ##### SublimeSocket: on
@@ -12,7 +18,7 @@
 ##### SublimeSocket: open preference
 **-> show SublimeSocket's preference.**  
 ##### SublimeSocket: off
-**-> not yet work well!!**  
+**-> not yet work!!**  
 Please restart ST2 manually. or use preferences's kill button.
 
 
@@ -23,6 +29,5 @@ Please restart ST2 manually. or use preferences's kill button.
 
 
 ###ToDo
-* Prepare input-api for ST2.(almost listed)
-* Prepare output-api for control the client.
-* and more. see ToDo.txt(Jp)
+* timing-pool function for in/out
+

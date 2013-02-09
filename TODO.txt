@@ -14,59 +14,59 @@ TimerEvent ほか、SS上で動くもの
 		bufferList
 
 	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
-		set(key,value)
-		get(key)
+		√set(key,value)
+		√get(key)
 		keys
 		remove(key)
 		clear
 
-	TranslateFilter
-		???
+√	defineFilter
+		√フィルタの定義が可能
 
-	Kick
-		observe何か
-			まだ形が決まらないな。
+√	runFilter
+		√フィルタの実行が可能
 
-	eval エラーハンドリング
-		エラー出たとき封印せねば。
+√	setEvent
+		√イベントに対してリスナをセット可能
 
-	eval 変数の定義を自力でできるのか？→無理。名前が異なるヤツを数種類用意しておくんだなー。
+√	outputMessage
+		√リスナに対して簡単なメッセージをセット可能
 
-	MessagePack:DONE
-		ちょうどよくハッカソンあったので積んでみた。
+√	eval エラーハンドリング
+		√エラー出たとき封印せねば。
+
+		√eval 変数の定義を自力でできるのか？→無理。名前が異なるヤツを数種類用意しておくんだなー。
+
+√	MessagePack:DONE
+		√ちょうどよくハッカソンあったので積んでみた。
 		bufferとか、重量の有る物を外部に出すときに使用したい。
 		今のところmsgpackブランチのみOn。
 		
 
-TranslateFilterの追加
-	任意のストリーム　＞　アクション変換を可能にする機構を、作成してさらに外部化したい。
-	具体的には、外部コンパイラの吐き出したメッセージストリームを、
-		特定のST2APIに翻訳する、中継機(TranslateFilter)を足し引き可能にしたい。できるだけ動的に。
-		うーーーーんどうすれば。
-		音楽のシーケンサみたいな感じに追加したいが、ClassにしてArrayの連続の中に差し込むとかそういうのかな、、めんどい。
+√	TranslateFilterの概念追加
+	√defineFilter -> runFilter
 
 
-ファイルの識別を行わないとな。
+viewファイルの識別を行わないとな。
 	targetSettingみたいなのを行ってからrepl、で良い気がする。
 	それで、セット先のviewの有無が決まる。
 	開いてないファイルとかもあり得る。
 	evalでの対象を分けてやれば良いか。
 
-Sequence式の書式
-	どこかに記録を作らないと参照できない。ある程度固めたら書く。
+SublimeSocketAPI -Sequence
+	sublimesocket @ API : {JSONPARAM} -> API2 : {JSONPARAM} -> API3 : {JSONPARAM}>,,
 	
-	02/02/13 16:45:17
-	sublimesocket@コマンド:{JSONPARAM}>コマンド2:{JSONPARAM}>コマンド3:{JSONPARAM}>,,
-	
-	とかが可能。シーケンシャルな処理を実行するようにセットできる
-	TimerEventとかは、そこから先のSequenceをすべて吸収して繰り返す。
-
 
 OutputAPIの整理
 	外部からのrequestも可能なので、InputAPIの拡張と言える。
 	pushで押し付ける設定を外部から注入されれば、定期的に叩き付けることが可能。
 	shakehandが済んだらOK、という。
 	定期的に叩く外部、っていうのも、フィルタ的な感じでTranslateが必要か。
+
+
+テスト
+	書いた方が良い。
+	outputMessageを当てにして、外部の物を一連で実行するようにしよう。
 
 
 やりたいけどどうやったらいいか判らないもの
@@ -76,10 +76,3 @@ OutputAPIの整理
 	サジェストからのアクション
 		やりたい
 
-
-以下メモ
-
-概念区分け
-	outside/inside OOOOO
-	全機能について、内部(SS上)と、外部(WebSocketの向こう側)の2つがありえそう。
-	
