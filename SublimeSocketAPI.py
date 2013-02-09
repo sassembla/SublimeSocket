@@ -222,17 +222,18 @@ class SublimeSocketAPI:
 
 								print "mapped", mapped
 
+								replaced_paramsSource = paramsSource
+								
 								# replace
 								i = 0
 								for index in paramsIndexies:
-									replaced_paramsSource = re.sub('groups['+index+']', ""+mapped[i], paramsSource)
+									replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
 									i = i + 1
 
 								print "replaced_paramsSource", replaced_paramsSource
-
+					
 								# JSON parameterize
-								# params = json.loads(paramsSource)
-								
+								params = json.loads(replaced_paramsSource)
 
 							self.runAPI(command, params)
 						else:
