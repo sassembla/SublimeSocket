@@ -25,7 +25,7 @@ class SublimeSocketAPI:
 	## Parse the API command via WebSocket
 	def parse(self, data, client):
 		# print "parse sourceData is ", data
-
+		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
 
@@ -38,7 +38,6 @@ class SublimeSocketAPI:
 			params = ''
 			if 1 < len(command_params):
 				params = json.loads(command_params[1])
-
 			self.runAPI(command, params, client)
 		
 
@@ -49,6 +48,14 @@ class SublimeSocketAPI:
   	
   	# python-switch
 		for case in PythonSwitch(command):
+			if case(SublimeSocketAPISettings.API_RUNSETTING):
+				filePath = params[SublimeSocketAPISettings.RUNSETTING_FILEPATH]
+				result = self.runSetting(filePath)
+
+				buf = self.encoder.text(result, mask=0)
+				client.send(buf)
+				break
+
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
 				clientId = params["id"]
 				self.server.setKV("clientId", str(clientId))
@@ -105,6 +112,31 @@ class SublimeSocketAPI:
 	## run API with interval.
 	def runOnInterval(self, key):
 		print "runOnInterval", key
+
+	## run specific setting.txt file as API
+	def runSetting(self, filePath):
+		settingFile = open(filePath, 'r')
+		setting = settingFile.read()
+		settingFile.close()
+
+		# print "setting", setting
+
+		# remove //comment line
+		removeCommented_setting = re.sub(r'//.*', r'', setting)
+		
+		# remove spaces
+		removeSpaces_setting = re.sub(r'(?m)^\s+', '', removeCommented_setting)
+		
+		# remove CRLF
+		removeCRLF_setting = removeSpaces_setting.replace("\n", "")
+		
+		result = removeCRLF_setting
+		# print "result", result
+
+		# parse
+		self.parse(result, None)
+
+		return "runSettings:"+str(removeCRLF_setting)
 
 
 	## set event onto KVS

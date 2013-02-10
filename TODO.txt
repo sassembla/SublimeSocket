@@ -37,7 +37,7 @@ TimerEvent ほか、SS上で動くもの
 
 		√eval 変数の定義を自力でできるのか？→無理。名前が異なるヤツを数種類用意しておくんだなー。
 
-√	MessagePack:DONE
+√	MessagePack
 		√ちょうどよくハッカソンあったので積んでみた。
 		bufferとか、重量の有る物を外部に出すときに使用したい。
 		今のところmsgpackブランチのみOn。
@@ -46,9 +46,10 @@ TimerEvent ほか、SS上で動くもの
 √	TranslateFilterの概念追加
 	√defineFilter -> runFilter
 
-RunSetting/TestRun
+
+√	runSetting/TestRun
 	必要。ファイル位置を読み込ませて、書いてあるのを順に実行する。改行とtabは無視される。
-	runSettings
+	runSetting
 
 
 viewファイルの識別を行わないとな。
