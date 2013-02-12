@@ -2,8 +2,6 @@
 import struct, array, math, random
 import SublimeWSSettings
 
-from PythonSwitch import *
-
 class SublimeWSEncoder:
 
 	#0                   1                   2                   3

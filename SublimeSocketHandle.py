@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import sublime, sublime_plugin
-from SublimeWSServer import *
-from OpenPreference import *
+import threading
+from SublimeWSServer import SublimeWSServer
+from OpenPreference import Openpreference
 
 
 # WebSocket server's thread

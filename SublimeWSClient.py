@@ -2,9 +2,9 @@
 import threading, hashlib, base64
 import SublimeWSSettings
 
-from SublimeWSDecoder import *
+from SublimeWSDecoder import SublimeWSDecoder
 
-from SublimeWSController import *
+from SublimeWSController import SublimeWSController
 import uuid
 
 class SublimeWSClient:

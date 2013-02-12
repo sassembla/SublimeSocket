@@ -13,7 +13,7 @@ TimerEvent ほか、SS上で動くもの
 		updated
 		bufferList
 
-	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
+√	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
 		√set(key,value)
 		√get(key)
 		keys
@@ -72,6 +72,7 @@ OutputAPIの整理
 テスト
 	書いた方が良い。
 	outputMessageを当てにして、外部の物を一連で実行するようにしよう。
+	
 
 
 やりたいけどどうやったらいいか判らないもの

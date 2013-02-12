@@ -2,7 +2,7 @@
 import struct, array
 import SublimeWSSettings
 
-from PythonSwitch import *
+from PythonSwitch import PythonSwitch
 
 class SublimeWSDecoder:
 

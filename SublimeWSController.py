@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import SublimeWSSettings
 import SublimeSocketAPI
-from SublimeWSEncoder import *
+from SublimeWSEncoder import SublimeWSEncoder
 import SublimeSocketAPISettings
 
 

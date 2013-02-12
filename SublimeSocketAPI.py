@@ -4,7 +4,7 @@ import sublime, sublime_plugin
 import SublimeWSSettings
 import json
 
-from SublimeWSEncoder import *
+from SublimeWSEncoder import SublimeWSEncoder
 import SublimeSocketAPISettings
 
 # import subprocess
@@ -14,7 +14,7 @@ import SublimeSocketAPISettings
 import re
 
 
-from PythonSwitch import *
+from PythonSwitch import PythonSwitch
 
 ## API Parse the action
 class SublimeSocketAPI:

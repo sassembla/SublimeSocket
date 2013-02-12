@@ -2,16 +2,15 @@
 import sublime, sublime_plugin
 
 import socket, threading, string, time
-from SublimeWSClient import *
-from SublimeSocketAPI import *
+from SublimeWSClient import SublimeWSClient
+from SublimeSocketAPI import SublimeSocketAPI
 import SublimeSocketAPISettings
 
 import json
 
-from PythonSwitch import *
+from PythonSwitch import PythonSwitch
 
 SERVER_INTERVAL_SEC = 2000
-
 
 class SublimeWSServer:
 
