@@ -119,6 +119,7 @@ class SublimeWSServer:
 				break
 
 			if case(SublimeSocketAPISettings.KVS_SHOWVALUE):
+				print "param is", param
 				return self.showValue(param)
 				break
 
@@ -160,19 +161,24 @@ class SublimeWSServer:
 
 	## return all key-value as string
 	def showAll(self):
+		if self.kvs.isEmpty():
+			return "No Keys - Values. empty."
+
 		v = self.kvs.items()
 		printKV = []
 		for kvTuple in v:
-			kvsStr = str(kvTuple[0]) + ":" + str(kvTuple[1]) + "\n"
+			kvsStr = str(kvTuple[0]) + " : " + str(kvTuple[1])+ "	/	"
 			printKV.append(kvsStr)
 		
-		return "KVS	".join(printKV)
+		return "".join(printKV)
 
 	## return single key-value as string
 	def showValue(self, key):
-		v = self.kvs.get(key)
-		kv = key + " : " + v
-		return kv
+		if not self.kvs.get(key):
+			return str(False)
+		
+		kv = key + " : " + self.kvs.get(key)
+		return str(kv)
 
 
 	## clear all KVS contents
@@ -191,6 +197,14 @@ class KVS:
 		self.keyValueDict = {}
 
 
+	## empty or not
+	def isEmpty(self):
+		if 0 == len(self.keyValueDict):
+			return True
+		else:
+			return False
+
+		
 	## set (override if exist already)
 	def setKeyValue(self, key, value):
 		if self.keyValueDict.has_key(key):
@@ -211,7 +225,7 @@ class KVS:
 
 	## remove key-value
 	def remove(self, key):
-		if not self.get(key):
+		if self.get(key):
 			del self.keyValueDict[key]
 			return True
 		else:

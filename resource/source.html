@@ -109,7 +109,15 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" onchange="setter.set(this[this.selectedIndex].value)">
+            <option>ss@kvs:{"showAll":"true"}</option>
+
+            <option>ss@kvs:{"showValue":"clientId"}</option>
+
+            <option>ss@kvs:{"removeValue":"clientId"}</option>
+
+            <option>ss@kvs:{"clear":"true"}</option>
             
+
             <option>ss@runSetting:{"filePath":"/Users/sassembla/Desktop/UnityFilter.txt"}</option>
 
             <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
