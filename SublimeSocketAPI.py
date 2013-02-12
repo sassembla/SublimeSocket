@@ -65,6 +65,14 @@ class SublimeSocketAPI:
 				self.server.killServerSelf()
 				break
 
+			if case(SublimeSocketAPISettings.API_KEYVALUESTORE):
+				result = self.server.KVSControl(params)
+				print "kvs result", result
+				
+				buf = self.encoder.text(result, mask=0)
+				client.send(buf)
+				break
+
 			if case(SublimeSocketAPISettings.API_TIMEREVENT):
 				#残りのタスクを内包して、非同期で抜ける。
 				print "params ", params
@@ -298,11 +306,12 @@ class SublimeSocketAPI:
 		else:
 			print "no message"
 
-		
+	### APIs for shortcut ST2-Display
 	def ssStatusMessage(self, message):
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 	
+
 
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.

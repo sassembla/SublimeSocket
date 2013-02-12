@@ -14,11 +14,12 @@ TimerEvent ほか、SS上で動くもの
 		bufferList
 
 √	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
-		√set(key,value)
-		√get(key)
-		keys
-		remove(key)
-		clear
+		√setKV(key,value) //unavailable from api
+		√getV(key)				//unavailable from api
+		showValue(key)
+		showAll
+		removeValue(key)
+		clearKVS
 
 √	defineFilter
 		√フィルタの定義が可能

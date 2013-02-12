@@ -3,7 +3,7 @@ import SublimeWSSettings
 import SublimeSocketAPI
 from SublimeWSEncoder import SublimeWSEncoder
 import SublimeSocketAPISettings
-
+from PythonSwitch import PythonSwitch
 
 class SublimeWSController:
 	def __init__(self, client):

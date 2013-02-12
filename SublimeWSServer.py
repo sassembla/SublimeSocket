@@ -104,16 +104,51 @@ class SublimeWSServer:
 					self.api.runAPI(commandAndParams[0], commandAndParams[1])	
 
 
+	## KVSControl
+	def KVSControl(self, subCommandAndParam):
+		if 1 < len(subCommandAndParam):
+			return "KVSControl: too many subCommands. please set only one subCommnad."
+
+		subCommnad = subCommandAndParam.keys()[0]
+		param = subCommandAndParam.values()[0]
+
+		# python-switch
+		for case in PythonSwitch(subCommnad):
+			if case(SublimeSocketAPISettings.KVS_SHOWALL):
+				return self.showAll()
+				break
+
+			if case(SublimeSocketAPISettings.KVS_SHOWVALUE):
+				return self.showValue(param)
+				break
+
+			if case(SublimeSocketAPISettings.KVS_REMOVEVALUE):
+				return self.remove(param)
+				break
+
+				
+			if case(SublimeSocketAPISettings.KVS_CLEAR):
+				return self.clear()
+				break
+
+
+			if case():
+				print "unknown KVS subcommand"
+				break
+
+
 	## put key-value onto KeyValueStore
 	def setKV(self, key, value):
-		print "should update! if same key is on, already"
 		self.kvs.setKeyValue(key, value)
 
 
+	## return None or object
 	def getV(self, key):
 		value = self.kvs.get(key)
 		return value
+
 	
+	## exist or not. return bool
 	def isExistOnKVS(self, key):
 		if self.kvs.get(key):
 			print "isExistOnKVS true", self.kvs.get(key)
@@ -123,6 +158,32 @@ class SublimeWSServer:
 			print "isExistOnKVS false", self.kvs.get(key)
 			return False
 
+	## return all key-value as string
+	def showAll(self):
+		v = self.kvs.items()
+		printKV = []
+		for kvTuple in v:
+			kvsStr = str(kvTuple[0]) + ":" + str(kvTuple[1]) + "\n"
+			printKV.append(kvsStr)
+		
+		return "KVS	".join(printKV)
+
+	## return single key-value as string
+	def showValue(self, key):
+		v = self.kvs.get(key)
+		kv = key + " : " + v
+		return kv
+
+
+	## clear all KVS contents
+	def clear(self):
+		self.kvs.clear()
+		return str(True)
+		
+
+	def remove(self, key):
+		result = self.kvs.remove(key)
+		return str(result)
 
 ## key-value pool
 class KVS:
@@ -130,8 +191,11 @@ class KVS:
 		self.keyValueDict = {}
 
 
-	## set
+	## set (override if exist already)
 	def setKeyValue(self, key, value):
+		if self.keyValueDict.has_key(key):
+			print "override:", key
+
 		self.keyValueDict[key] = value
 		return self.keyValueDict[key]
 
@@ -139,4 +203,28 @@ class KVS:
 	def get(self, key):
 		if self.keyValueDict.has_key(key):
 			return self.keyValueDict[key]
+
+	## get all key-value
+	def items(self):
+		return self.keyValueDict.items()
+
+
+	## remove key-value
+	def remove(self, key):
+		if not self.get(key):
+			del self.keyValueDict[key]
+			return True
+		else:
+			print "no '", key, "' key exists in KVS."
+			return False
+
+
+	## remove all keys and values
+	def clear(self):
+		self.keyValueDict.clear()
+		return True
+
+
+
+
 

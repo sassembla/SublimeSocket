@@ -17,6 +17,12 @@ RUNSETTING_FILEPATH	= "filePath"
 API_INPUTIDENTITY = "inputIdentity"
 API_KILLSERVER		=	"killServer"
 
+API_KEYVALUESTORE	= "kvs"
+KVS_SHOWALL				= "showAll"
+KVS_SHOWVALUE			= "showValue"
+KVS_REMOVEVALUE		= "removeValue"
+KVS_CLEAR					= "clear"
+
 API_DEFINEFILTER	= "defineFilter"
 FILTER_PATTERNS		= "filterPatterns"
 
