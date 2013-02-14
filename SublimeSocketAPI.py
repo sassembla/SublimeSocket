@@ -95,9 +95,9 @@ class SublimeSocketAPI:
 				self.eventListen(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_SETEVENT):
+			if case(SublimeSocketAPISettings.API_SETLISTENEREVENT):
 				# set event to listener
-				self.setEvent(params)
+				self.setListenerEvent(params)
 				break
 
 			# if case(SublimeSocketAPISettings.API_RUNSHELL):
@@ -148,8 +148,8 @@ class SublimeSocketAPI:
 
 
 	## set event onto KVS
-	def setEvent(self, params):
-		self.server.setKV(SublimeSocketAPISettings.API_SETEVENT, params)
+	def setListenerEvent(self, params):
+		self.server.setKV(SublimeSocketAPISettings.DICT_LISTENERS, params)
 
 
 	# ## run shellScript
@@ -188,8 +188,8 @@ class SublimeSocketAPI:
 		# load defined filters
 		filterNameAndPatternsArray = {}
 
-		if self.server.isExistOnKVS(SublimeSocketAPISettings.API_DEFINEFILTER):
-			filterNameAndPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)
+		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
+			filterNameAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)
 
 		print "loaded filterNameAndPatternsArray:", filterNameAndPatternsArray
 
@@ -200,7 +200,7 @@ class SublimeSocketAPI:
 
 
 		# store
-		self.server.setKV(SublimeSocketAPISettings.API_DEFINEFILTER, filterNameAndPatternsArray)
+		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
 
 	## filtering. matching -> run API with interval
 	def runFiltering(self, params, client):
@@ -219,8 +219,11 @@ class SublimeSocketAPI:
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
 		# print "filterName", filterName, "	/filterSource",filterSource
 
+		# if filterSource includes any view identifier, set TargetViewIdentity to the view that should be choose.
+		self.changeTargetView(filterSource)
+
 		# get filter key-values array
-		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.API_DEFINEFILTER)[filterName]
+		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
 
 		print "filterPatternsArray", filterPatternsArray
 		results = []
@@ -306,12 +309,18 @@ class SublimeSocketAPI:
 		else:
 			print "no message"
 
+
+	## change the target view of API, if params includes "filename.something"
+	def changeTargetView(self, params):
+		print "viewDict", self.server.viewDict()
+		
+
+
 	### APIs for shortcut ST2-Display
 	def ssStatusMessage(self, message):
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 	
-
 
 	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
 	# The event will reach every-view that included by the window.
@@ -349,7 +358,7 @@ class SublimeSocketAPI:
 			
 
 		# update
-		self.server.setKV(SublimeSocketAPISettings.API_EVENTLISTEN, eventObservationArray)
+		self.server.setKV(SublimeSocketAPISettings.DICT_EVENTLISTENERS, eventObservationArray)
 		
 
 	## evaluate strings

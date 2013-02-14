@@ -32,14 +32,14 @@ FILTER_SOURCE			= "filterSource"
 FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
 API_EVENTLISTEN		= "eventListen"
-LISTEN_EVENTS			= ["on_modified"]
+LISTEN_EVENTS			= ["on_modified"] #list of aceptable-event names.
 
-API_SETEVENT			= "setEvent"
+API_SETLISTENEREVENT	= "setListenerEvent"
 
 # API_RUNSHELL			= "runShell" # not so sweet
 
 API_OUTPUTMESSAGE	= "outputMessage"
-OUTPUT_TARGET			= "target"
+# OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
 
 API_TIMEREVENT		= "timerEvent"
@@ -47,5 +47,7 @@ API_TIMEREVENT		= "timerEvent"
 API_EVAL					= "eval"
 
 
-# list of apis that depends on WSServer's interval event
-INTERVAL_DEPEND_APIS = [API_EVENTLISTEN]
+#Dictionaries for collection of "Views", "filters", "events"
+DICT_VIEWS				= "DICT_VIEWS"
+DICT_FILTERS			= "DICT_FILTERS"
+DICT_EVENTLISTENERS	= "DICT_EVENTLISTENERS"

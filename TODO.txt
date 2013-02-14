@@ -14,12 +14,12 @@ TimerEvent ほか、SS上で動くもの
 		bufferList
 
 √	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
-		√setKV(key,value) //unavailable from api
-		√getV(key)				//unavailable from api
-		showValue(key)
-		showAll
-		removeValue(key)
-		clearKVS
+		√setKV(key,value) //unavailable from api directly
+		√getV(key)				//unavailable from api directly
+		√showValue(key)
+		√showAll
+		√removeValue(key)
+		√clear
 
 √	defineFilter
 		√フィルタの定義が可能
@@ -52,12 +52,25 @@ TimerEvent ほか、SS上で動くもの
 	必要。ファイル位置を読み込ませて、書いてあるのを順に実行する。改行とtabは無視される。
 	runSetting
 
+setTargetView
+	APIとして、どのViewに対するものか、セットする必要がある。
+	一回のAPIStreamで、どのViewに対して filterを掛けた要素を入れるのか　というのがセットできれば良いのかなあ。
+	送る側で判別したくないな。filterから合成すればいいか。
 
-viewファイルの識別を行わないとな。
+書き込み対象Viewファイルの識別を行わないとな
 	targetSettingみたいなのを行ってからrepl、で良い気がする。
 	それで、セット先のviewの有無が決まる。
 	開いてないファイルとかもあり得る。
 	evalでの対象を分けてやれば良いか。
+
+
+ViewIdentifierをスイッチ的に持つ場合の設定
+	一時キーattachとdetachの仕掛けを付けたい
+	→setTarget という識別子で、アクティブ以外にcurrentTargetを持つ
+
+
+
+DOC:
 
 SublimeSocketAPI -Sequence
 	sublimesocket @ API : {JSONPARAM} -> API2 : {JSONPARAM} -> API3 : {JSONPARAM}>,,
@@ -73,7 +86,7 @@ OutputAPIの整理
 テスト
 	書いた方が良い。
 	outputMessageを当てにして、外部の物を一連で実行するようにしよう。
-	
+	→3系の方が将来ありそうなのでそちらで。
 
 
 やりたいけどどうやったらいいか判らないもの

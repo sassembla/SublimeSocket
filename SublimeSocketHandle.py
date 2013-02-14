@@ -34,8 +34,7 @@ class Socketoff(sublime_plugin.TextCommand):
   def run(self, edit):
     global thread
     print "thread is,, ", thread.is_alive()
-    print "off.... not yet implimented as standalone. Plase use preference > Kill Button"
-        
+    print "off.... not yet implimented as standalone. Plase use preference > Kill Button"        
 
 
 # threading
@@ -51,17 +50,23 @@ class SublimeSocketThread(threading.Thread):
 
 
   # send eventName and data to server
-  def toServer(self, eventName):
-    self._server.fireKVStoredEvent(eventName)
+  def toServer(self, eventName, eventParam=None):
+    self._server.fireKVStoredItem(eventName, eventParam)
     
 
 # event listeners
 class CaptureEditing(sublime_plugin.EventListener):
   edit_info = {}
   def on_modified(self, view):
+    self.update("on_modified")
+
+  def on_load(self, view):
+    self.update("on_load", view)
+
+  ## call when the event happen
+  def update(self, eventName, param = None):
     global thread
 
     if thread is not None and thread.is_alive():
-      thread.toServer("on_modified")
-
+      thread.toServer(eventName, param)
 
