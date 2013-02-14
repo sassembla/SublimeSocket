@@ -56,12 +56,16 @@ class SublimeSocketThread(threading.Thread):
 
 # event listeners
 class CaptureEditing(sublime_plugin.EventListener):
-  edit_info = {}
+  
   def on_modified(self, view):
     self.update("on_modified")
 
   def on_load(self, view):
     self.update("on_load", view)
+
+
+
+
 
   ## call when the event happen
   def update(self, eventName, param = None):

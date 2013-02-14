@@ -23,7 +23,7 @@ class SublimeSocketAPI:
 		self.encoder = SublimeWSEncoder()
 
 	## Parse the API command via WebSocket
-	def parse(self, data, client):
+	def parse(self, data, client=None):
 		# print "parse sourceData is ", data
 		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
@@ -90,11 +90,6 @@ class SublimeSocketAPI:
 				result = self.runFiltering(params, client)
 				break
 
-			if case(SublimeSocketAPISettings.API_EVENTLISTEN):
-				# set listener to KVS for observing the event occured
-				self.eventListen(params)
-				break
-
 			if case(SublimeSocketAPISettings.API_SETLISTENEREVENT):
 				# set event to listener
 				self.setListenerEvent(params)
@@ -149,7 +144,7 @@ class SublimeSocketAPI:
 
 	## set event onto KVS
 	def setListenerEvent(self, params):
-		self.server.setKV(SublimeSocketAPISettings.DICT_LISTENERS, params)
+		self.server.setKV(SublimeSocketAPISettings.DICT_EVENTLISTENERS, params)
 
 
 	# ## run shellScript
@@ -321,45 +316,6 @@ class SublimeSocketAPI:
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 	
-
-	## set/remove {eventListener : emitSetting} at the event that are observed by ST.
-	# The event will reach every-view that included by the window.
-	# KVS-key is SublimeSocketAPISettings.API_EVENTLISTEN
-	# KVS-value is Dictionary {eventListener:emitSetting}
-	def eventListen(self, params):
-		print "eventListen", params
-		# on_new(view)	None	Called when a new buffer is created.
-		# on_clone(view)	None	Called when a view is cloned from an existing one.
-		# on_load(view)	None	Called when the file is finished loading.
-		# on_close(view)	None	Called when a view is closed (note, there may still be other views into the same buffer).
-		# on_pre_save(view)	None	Called just before a view is saved.
-		# on_post_save(view)	None	Called after a view has been saved.
-		# on_modified(view)	None	Called after changes have been made to a view.
-		# on_selection_modified(view)	None	Called after the selection has been modified in a view.
-		# on_activated(view)	None	Called when a view gains input focus.
-		# on_deactivated(view)	None	Called when a view loses input focus.
-		# on_query_context(view, key, operator, operand, match_all)	bool or None	Called when determining to trigger a key binding with the given context key. If the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None.
-		# 	operator is one of:
-		# 	sublime.OP_EQUAL. Is the value of the context equal to the operand?
-		# 	sublime.OP_NOT_EQUAL. Is the value of the context not equal to the operand?
-		# 	sublime.OP_REGEX_MATCH. Does the value of the context match the regex given in operand?
-		# 	sublime.OP_NOT_REGEX_MATCH. Does the value of the context not match the regex given in operand?
-		# 	sublime.OP_REGEX_CONTAINS. Does the value of the context contain a substring matching the regex given in operand?
-		# 	sublime.OP_NOT_REGEX_CONTAINS. Does the value of the context not contain a substring matching the regex given in operand?
-		# 	match_all should be used if the context relates to the selections: does every selection have to match (match_all = True), or is at least one matching enough (match_all = Fals)?
-		
-		keys = params.keys()
-		eventObservationArray = {}
-
-		# check acceptable event
-		valid_events = set(keys) & set(SublimeSocketAPISettings.LISTEN_EVENTS)
-		for eventIdentity in valid_events:
-			eventObservationArray[eventIdentity] = params[eventIdentity]
-			
-
-		# update
-		self.server.setKV(SublimeSocketAPISettings.DICT_EVENTLISTENERS, eventObservationArray)
-		
 
 	## evaluate strings
 	# Not only eval.

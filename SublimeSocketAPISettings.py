@@ -31,10 +31,11 @@ FILTER_NAME				= "filterName"
 FILTER_SOURCE			= "filterSource"
 FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
-API_EVENTLISTEN		= "eventListen"
-LISTEN_EVENTS			= ["on_modified"] #list of aceptable-event names.
-
 API_SETLISTENEREVENT	= "setListenerEvent"
+LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
+
+API_SETTARGETVIEW	= "setTargetView"
+VIEW_EVENTS				= ["on_load"] #list of acceptable-view event names. 
 
 # API_RUNSHELL			= "runShell" # not so sweet
 

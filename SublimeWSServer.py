@@ -87,32 +87,22 @@ class SublimeWSServer:
 	## input to sublime from server.
 	# fire event in KVS, if exist.
 	def fireKVStoredItem(self, eventName, eventParam=None):
+
 		# event listener adopt
 		if eventName in SublimeSocketAPISettings.LISTEN_EVENTS:
-			print "eventName", eventName
-		
-		# # なんか、イベントの列挙にたいして応える側規定するのが正しい気がする、ミスった。
-		# for key in SublimeSocketAPISettings.REACTABLE_APIS:
-		# 	if not isinstance(self.getV(key), dict):
-		# 		return
+			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_EVENTLISTENERS):
+				commandAndParams = self.getV(SublimeSocketAPISettings.DICT_EVENTLISTENERS)[eventName].items()
 
-		# 	if self.getV(key).has_key(eventName):
+				command = commandAndParams[0][0]
+				params = commandAndParams[0][1]
+				self.api.runAPI(command, params)	
 
-		# 		# print "getV", self.getV(key) # {'on_modified': u'runShell2013/02/04 23:01:51'}
-		# 		eventKey = self.getV(key)[eventName]# array, [0] is API, others are parameters.
+		# viewCollector will react
+		if eventName in SublimeSocketAPISettings.VIEW_EVENTS:
+			print "eventName is ", eventName
+			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 
-		# 		# eventListener will react if set
-		# 		if self.getV(SublimeSocketAPISettings.DICT_LISTENERS).has_key(eventKey):
-					
-		# 			commandAndParams = self.getV(SublimeSocketAPISettings.DICT_LISTENERS)[eventKey]
-		# 			# print "commandAndParams", commandAndParams[1]
-
-		# 			self.api.runAPI(commandAndParams[0], commandAndParams[1])	
-
-
-		# 		# viewCollector will react
-		# 		if self.getV(SublimeSocketAPISettings.DICT_VIEWS).has_key(eventKey):
-		# 			pass
+				pass
 
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
