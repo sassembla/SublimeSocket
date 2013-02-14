@@ -55,7 +55,7 @@ class SublimeSocketAPI:
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
 				break
-
+				
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
 				clientId = params["id"]
 				self.server.setKV("clientId", str(clientId))

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import sublime, sublime_plugin
 
+import os
+
 import socket, threading, string, time
 from SublimeWSClient import SublimeWSClient
 from SublimeSocketAPI import SublimeSocketAPI
@@ -99,10 +101,25 @@ class SublimeWSServer:
 
 		# viewCollector will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS:
-			print "eventName is ", eventName
-			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 
-				pass
+			# update or append if exist.
+			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
+				viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
+
+			# create
+			else:	
+				viewDict = {}
+
+			viewInfo = {}
+			viewInfo["id"] = eventParam.id()
+			viewInfo["buffer_id"] = eventParam.buffer_id()
+			viewInfo["file_basename"] = os.path.basename(eventParam.file_name())
+			viewInfo["name"] = eventParam.name()
+			viewInfo["view"] = eventParam
+			
+			viewDict[eventParam.file_name()] = viewInfo
+			self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
+
 
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
