@@ -64,10 +64,11 @@
         write textlist
         */
         writeLog: function (message) {
+            var childNodes = document.getElementById('output').childNodes;
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
             p.innerHTML = message.toString();
-            document.getElementById('output').appendChild(p);
+            document.getElementById('output').insertBefore(p, childNodes[0]);
         },
         send: function (message) {
           if (!message.length) {
@@ -108,7 +109,13 @@
         </div>
         
         <div>
-          <select multiple="multiple" class="span9 offset2" onchange="setter.set(this[this.selectedIndex].value)">
+          <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
+            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}->setTargetView:{"path":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"}->ss@filter:{"filterName":"s", "filterSource":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"}</option>
+
+            <option>ss@filter:{"filterName":"s", "filterSource":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"}</option>
+
+            <option>ss@setTargetView:{"path":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"}</option>
+
             <option>ss@outputMessage:{"message":"here comes Daredevil!"}</option>
 
             <option>ss@kvs:{"showAll":"true"}</option>
@@ -122,7 +129,12 @@
 
             <option>ss@runSetting:{"filePath":"/Users/sassembla/Desktop/UnityFilter.txt"}</option>
 
+            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}</option>
+
             <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
+
+            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_showStatusMessage:{\"a\":\"b\""}"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
+
 
             <option>ss@setListenerEvent:{"on_modified":{"outputMessage":{"message":"text's been modified!"}}}</option>
 
