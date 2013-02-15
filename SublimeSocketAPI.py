@@ -55,7 +55,7 @@ class SublimeSocketAPI:
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
 				break
-				
+
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
 				clientId = params["id"]
 				self.server.setKV("clientId", str(clientId))
@@ -63,6 +63,10 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_KILLSERVER):
 				self.server.killServerSelf()
+				break
+
+			if case(SublimeSocketAPISettings.API_SETTARGETVIEW):
+				self.setTargetView(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_KEYVALUESTORE):
@@ -171,10 +175,18 @@ class SublimeSocketAPI:
 		for client in clients:
 			client.send(buf)
 
+
+	## set target-view info
+	def setTargetView(self, params):
+		if self.server.isViewDefined(params):
+				# update currentTargetView
+				viewInfo = self.server.getViewInfo(params)
+
+				self.server.setKV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW, viewInfo)
+				
+
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
-		print "defineFilter", params
-
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
 			print "no filterName key."
@@ -215,7 +227,7 @@ class SublimeSocketAPI:
 		# print "filterName", filterName, "	/filterSource",filterSource
 
 		# if filterSource includes any view identifier, set TargetViewIdentity to the view that should be choose.
-		self.changeTargetView(filterSource)
+		self.getTargetView(filterSource)
 
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
@@ -305,17 +317,26 @@ class SublimeSocketAPI:
 			print "no message"
 
 
-	## change the target view of API, if params includes "filename.something"
-	def changeTargetView(self, params):
-		print "viewDict", self.server.viewDict()
-		
+	## get the target view of API, if params includes "filename.something"
+	def getTargetView(self, params):
+		# この文言の中から、viewパスに一致する物を検出する
+		print "viewDict", self.server.viewDict(), "	vs	/params",params 
+		# if self.server.
 
 
 	### APIs for shortcut ST2-Display
-	def ssStatusMessage(self, message):
+	def showStatusMessage(self, message):
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 	
+
+	## show lines as error on targeted view.
+	def showErrorLine(self, params):
+		# DICT_CURRENTTARGETVIEW
+		print "showErrorLine", params
+		pass
+
+
 
 	## evaluate strings
 	# Not only eval.

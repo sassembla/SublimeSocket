@@ -62,10 +62,12 @@ class SublimeWSServer:
 		# loop
 		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
 		
+		
 	## api 
 	def callAPI(self, apiData, clientId):
 		currentClient = [client for client in self.clients if client.clientId == clientId][0]
 		self.api.parse(apiData, currentClient)
+
 		
 	## kill server. with all connection(maybe some bugs include. will not be close immediately, at least 1 reload need,,)
 	def killServerSelf(self):
@@ -84,8 +86,31 @@ class SublimeWSServer:
 			if filterName in filterDict:
 				return True
 		return False
-			
+	
+	
+	## return the view has been defined or not
+	def isViewDefined(self, viewParam):
+		if not self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
+			print "target view does not exist in KVS. :", viewParam
+			return False
 
+		# use file_name if path exists. (PATH)
+		if viewParam.has_key(SublimeSocketAPISettings.VIEW_PATH):
+			if viewParam[SublimeSocketAPISettings.VIEW_PATH] in self.kvs.get(SublimeSocketAPISettings.DICT_VIEWS):
+				return True
+
+		print "NO hit", viewParam
+		return False
+
+
+	## return specific view instance from viewDict.
+	def getViewInfo(self, viewParam):
+		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
+		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
+		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
+		return viewInfo
+
+		
 	## input to sublime from server.
 	# fire event in KVS, if exist.
 	def fireKVStoredItem(self, eventName, eventParam=None):
@@ -102,22 +127,26 @@ class SublimeWSServer:
 		# viewCollector will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS:
 
+			viewDict = {}
+			
 			# update or append if exist.
 			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 				viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
 			# create
 			else:	
-				viewDict = {}
+				pass
+
+			filePath = eventParam.file_name()
 
 			viewInfo = {}
-			viewInfo["id"] = eventParam.id()
-			viewInfo["buffer_id"] = eventParam.buffer_id()
-			viewInfo["file_basename"] = os.path.basename(eventParam.file_name())
-			viewInfo["name"] = eventParam.name()
-			viewInfo["view"] = eventParam
+			viewInfo[SublimeSocketAPISettings.VIEW_ID] = eventParam.id()
+			viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = eventParam.buffer_id()
+			viewInfo[SublimeSocketAPISettings.VIEW_BASENAME] = os.path.basename(eventParam.file_name())
+			viewInfo[SublimeSocketAPISettings.VIEW_VNAME] = eventParam.name()
+			viewInfo[SublimeSocketAPISettings.VIEW_SELF] = eventParam
 			
-			viewDict[eventParam.file_name()] = viewInfo
+			viewDict[filePath] = viewInfo
 			self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
 
@@ -154,6 +183,7 @@ class SublimeWSServer:
 				print "unknown KVS subcommand"
 				break
 
+
 	## 
 	def viewDict(self):
 		return self.kvs.get(SublimeSocketAPISettings.DICT_VIEWS)
@@ -173,11 +203,11 @@ class SublimeWSServer:
 	## exist or not. return bool
 	def isExistOnKVS(self, key):
 		if self.kvs.get(key):
-			print "isExistOnKVS true", self.kvs.get(key)
+			# print "isExistOnKVS true", self.kvs.get(key)
 			return True
 			
 		else:
-			print "isExistOnKVS false", self.kvs.get(key)
+			# print "isExistOnKVS false", self.kvs.get(key)
 			return False
 
 	## return all key-value as string
