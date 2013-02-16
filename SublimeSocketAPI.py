@@ -271,7 +271,7 @@ class SublimeSocketAPI:
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
 			print "pattern is ", pattern
 			try:
-				(key, executables) = pattern.items()[0]
+				(key, executablesDict) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
 				print "src is", src
 
@@ -284,59 +284,46 @@ class SublimeSocketAPI:
 					print "searched.groups()",searched.groups()
 					
 					patternIndex = 0
-					print "executables",executables
-					# [SublimeSocketAPISettings.FILTER_RUNNABLE]
+					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
 
-					# execute
-					# for executableSource in executables:
-					# 	print "executableSource", executableSource
-					# 	# check includes API-runnable. Then run.
+					# run
+					for key in executables.keys():
 
-					# 	if executableSource.startswith():
-					# 		executable = executableSource.replace(SublimeSocketAPISettings.FILTER_RUNNABLE, "")
-
-					# 		command_params = executable.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
-					# 		command = command_params[0]
-					# 		print "commandは",command
-					# 		params = ''
-					# 		if 1 < len(command_params):
-					# 			# replace parameter-strings to desired.
-					# 			paramsSource = command_params[1]
-
-					# 			# before	eval:["sublime.message_dialog('groups[0]')"]
-					# 			# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
-
-					# 			# get array that is source of value
-					# 			paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
-
-					# 			# print "paramsIndexies", paramsIndexies
-
-					# 			# convert to values
-					# 			mapped = []
-					# 			for index in paramsIndexies:
-					# 				mapped.append(searched.groups()[index])
-
-					# 			# print "mapped", mapped
-
-					# 			replaced_paramsSource = paramsSource
-								
-					# 			# replace
-					# 			i = 0
-					# 			for index in paramsIndexies:
-					# 				replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
-					# 				i = i + 1
-
-					# 			# print "replaced_paramsSource", replaced_paramsSource
-					
-					# 			# JSON parameterize
-					# 			params = json.loads(replaced_paramsSource)
+						# execute
+						command = key
+						print "command", command
 						
-					# 		print "command", command
-					# 		self.runAPI(command, params)
+						paramsSource = executables[key]
+						print "paramsSource", paramsSource
+
+						# if params are string-array, replace "groups[x]" to regexp-result value of the 'groups[x]'
+						if type(paramsSource) == list:
+							
+							# before	eval:["sublime.message_dialog('groups[0]')"]
+							# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
+							
+							size = len(searched.groups())
+
+							def replaceGroupsKeyword(param):
+								result = param
 								
-						# else:
-						# 	# print "else, ",executableSource
-						# 	pass
+								for index in range(size):
+									isFound = re.findall(r'groups\[(' + str(index) + ')\]', result)
+									if isFound:
+										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+								return result
+								
+							# replace "groups[x]" expression to 'searched.groups()[x]' value
+							params = map(replaceGroupsKeyword, paramsSource)
+
+						elif type(paramsSource) == dict:
+							print "dict!"
+
+						else:
+							print "unknown type"
+
+						# execute
+						self.runAPI(command, params)
 
 					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
 					patternIndex = patternIndex + 1

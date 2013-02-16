@@ -231,11 +231,15 @@ ss@defineFilter:
     "patterns": [
         {
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
-                "runnable": "eval:[\"sublime.message_dialog('groups[1]')\"]"
+                "runnable": {
+                    "eval": [
+                        "sublime.message_dialog('onlySetFilter groups[1]')"
+                    ]
+                }
             }
         }
     ]
-}           
+}       
             </option>
 
             <option>
@@ -247,7 +251,10 @@ ss@defineFilter:
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
                 "runnable": {
                     "eval": [
-                        "sublime.message_dialog('groups[1]')"
+                        "sublime.message_dialog('singleParam groups[0]')",
+                        "sublime.message_dialog('singleParamgroups[1]')",
+                        "sublime.message_dialog('2param groups[1], groups[0]')",
+                        "sublime.message_dialog('multiparam groups[1], groups[0], groups[1], groups[0]')"
                     ]
                 }
             }
