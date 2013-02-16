@@ -5,6 +5,7 @@ import SublimeWSSettings
 import json
 
 from SublimeWSEncoder import SublimeWSEncoder
+from SublimeSocketInternalAPI import SublimeSocketInternalAPI
 import SublimeSocketAPISettings
 
 # import subprocess
@@ -21,6 +22,7 @@ class SublimeSocketAPI:
 	def __init__(self, server):
 		self.server = server
 		self.encoder = SublimeWSEncoder()
+		self.internalAPI = SublimeSocketInternalAPI()
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client=None):
@@ -115,6 +117,19 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_EVAL):
 				sublime.set_timeout(lambda: self.sublimeEval(params, client), 0)
+				break
+
+
+			# internal APIS
+			if case(SublimeSocketAPISettings.API_SHOWSTATUS):
+				break
+
+			if case(SublimeSocketAPISettings.API_SHOWLINE):
+				print "呼ばれてる, param", param
+				view = self.server.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
+				print "view", view
+				
+				self.showLine(view, 10, "here is Message!!")
 				break
 
 			if case():
@@ -249,7 +264,7 @@ class SublimeSocketAPI:
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
 
-		print "filterPatternsArray", filterPatternsArray
+		# print "filterPatternsArray", filterPatternsArray
 		results = []
 		for pattern in filterPatternsArray:
 			# regx key filterSource
@@ -262,15 +277,15 @@ class SublimeSocketAPI:
 			try:
 				(key, executables) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				print "src is", src
+				# print "src is", src
 
 				# regexp match
 				searched = eval(src)
 				
 				if searched:
 					
-					print "searched.group()",searched.group()
-					print "searched.groups()",searched.groups()
+					# print "searched.group()",searched.group()
+					# print "searched.groups()",searched.groups()
 					
 					patternIndex = 0
 					# execute
@@ -315,10 +330,12 @@ class SublimeSocketAPI:
 					
 								# JSON parameterize
 								params = json.loads(replaced_paramsSource)
-
+						
 							self.runAPI(command, params)
+								
 						else:
-							print "else, ",executableSource
+							# print "else, ",executableSource
+							pass
 
 					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
 					patternIndex = patternIndex + 1
@@ -331,7 +348,8 @@ class SublimeSocketAPI:
 			buf = self.encoder.text(ret, mask=0)
 			client.send(buf)
 		else:
-			print "no message"
+			# print "no message"
+			pass
 
 
 	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
@@ -353,14 +371,10 @@ class SublimeSocketAPI:
 	def showStatusMessage(self, message):
 		# stack messages then show sequently.
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
-	
 
-	## show lines as error on targeted view.
-	def showErrorLine(self, params):
-		# DICT_CURRENTTARGETVIEW
-		print "showErrorLine", params
+	def showLine(self, view, lineNum, comment):
+
 		pass
-
 
 
 	## evaluate strings
@@ -389,10 +403,7 @@ class SublimeSocketAPI:
 		# arch
 
 		# WINDOW series
-		window = sublime.active_window()
-
-		# set default
-		self.window = window
+		active_window = sublime.active_window()
 
 		# id()	
 		# new_file()	
@@ -415,10 +426,7 @@ class SublimeSocketAPI:
 
 
 		# VIEW series
-		active_view = window.active_view()
-
-		# set default
-		self.view = active_view
+		active_view = active_window.active_view()
 		
 		# id()	int	Returns a number that uniquely identifies this view.
 		# buffer_id()	int	Returns a number that uniquely identifies the buffer underlying this view.
@@ -545,7 +553,7 @@ class SublimeSocketAPI:
 			client.send(buf)
 		
 	## change lineCount to wordCount that is, includes the target-line index at SublimeText.
-	def getLineCount_And_SetToArray(self, lineCount, lineArray):
+	def getLineCount_And_SetToArray(self, view, lineCount, lineArray):
 		#check the namespace of inputted param
 		len(lineArray)
 
@@ -554,10 +562,10 @@ class SublimeSocketAPI:
 		print "line	", line
 		# Negative line numbers count from the end of the buffer
 		if line < 0:
-			lines, _ = self.view.rowcol(self.view.size())
+			lines, _ = view.rowcol(view.size())
 			line = lines + line + 1
 
-		pt = self.view.text_point(line, 0)
+		pt = view.text_point(line, 0)
 
 		#store params to local param.
 		lineArray.append(pt)

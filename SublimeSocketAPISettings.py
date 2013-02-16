@@ -31,6 +31,12 @@ FILTER_NAME				= "filterName"
 FILTER_SOURCE			= "filterSource"
 FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
+
+# ITERNAL_APIS
+API_SHOWSTATUS		= "showStatus"
+API_SHOWLINE			= "showLine"
+
+
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
 
@@ -66,3 +72,7 @@ DICT_VIEWS				= "DICT_VIEWS"
 DICT_FILTERS			= "DICT_FILTERS"
 DICT_EVENTLISTENERS	= "DICT_EVENTLISTENERS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
+
+
+
+
