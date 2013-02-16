@@ -22,7 +22,6 @@ class SublimeSocketAPI:
 	def __init__(self, server):
 		self.server = server
 		self.encoder = SublimeWSEncoder()
-		self.internalAPI = SublimeSocketInternalAPI()
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client=None):
@@ -121,10 +120,10 @@ class SublimeSocketAPI:
 
 
 			# internal APIS
-			if case(SublimeSocketAPISettings.API_SHOWSTATUS):
+			if case(SublimeSocketAPISettings.API_I_SHOWSTATUS):
 				break
 
-			if case(SublimeSocketAPISettings.API_SHOWLINE):
+			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
 				print "呼ばれてる, param", param
 				view = self.server.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
 				print "view", view
@@ -232,8 +231,6 @@ class SublimeSocketAPI:
 
 		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
 			filterNameAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)
-
-		print "loaded filterNameAndPatternsArray:", filterNameAndPatternsArray
 
 		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
 

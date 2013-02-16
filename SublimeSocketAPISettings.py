@@ -33,8 +33,8 @@ FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 
 
 # ITERNAL_APIS
-API_SHOWSTATUS		= "showStatus"
-API_SHOWLINE			= "showLine"
+API_I_SHOWSTATUS		= "showStatus"
+API_I_SHOWLINE			= "showLine"
 
 
 API_SETLISTENEREVENT	= "setListenerEvent"
