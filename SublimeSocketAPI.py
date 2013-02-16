@@ -43,7 +43,6 @@ class SublimeSocketAPI:
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, client=None):
-
 		evalResults = "empty"
   	
   	# python-switch
@@ -65,13 +64,16 @@ class SublimeSocketAPI:
 				self.server.killServerSelf()
 				break
 
+			if case(SublimeSocketAPISettings.API_DETECTVIEW):
+				self.detectViewInfo(params, client)
+				break
+
 			if case(SublimeSocketAPISettings.API_SETTARGETVIEW):
-				self.setTargetView(params)
+				self.setTargetView(params, client)
 				break
 
 			if case(SublimeSocketAPISettings.API_KEYVALUESTORE):
 				result = self.server.KVSControl(params)
-				print "kvs result", result
 				
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
@@ -79,7 +81,7 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_TIMEREVENT):
 				#残りのタスクを内包して、非同期で抜ける。
-				print "params ", params
+				print "Timer params ", params
 				# どんな分散をするか、
 				# self.timerEventSetIntreval()
 				break
@@ -177,12 +179,26 @@ class SublimeSocketAPI:
 
 
 	## set target-view info
-	def setTargetView(self, params):
+	def setTargetView(self, params, client=None):
 		if self.server.isViewDefined(params):
-				# update currentTargetView
-				viewInfo = self.server.getViewInfo(params)
+			# update currentTargetView
+			viewInfo = self.server.getViewInfo(params)
 
-				self.server.setKV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW, viewInfo)
+			self.server.setKV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW, viewInfo)
+
+			v = viewInfo.items()
+			printKV = []
+			for kvTuple in v:
+				kvsStr = str(kvTuple[0]) + " : " + str(kvTuple[1])+ "	/	"
+				printKV.append(kvsStr)
+
+			result = "".join(printKV)
+			
+			if client and result:
+				buf = self.encoder.text(result, mask=0)
+				client.send(buf)
+			else:
+				print "client", client, "result", result
 				
 
 	## Define the filter and check filterPatterns
@@ -225,9 +241,6 @@ class SublimeSocketAPI:
 
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
 		# print "filterName", filterName, "	/filterSource",filterSource
-
-		# if filterSource includes any view identifier, set TargetViewIdentity to the view that should be choose.
-		self.getTargetView(filterSource)
 
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
@@ -317,11 +330,19 @@ class SublimeSocketAPI:
 			print "no message"
 
 
-	## get the target view of API, if params includes "filename.something"
-	def getTargetView(self, params):
-		# この文言の中から、viewパスに一致する物を検出する
-		print "viewDict", self.server.viewDict(), "	vs	/params",params 
-		# if self.server.
+	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
+	def detectViewInfo(self, params, client=None):
+		if self.server.viewDict():
+			viewSourceStr = params[SublimeSocketAPISettings.DETECT_SOURCE]
+			viewKeys = self.server.viewDict().keys()
+
+			for viewKey in viewKeys:
+				if re.findall(viewKey, viewSourceStr):
+
+					paramDict = {}
+					paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
+
+					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
 
 
 	### APIs for shortcut ST2-Display

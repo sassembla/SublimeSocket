@@ -34,6 +34,9 @@ FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
 
+API_DETECTVIEW		= "detectView"
+DETECT_SOURCE			= "source"
+
 API_SETTARGETVIEW	= "setTargetView"
 VIEW_PATH					= "path"
 VIEW_ID						= "viewId"
