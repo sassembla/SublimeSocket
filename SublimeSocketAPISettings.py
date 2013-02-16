@@ -12,7 +12,7 @@ API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
 API_RUNSETTING		= "runSetting"
-RUNSETTING_FILEPATH	= "filePath"
+RUNSETTING_FILEPATH	= "path"
 
 API_INPUTIDENTITY = "inputIdentity"
 API_KILLSERVER		=	"killServer"
@@ -24,12 +24,12 @@ KVS_REMOVEVALUE		= "removeValue"
 KVS_CLEAR					= "clear"
 
 API_DEFINEFILTER	= "defineFilter"
-FILTER_PATTERNS		= "filterPatterns"
+FILTER_PATTERNS		= "patterns"
 
 API_FILTER				= "filter"
-FILTER_NAME				= "filterName"
-FILTER_SOURCE			= "filterSource"
-FILTER_RUNNABLE_DELIM	= "filterRunnable_"
+FILTER_NAME				= "name"
+FILTER_SOURCE			= "source"
+FILTER_RUNNABLE		= "runnable"
 
 
 # ITERNAL_APIS

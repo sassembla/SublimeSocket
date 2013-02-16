@@ -14,7 +14,6 @@ import SublimeSocketAPISettings
 # import difflib
 import re
 
-
 from PythonSwitch import PythonSwitch
 
 ## API Parse the action
@@ -270,69 +269,74 @@ class SublimeSocketAPI:
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
-			
+			print "pattern is ", pattern
 			try:
 				(key, executables) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				# print "src is", src
+				print "src is", src
 
 				# regexp match
 				searched = eval(src)
 				
 				if searched:
 					
-					# print "searched.group()",searched.group()
-					# print "searched.groups()",searched.groups()
+					print "searched.group()",searched.group()
+					print "searched.groups()",searched.groups()
 					
 					patternIndex = 0
+					print "executables",executables
+					# [SublimeSocketAPISettings.FILTER_RUNNABLE]
+
 					# execute
-					for executableSource in executables:
+					# for executableSource in executables:
+					# 	print "executableSource", executableSource
+					# 	# check includes API-runnable. Then run.
 
-						# check includes API-runnable. Then run.
-						if executableSource.startswith(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM):
-							executable = executableSource.replace(SublimeSocketAPISettings.FILTER_RUNNABLE_DELIM, "")
+					# 	if executableSource.startswith():
+					# 		executable = executableSource.replace(SublimeSocketAPISettings.FILTER_RUNNABLE, "")
 
-							command_params = executable.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
-							command = command_params[0]
+					# 		command_params = executable.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
+					# 		command = command_params[0]
+					# 		print "commandは",command
+					# 		params = ''
+					# 		if 1 < len(command_params):
+					# 			# replace parameter-strings to desired.
+					# 			paramsSource = command_params[1]
 
-							params = ''
-							if 1 < len(command_params):
-								# replace parameter-strings to desired.
-								paramsSource = command_params[1]
+					# 			# before	eval:["sublime.message_dialog('groups[0]')"]
+					# 			# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
 
-								# before	eval:["sublime.message_dialog('groups[0]')"]
-								# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
+					# 			# get array that is source of value
+					# 			paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
 
-								# get array that is source of value
-								paramsIndexies = map(int, re.findall(r'groups\[([0-9].*?)\]', paramsSource))
+					# 			# print "paramsIndexies", paramsIndexies
 
-								# print "paramsIndexies", paramsIndexies
+					# 			# convert to values
+					# 			mapped = []
+					# 			for index in paramsIndexies:
+					# 				mapped.append(searched.groups()[index])
 
-								# convert to values
-								mapped = []
-								for index in paramsIndexies:
-									mapped.append(searched.groups()[index])
+					# 			# print "mapped", mapped
 
-								# print "mapped", mapped
-
-								replaced_paramsSource = paramsSource
+					# 			replaced_paramsSource = paramsSource
 								
-								# replace
-								i = 0
-								for index in paramsIndexies:
-									replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
-									i = i + 1
+					# 			# replace
+					# 			i = 0
+					# 			for index in paramsIndexies:
+					# 				replaced_paramsSource = re.sub(r'groups\['+str(index)+'\]', mapped[i], replaced_paramsSource)
+					# 				i = i + 1
 
-								# print "replaced_paramsSource", replaced_paramsSource
+					# 			# print "replaced_paramsSource", replaced_paramsSource
 					
-								# JSON parameterize
-								params = json.loads(replaced_paramsSource)
+					# 			# JSON parameterize
+					# 			params = json.loads(replaced_paramsSource)
 						
-							self.runAPI(command, params)
+					# 		print "command", command
+					# 		self.runAPI(command, params)
 								
-						else:
-							# print "else, ",executableSource
-							pass
+						# else:
+						# 	# print "else, ",executableSource
+						# 	pass
 
 					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
 					patternIndex = patternIndex + 1

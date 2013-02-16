@@ -110,41 +110,204 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
-            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"pattern":[{"filterRunnable_showLine":{"line":"groups[0]","message":"hoge"}}]}]}</option>
+            <option>
+ss@defineFilter:
+{
+    "name": "showLine",
+    "patterns": [
+        {
+            "pa(tt)ern,([0-9].*)": [
+                {
+                    "runnable": {
+                        "showLine": {
+                            "line": "groups[1]",
+                            "message": "message is groups[0]"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
+->filter: 
+{
+    "name": "showLine",
+    "source": "pattern,10"
+}
+            </option>
 
-            <option>ss@detectView:{"source":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"}</option>
+            <option>
+ss@detectView:
+{
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+}
+            </option>
 
-            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}->setTargetView:{"path":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"}->filter:{"filterName":"s", "filterSource":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"}</option>
+            <option>
+ss@defineFilter:
+{
+    "name": "s",
+    "patterns": [
+        {
+            "-----CompilerOutput:-stdout--exitcode: (.+?)--.": [
+                "runnable":{"eval":[\"sublime.message_dialog('groups[1]')\"]"
+            ]
+        }
+    ]
+}
+->setTargetView:
+{
+    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
+}
+->filter:
+{
+    "name": "s",
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+}
+            </option>
 
-            <option>ss@filter:{"filterName":"s", "filterSource":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"}</option>
+            <option>
+ss@filter:
+{
+    "name": "s",
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+}
+            </option>
 
-            <option>ss@setTargetView:{"path":"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"}</option>
+            <option>
+ss@setTargetView:
+{
+    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
+}
+            </option>
 
-            <option>ss@outputMessage:{"message":"here comes Daredevil!"}</option>
+            <option>
+ss@outputMessage:
+{
+    "message": "here comes Daredevil!"
+}
+            </option>
 
-            <option>ss@kvs:{"showAll":"true"}</option>
+            <option>
+ss@kvs:
+{
+    "showAll": "true"
+}
+            </option>
 
-            <option>ss@kvs:{"showValue":"clientId"}</option>
+            <option>
+ss@kvs:
+{
+    "showValue": "clientId"
+}
+            </option>
 
-            <option>ss@kvs:{"removeValue":"clientId"}</option>
+            <option>
+ss@kvs:
+{
+    "removeValue": "clientId"
+}
+            </option>
 
-            <option>ss@kvs:{"clear":"true"}</option>
+            <option>
+ss@kvs:
+{
+    "clear": "true"
+}
+            </option>
             
 
-            <option>ss@runSetting:{"filePath":"/Users/sassembla/Desktop/UnityFilter.txt"}</option>
+            <option>
+ss@runSetting:
+{
+    "path": "/Users/sassembla/Desktop/UnityFilter.txt"
+}
+            </option>
 
-            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}</option>
+            <option>
+ss@defineFilter:
+{
+    "name": "s",
+    "patterns": [
+        {
+            "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
+                "runnable": "eval:[\"sublime.message_dialog('groups[1]')\"]"
+            }
+        }
+    ]
+}           
+            </option>
 
-            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_eval:[\"sublime.message_dialog('groups[1]')\"]"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
+            <option>
+ss@defineFilter:
+{
+    "name": "s",
+    "patterns": [
+        {
+            "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
+                "runnable": {
+                    "eval": [
+                        "sublime.message_dialog('groups[1]')"
+                    ]
+                }
+            }
+        }
+    ]
+}
+->filter:
+{
+    "name": "s",
+    "source": "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"
+}
+            </option>
 
-            <option>ss@defineFilter:{"filterName":"s","filterPatterns":[{"-----CompilerOutput:-stdout--exitcode: (.+?)--.":[ "filterRunnable_showStatusMessage:{\"a\":\"b\""}"]}]}->filter:{"filterName":"s","filterSource":"-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"}</option>
+            <option>
+ss@defineFilter:
+{
+    "name": "s",
+    "patterns": [
+        {
+            "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
+                "runnable": {
+                    "showStatusMessage": {}
+                }
+            }
+        }
+    ]
+}
+->filter:
+{
+    "name": "s",
+    "source": "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"
+}
+            </option>
 
+            <option>
+ss@setListenerEvent:
+{
+    "on_modified": {
+        "outputMessage": {
+            "message": "text's been modified!"
+        }
+    }
+}
+            </option>
 
-            <option>ss@setListenerEvent:{"on_modified":{"outputMessage":{"message":"text's been modified!"}}}</option>
-
-            <option>ss@eval:["sublime.message_dialog('show dialog from WebSocket Client')"]</option>
+            <option>
+ss@eval:
+[
+    "sublime.message_dialog('show dialog from WebSocket Client')"
+]
+            </option>
             
-            <option>ss@eval:["self.getLineCount_And_SetToArray(active_view, 20, lines)","regions.append(active_view.line(lines[0]))","active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)"]</option>
+            <option>
+ss@eval:
+[
+    "self.getLineCount_And_SetToArray(active_view, 20, lines)",
+    "regions.append(active_view.line(lines[0]))",
+    "active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)"
+]
+            </option>
 
           </select>
         </div>
