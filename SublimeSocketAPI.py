@@ -42,7 +42,7 @@ class SublimeSocketAPI:
 		
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
-	def runAPI(self, command, params, client=None):
+	def runAPI(self, command, params=None, client=None):
 		evalResults = "empty"
   	
   	# python-switch
@@ -62,6 +62,10 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_KILLSERVER):
 				self.server.killServerSelf()
+				break
+
+			if case(SublimeSocketAPISettings.API_COLLECTVIEWS):
+				sublime.set_timeout(lambda: self.server.collectViews(), 0)
 				break
 
 			if case(SublimeSocketAPISettings.API_DETECTVIEW):

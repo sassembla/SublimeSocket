@@ -34,6 +34,8 @@ FILTER_RUNNABLE_DELIM	= "filterRunnable_"
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
 
+API_COLLECTVIEWS	= "collectViews"
+
 API_DETECTVIEW		= "detectView"
 DETECT_SOURCE			= "source"
 
@@ -44,7 +46,8 @@ VIEW_BUFFERID			= "bufferId"
 VIEW_BASENAME			= "basename"
 VIEW_VNAME				= "vname"
 VIEW_SELF					= "view"
-VIEW_EVENTS				= ["on_load"] #list of acceptable-view event names. 
+VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_modified", "ss_collect"] #list of acceptable-view renew event names.
+VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
 # API_RUNSHELL			= "runShell" # not so sweet

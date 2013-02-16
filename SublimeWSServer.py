@@ -37,6 +37,10 @@ class SublimeWSServer:
 		# start serverControlIntervals
 		# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
 
+		# load settings
+		sublime.set_timeout(lambda: self.loadSettings(), 0)
+
+
 		self.listening = True
 		while self.listening:
 			(conn, addr) = self.socket.accept()
@@ -44,7 +48,7 @@ class SublimeWSServer:
 			client = SublimeWSClient(self)
 			self.clients.append(client)
 
-			print 'Total Clients:', str(len(self.clients))
+			print 'Clients num:', str(len(self.clients))
 			
 			threading.Thread(target = client.handle, args = (conn,addr)).start()
 			
@@ -62,7 +66,14 @@ class SublimeWSServer:
 		# loop
 		sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
 		
-		
+
+	## load settings and run in mainThread
+	def loadSettings(self):
+		settingCommands = sublime.load_settings("SublimeSocket.sublime-settings").get('loadSettings')
+		for command in settingCommands:
+			self.api.runAPI(command)
+
+
 	## api 
 	def callAPI(self, apiData, clientId):
 		currentClient = [client for client in self.clients if client.clientId == clientId][0]
@@ -110,6 +121,13 @@ class SublimeWSServer:
 		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
 		return viewInfo
 
+
+	## collect current views
+	def collectViews(self):
+		for views in [window.views() for window in sublime.windows()]:
+			for view in views:
+				self.fireKVStoredItem("ss_collect", view)
+
 		
 	## input to sublime from server.
 	# fire event in KVS, if exist.
@@ -124,30 +142,63 @@ class SublimeWSServer:
 				params = commandAndParams[0][1]
 				self.api.runAPI(command, params)	
 
-		# viewCollector will react
-		if eventName in SublimeSocketAPISettings.VIEW_EVENTS:
+		# viewCollector "renew" will react
+		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
+			viewInstance = eventParam
+
+			if viewInstance.is_scratch():
+				# print "scratch buffer."
+				pass
+				
+			elif not viewInstance.file_name():
+				# print "no path"
+				pass
+
+			else:
+				viewDict = {}
+				
+				# update or append if exist.
+				if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
+					viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
+
+				# create
+				else:	
+					pass
+
+				filePath = viewInstance.file_name()
+
+				viewInfo = {}
+				viewInfo[SublimeSocketAPISettings.VIEW_ID] = viewInstance.id()
+				viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = viewInstance.buffer_id()
+				viewInfo[SublimeSocketAPISettings.VIEW_BASENAME] = os.path.basename(viewInstance.file_name())
+				viewInfo[SublimeSocketAPISettings.VIEW_VNAME] = viewInstance.name()
+				viewInfo[SublimeSocketAPISettings.VIEW_SELF] = viewInstance
+				
+				# add
+				viewDict[filePath] = viewInfo
+				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
+
+		# viewCollector "del" will react
+		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_DEL:
+			viewInstance = eventParam
 
 			viewDict = {}
 			
-			# update or append if exist.
+			# get view-dictionary if exist.
 			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 				viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
 			# create
 			else:	
-				pass
+				return
 
-			filePath = eventParam.file_name()
+			filePath = viewInstance.file_name()
 
-			viewInfo = {}
-			viewInfo[SublimeSocketAPISettings.VIEW_ID] = eventParam.id()
-			viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = eventParam.buffer_id()
-			viewInfo[SublimeSocketAPISettings.VIEW_BASENAME] = os.path.basename(eventParam.file_name())
-			viewInfo[SublimeSocketAPISettings.VIEW_VNAME] = eventParam.name()
-			viewInfo[SublimeSocketAPISettings.VIEW_SELF] = eventParam
-			
-			viewDict[filePath] = viewInfo
-			self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
+			# delete
+			if viewDict.has_key(filePath):
+				del viewDict[filePath]
+				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
+
 
 
 	## KVSControl
@@ -259,7 +310,8 @@ class KVS:
 	## set (override if exist already)
 	def setKeyValue(self, key, value):
 		if self.keyValueDict.has_key(key):
-			print "overwritten:", key, "as:", value
+			# print "overwritten:", key, "as:", value
+			pass
 
 		self.keyValueDict[key] = value
 		return self.keyValueDict[key]

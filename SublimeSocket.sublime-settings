@@ -4,6 +4,10 @@
 	"host" : "127.0.0.1",
 	"port" : 8823,
 
-	"preference browser" : "Safari.app"
 
+	"preference browser" : "Safari.app",
+
+	//run when server start
+	"loadSettings" : ["collectViews"]
+	
 }

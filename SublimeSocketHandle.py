@@ -4,7 +4,6 @@ import threading
 from SublimeWSServer import SublimeWSServer
 from OpenPreference import Openpreference
 
-
 # WebSocket server's thread
 thread = None
 
@@ -58,12 +57,23 @@ class SublimeSocketThread(threading.Thread):
 class CaptureEditing(sublime_plugin.EventListener):
   
   def on_modified(self, view):
-    self.update("on_modified")
+    self.update("on_modified", view)
+    
+  def on_new(self, view):
+    # print "new!"
+    self.update("on_new", view)
 
-  def on_load(self, view):
-    self.update("on_load", view)
+  def on_clone(self, view):
+    # print "clone!"
+    self.update("on_clone", view)
 
+  # def on_load(self, view):
+  #   print "load!"
+  #   self.update("on_load", view)
 
+  def on_close(self, view):
+    # print "close!"
+    self.update("on_close", view)
 
 
 
