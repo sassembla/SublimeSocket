@@ -27,50 +27,54 @@ ws.on('open', function() {
 	console.log("OPENED");
 	
 	var json = 
-{
-    "name": "unity",
-    "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
-    "patterns": [
-        {
-            ".ts.*[(]([0-9].*?),.*:(.*)": {
-                "runnable": {
-                    "showLine": {
-                        "line": "groups[1]",
-                        "message": "groups[2]"
+    {
+        "name": "unity",
+        "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
+        "patterns": [
+            {
+                ".ts.*[(]([0-9].*?),.*:(.*)": {
+                    "runnable": {
+                        "showLine": {
+                            "line": "groups[1]",
+                            "message": "groups[2]"
+                        }
                     }
                 }
-            }
-        },
-        {
-            "Compilation failed:(.*)": {
-                "runnable": {
-                    "showStatusMessage": {
-                        "message":"groups[0]"
+            },
+            {
+                "Compilation failed:(.*)": {
+                    "runnable": {
+                        "showStatusMessage": {
+                            "message":"groups[0]"
+                        }
                     }
                 }
-            }
-        },
-        {
-            "(^Mono: successfully reloaded assembly)": {
-                "runnable": {
-                    "showStatusMessage": {
-                        "message":"groups[0]"
+            },
+            {
+                "(^Mono: successfully reloaded assembly)": {
+                    "runnable": {
+                        "showStatusMessage": {
+                            "message":"groups[0]"
+                        }
                     }
-                }
-            }
-        }
-        
-    ]
-};
+                }            }
+        ]
+    };
+
 	ws.send("ss@defineFilter:"+JSON.stringify(json));
 });
 
 tail.on("line", function(message) {
 	console.log("original	"+message);
 
-	var json = '{"name":"unity","source":"' + message + '","debug":true}';
-	var parsed = JSON.parse(json);
-	apiModifiedData = "ss@detectView+filtering:" + JSON.stringify(parsed);
+	var json = 
+    {
+        "name": "unity",
+        "source": message,
+        "debug": true
+    };
+    
+	apiModifiedData = "ss@detectView+filtering:" + JSON.stringify(json);
 	
  	ws.send(apiModifiedData);
 });
