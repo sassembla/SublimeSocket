@@ -123,11 +123,9 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
-				print "呼ばれてる, param", param
-				view = self.server.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
-				print "view", view
+				view = self.server.currentTargetView()
 				
-				self.showLine(view, 10, "here is Message!!")
+				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 0)
 				break
 
 			if case():
@@ -240,7 +238,7 @@ class SublimeSocketAPI:
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
 
-	## filtering. matching -> run API with interval
+	## filtering. matching -> run API
 	def runFiltering(self, params, client):
 		# check filter name
 		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
@@ -273,62 +271,91 @@ class SublimeSocketAPI:
 			try:
 				(key, executablesDict) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				print "src is", src
+				# print "src is", src
 
 				# regexp match
 				searched = eval(src)
 				
 				if searched:
 					
-					print "searched.group()",searched.group()
-					print "searched.groups()",searched.groups()
+					# print "searched.group()",searched.group()
+					# print "searched.groups()",searched.groups()
 					
-					patternIndex = 0
+					
 					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
 
+					currentGroupSize = len(searched.groups())
+					patternIndex = 0
 					# run
 					for key in executables.keys():
 
 						# execute
 						command = key
-						print "command", command
+						# print "command", command
 						
 						paramsSource = executables[key]
-						print "paramsSource", paramsSource
+						# print "paramsSource", paramsSource
 
-						# if params are string-array, replace "groups[x]" to regexp-result value of the 'groups[x]'
+						params = None
+
+						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
 						if type(paramsSource) == list:
-							
 							# before	eval:["sublime.message_dialog('groups[0]')"]
 							# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
 							
-							size = len(searched.groups())
-
-							def replaceGroupsKeyword(param):
+							def replaceGroupsInListKeyword(param):
 								result = param
 								
-								for index in range(size):
-									isFound = re.findall(r'groups\[(' + str(index) + ')\]', result)
-									if isFound:
+								for index in range(currentGroupSize):
+									# replace all expression
+									if re.findall(r'groups\[(' + str(index) + ')\]', result):
 										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
 								return result
 								
-							# replace "groups[x]" expression to 'searched.groups()[x]' value
-							params = map(replaceGroupsKeyword, paramsSource)
+							# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
+							params = map(replaceGroupsInListKeyword, paramsSource)
 
 						elif type(paramsSource) == dict:
-							print "dict!"
+							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
+							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
 
+							def replaceGroupsInDictionaryKeyword(key):
+								result = paramsSource[key]
+								
+								for index in range(currentGroupSize):
+									# replace all expression
+									if re.findall(r'groups\[(' + str(index) + ')\]', result):
+										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+
+
+								return {key:result}
+
+							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
+							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
+							if 1 == len(params_dicts):
+								params = params_dicts[0]
+							else:
+								def reduceLeft(before, next):
+									# append all key-value pair.
+									for key in next.keys():
+										before[key] = next[key]
+									return before
+							
+								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
 						else:
 							print "unknown type"
 
 						# execute
 						self.runAPI(command, params)
 
-					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded")
+						# report
+						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
+
+					# increment filter-index for report
 					patternIndex = patternIndex + 1
+
 			except Exception as e:
-				return "filter error", str(e)
+				return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal
 		ret = str("".join(results))
@@ -361,8 +388,12 @@ class SublimeSocketAPI:
 		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 
 	def showLine(self, view, lineNum, comment):
-
-		pass
+		lines = []
+		regions = []
+		point = self.getLineCount_And_SetToArray(view, lineNum, lines)
+		regions.append(view.line(point))
+		view.add_regions(comment, regions, 'comment', 'dot', sublime.DRAW_OUTLINED)
+		print "OVER!!!"
 
 
 	## evaluate strings
@@ -557,6 +588,7 @@ class SublimeSocketAPI:
 
 		#store params to local param.
 		lineArray.append(pt)
+		return pt
 
 
 		

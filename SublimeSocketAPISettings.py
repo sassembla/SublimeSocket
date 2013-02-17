@@ -32,10 +32,13 @@ FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
 
 
-# ITERNAL_APIS
+# ITERNAL_APIS/
 API_I_SHOWSTATUS		= "showStatus"
-API_I_SHOWLINE			= "showLine"
 
+API_I_SHOWLINE			= "showLine"
+SHOWLINE_LINE				= "line"
+SHOWLINE_MESSAGE		= "message"
+# /ITERNAL_APIS
 
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.

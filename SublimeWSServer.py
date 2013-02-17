@@ -113,6 +113,11 @@ class SublimeWSServer:
 		print "NO hit", viewParam
 		return False
 
+	## return current targetted view or None.
+	def currentTargetView(self):
+		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW):
+			return self.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
+		return None
 
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
