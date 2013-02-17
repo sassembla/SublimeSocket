@@ -112,7 +112,7 @@ class SublimeWSEncoder:
 			for i in xrange(4):
 				mask_key += chr(int(math.floor(random.random() * 256)))
 
-		print 'mask_key:', repr(mask_key)
+		# print 'mask_key:', repr(mask_key)
 
 		length = len(data)
 

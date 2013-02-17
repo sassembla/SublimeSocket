@@ -131,13 +131,13 @@ class SublimeWSServer:
 	def collectViews(self):
 		for views in [window.views() for window in sublime.windows()]:
 			for view in views:
-				self.fireKVStoredItem("ss_collect", view)
+				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, view)
 
 		
 	## input to sublime from server.
 	# fire event in KVS, if exist.
 	def fireKVStoredItem(self, eventName, eventParam=None):
-
+		# print "fireKVStoredItem eventListen!", eventName,"eventParam",eventParam
 		# event listener adopt
 		if eventName in SublimeSocketAPISettings.LISTEN_EVENTS:
 			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_EVENTLISTENERS):
@@ -160,6 +160,7 @@ class SublimeWSServer:
 				pass
 
 			else:
+				# print "open then add!!", eventParam
 				viewDict = {}
 				
 				# update or append if exist.

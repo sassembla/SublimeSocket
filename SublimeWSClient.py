@@ -170,7 +170,7 @@ class SublimeWSClient:
 	#  @param bytes Bytes to send.
 	def send(self, bytes):
 		if not self.hasStatus('CLOSED'):
-			print 'SEND TO:', self.clientId, "/via", repr(self.conn), repr(bytes), '[', str(len(bytes)), ']'
+			# print 'SEND TO:', self.clientId, "/via", repr(self.conn), repr(bytes), '[', str(len(bytes)), ']'
 			lock = threading.Lock()
 			lock.acquire()
 			self.conn.send(bytes)

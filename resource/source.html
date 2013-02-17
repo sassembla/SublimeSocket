@@ -110,27 +110,66 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
+
+            <option>
+ss@defineFilter:
+{
+    "name": "unity",
+    "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
+    "patterns": [
+        {
+            ".ts.*[(]([0-9].*?),.*:(.*)": {
+                "runnable": {
+                    "showLine": {
+                        "line": "groups[1]",
+                        "message": "groups[2]"
+                    }
+                }
+            }
+        },
+        {
+            "Compilation failed:(.*)": {
+                "runnable": {
+                    "showStatusMessage": {
+                        "message":"groups[0]"
+                    }
+                }
+            }
+        },
+        {
+            "(^Mono: successfully reloaded assembly)": {
+                "runnable": {
+                    "showStatusMessage": {
+                        "message":"groups[0]"
+                    }
+                }
+            }
+        }
+        
+    ]
+}
+            </option>
             <option>
 ss@defineFilter:
 {
     "name": "showLine",
     "patterns": [
         {
-            "pa(tt)ern,([0-9].*)": {
+            ".py.([0-9].*?),.*:(.*)": {
                 "runnable": {
                     "showLine": {
-                        "line": "groups[2]",
-                        "message": "message is groups[1]"
+                        "line": "groups[1]",
+                        "message": "message is groups[2]"
                     }
                 }
             }
         }
     ]
 }
-->filter: 
+->detectView+filtering: 
 {
     "name": "showLine",
-    "source": "pattern,10"
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
 }
             </option>
 
@@ -161,7 +200,7 @@ ss@defineFilter:
 {
     "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
 }
-->filter:
+->filtering:
 {
     "name": "s",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
@@ -169,7 +208,7 @@ ss@defineFilter:
             </option>
 
             <option>
-ss@filter:
+ss@filtering:
 {
     "name": "s",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
@@ -263,7 +302,7 @@ ss@defineFilter:
         }
     ]
 }
-->filter:
+->filtering:
 {
     "name": "s",
     "source": "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"
@@ -284,7 +323,7 @@ ss@defineFilter:
         }
     ]
 }
-->filter:
+->filtering:
 {
     "name": "s",
     "source": "-----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll"

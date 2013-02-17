@@ -19,9 +19,8 @@ prefix_file = "(Filename:"
 prefix_error = "Error:";
 
 function filterAndGenerateAPI (data) {
-	var json = '{"filterName":"unity","filterSource":"' + data + '"}';
-	var parsed = JSON.parse(json);
-	return "ss@filter:" + JSON.stringify(parsed);
+	
+	return 
 }
 
 ws.on('open', function() {
@@ -35,7 +34,10 @@ ws.on('open', function() {
 
 tail.on("line", function(message) {
 	console.log("original	"+message);
-	apiModifiedData = filterAndGenerateAPI(message);
+
+	var json = '{"name":"unity","source":"' + message + '"}';
+	var parsed = JSON.parse(json);
+	apiModifiedData = "ss@detectView+filtering:" + JSON.stringify(parsed);
 	
  	ws.send(apiModifiedData);
 });

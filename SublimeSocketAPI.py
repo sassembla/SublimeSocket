@@ -32,14 +32,24 @@ class SublimeSocketAPI:
 
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
+
 			command_params = commandIdentityAndParams.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
 			command = command_params[0]
 
 			params = ''
 			if 1 < len(command_params):
-				params = json.loads(command_params[1])
-			self.runAPI(command, params, client)
-		
+				try:
+					params = json.loads(command_params[1])
+				except Exception as e:
+					print "JSON parse error", e
+					return
+
+			overlapCommandList = command.split(SublimeSocketAPISettings.API_OVERLAP_DELIM)
+			if 1 < len(overlapCommandList):
+				for command in overlapCommandList:
+					self.runAPI(command, params, client)
+			else:
+				self.runAPI(command, params, client)
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params=None, client=None):
@@ -95,7 +105,7 @@ class SublimeSocketAPI:
 				self.defineFilter(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_FILTER):
+			if case(SublimeSocketAPISettings.API_FILTERING):
 				# run filtering
 				result = self.runFiltering(params, client)
 				break
@@ -119,12 +129,15 @@ class SublimeSocketAPI:
 
 
 			# internal APIS
-			if case(SublimeSocketAPISettings.API_I_SHOWSTATUS):
+			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
+				sublime.set_timeout(lambda: self.showStatusMessage(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE]), 0)
+
+				
 				break
 
 			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
 				view = self.server.currentTargetView()
-				
+
 				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 0)
 				break
 
@@ -234,9 +247,16 @@ class SublimeSocketAPI:
 		# key = filterName, value = the match patterns of filter.
 		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
-
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
+		
+
+		# EXPERIMENTAL. clientside should be send full-path!
+		if params.has_key(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH):
+			filterNameAndFILTER_DETECTPREFIXPATHArray = {}
+			filterNameAndFILTER_DETECTPREFIXPATHArray[filterName] = params[SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH]
+			self.server.setKV(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH, filterNameAndFILTER_DETECTPREFIXPATHArray)
+
 
 	## filtering. matching -> run API
 	def runFiltering(self, params, client):
@@ -267,7 +287,7 @@ class SublimeSocketAPI:
 			# Compilation failed: 1 error(s), 0 warnings
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
-			print "pattern is ", pattern
+			# print "pattern is ", pattern
 			try:
 				(key, executablesDict) = pattern.items()[0]
 				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
@@ -278,8 +298,8 @@ class SublimeSocketAPI:
 				
 				if searched:
 					
-					# print "searched.group()",searched.group()
-					# print "searched.groups()",searched.groups()
+					print "searched.group()",searched.group()
+					print "searched.groups()",searched.groups()
 					
 					
 					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
@@ -355,6 +375,7 @@ class SublimeSocketAPI:
 					patternIndex = patternIndex + 1
 
 			except Exception as e:
+				print "filter error", str(e)
 				return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal
@@ -372,7 +393,8 @@ class SublimeSocketAPI:
 		if self.server.viewDict():
 			viewSourceStr = params[SublimeSocketAPISettings.DETECT_SOURCE]
 			viewKeys = self.server.viewDict().keys()
-
+			
+			# straight full match in viewSourceStr. "/aaa/bbb/ccc.d something..." vs "/aaa/bbb/ccc.d"
 			for viewKey in viewKeys:
 				if re.findall(viewKey, viewSourceStr):
 
@@ -380,20 +402,47 @@ class SublimeSocketAPI:
 					paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
 
 					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
+					return
+
+			# use _detectPrefixPath if exist(EXPERIMENTAL)
+			if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
+				filterDict = self.server.kvs.get(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH)
+				for prefix in filterDict.values():
+					for viewKey in viewKeys:
+						prefixRemovedViewKey = viewKey.replace(prefix, "")
+						if re.findall(prefixRemovedViewKey, viewSourceStr):
+
+							paramDict = {}
+							paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
+
+							self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
+							return
+
+		
+		# if client:
+		# 	message = "no view found opening in SublimeText. please open:"+str(viewSourceStr)
+		# 	buf = self.encoder.text(message, mask=0)
+		# 	client.send(buf)
+		# print "error:", message
 
 
 	### APIs for shortcut ST2-Display
-	def showStatusMessage(self, message):
-		# stack messages then show sequently.
-		sublime.set_timeout(lambda: sublime.status_message(message), 0)
 
+
+	## show message on ST
+	def showStatusMessage(self, message):
+		sublime.status_message(message)
+		
+
+	## show line on ST
 	def showLine(self, view, lineNum, comment):
-		lines = []
-		regions = []
-		point = self.getLineCount_And_SetToArray(view, lineNum, lines)
-		regions.append(view.line(point))
-		view.add_regions(comment, regions, 'comment', 'dot', sublime.DRAW_OUTLINED)
-		print "OVER!!!"
+		print "showLine view is", view
+		if view:
+			lines = []
+			regions = []
+			point = self.getLineCount_And_SetToArray(view, lineNum, lines)
+			regions.append(view.line(point))
+			view.add_regions(comment, regions, 'comment', 'dot', sublime.DRAW_OUTLINED)
 
 
 	## evaluate strings
@@ -573,6 +622,7 @@ class SublimeSocketAPI:
 		
 	## change lineCount to wordCount that is, includes the target-line index at SublimeText.
 	def getLineCount_And_SetToArray(self, view, lineCount, lineArray):
+		assert view is not None, "view should not be None."
 		#check the namespace of inputted param
 		len(lineArray)
 
@@ -583,7 +633,6 @@ class SublimeSocketAPI:
 		if line < 0:
 			lines, _ = view.rowcol(view.size())
 			line = lines + line + 1
-
 		pt = view.text_point(line, 0)
 
 		#store params to local param.

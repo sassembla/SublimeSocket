@@ -67,9 +67,9 @@ class CaptureEditing(sublime_plugin.EventListener):
     # print "clone!"
     self.update("on_clone", view)
 
-  # def on_load(self, view):
-  #   print "load!"
-  #   self.update("on_load", view)
+  def on_load(self, view):
+    # print "load!"
+    self.update("on_load", view)
 
   def on_close(self, view):
     # print "close!"

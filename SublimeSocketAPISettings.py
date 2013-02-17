@@ -1,20 +1,37 @@
 
 #API for Input to ST2 through WebSocket
 
-### COMMAND = COMMAND_NAME : JSON_EXPRESSION
-### COMMANDS = COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME : JSON_EXPRESSION -> ...
+### COMMAND		=		COMMAND_NAME : JSON_EXPRESSION
+### COMMANDS	=		COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME : JSON_EXPRESSION -> ...
+### COMMANDS	=		COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME + COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> ...
+
 
 API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
 
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
+API_OVERLAP_DELIM	= "+"					# overlap commands. share parameters with multiple APIs.	
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
+# SublimeSocket internal event definition
+SS_EVENT_COLLECT = "ss_collect"
+
+# internal APIs/
+API_I_SHOWSTATUSMESSAGE		= "showStatusMessage"
+SHOWSTATUSMESSAGE_MESSAGE	= "message"
+
+API_I_SHOWLINE			= "showLine"
+SHOWLINE_LINE				= "line"
+SHOWLINE_MESSAGE		= "message"
+# /internal APIs
+
+
+# public APIs
 API_RUNSETTING		= "runSetting"
 RUNSETTING_FILEPATH	= "path"
 
-API_INPUTIDENTITY = "inputIdentity"
+API_INPUTIDENTITY = "inputIdentity" 
 API_KILLSERVER		=	"killServer"
 
 API_KEYVALUESTORE	= "kvs"
@@ -25,20 +42,12 @@ KVS_CLEAR					= "clear"
 
 API_DEFINEFILTER	= "defineFilter"
 FILTER_PATTERNS		= "patterns"
+FILTER_DETECTPREFIXPATH = "_detectPrefixPath"#TESTING. not sweet.
 
-API_FILTER				= "filter"
+API_FILTERING			= "filtering"
 FILTER_NAME				= "name"
 FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
-
-
-# ITERNAL_APIS/
-API_I_SHOWSTATUS		= "showStatus"
-
-API_I_SHOWLINE			= "showLine"
-SHOWLINE_LINE				= "line"
-SHOWLINE_MESSAGE		= "message"
-# /ITERNAL_APIS
 
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
@@ -55,7 +64,7 @@ VIEW_BUFFERID			= "bufferId"
 VIEW_BASENAME			= "basename"
 VIEW_VNAME				= "vname"
 VIEW_SELF					= "view"
-VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_modified", "ss_collect"] #list of acceptable-view renew event names.
+VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_COLLECT] #list of acceptable-view renew event names.
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
@@ -75,7 +84,5 @@ DICT_VIEWS				= "DICT_VIEWS"
 DICT_FILTERS			= "DICT_FILTERS"
 DICT_EVENTLISTENERS	= "DICT_EVENTLISTENERS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
-
-
 
 
