@@ -1,5 +1,5 @@
 # SublimeSocket
-###### version 0.1.2
+###### version 0.1.3
 WebSocket server for ST2 with In/Out functions to control SublimeText API.
 
 
@@ -9,6 +9,7 @@ WebSocket server for ST2 with In/Out functions to control SublimeText API.
 
 [Work with Unity](http://www.youtube.com/watch?v=JSdpa_LXa8c&feature=youtu.be)
 
+[Work with Unity part2](http://www.youtube.com/watch?v=JSdpa_LXa8c&feature=youtu.be)
 
 ###from CommandPalette >  
 ##### SublimeSocket: on
@@ -25,7 +26,7 @@ Please restart ST2 manually. or use preferences's kill button.
 
 ###Purpose/Motivation
 * Enable control ST2 from other process, browser, websocket clients.
-* Remove all heavy-process running with ST2. More light, little power.
+* Remove all heavy-process running with ST2. More light, less energy.
 
 
 ###ToDo

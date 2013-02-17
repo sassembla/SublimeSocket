@@ -15,6 +15,8 @@ import SublimeSocketAPISettings
 import re
 
 from PythonSwitch import PythonSwitch
+import uuid
+
 
 ## API Parse the action
 class SublimeSocketAPI:
@@ -131,14 +133,16 @@ class SublimeSocketAPI:
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
 				sublime.set_timeout(lambda: self.showStatusMessage(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE]), 0)
-
-				
 				break
 
 			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
 				view = self.server.currentTargetView()
 
 				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 0)
+				break
+
+			if case(SublimeSocketAPISettings.API_I_ERASEALLREGION):
+				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
 				break
 
 			if case():
@@ -298,10 +302,10 @@ class SublimeSocketAPI:
 				
 				if searched:
 					
-					print "searched.group()",searched.group()
-					print "searched.groups()",searched.groups()
-					
-					
+					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
+						print "searched.group()",searched.group()
+						print "searched.groups()",searched.groups()
+											
 					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
 
 					currentGroupSize = len(searched.groups())
@@ -426,8 +430,13 @@ class SublimeSocketAPI:
 		# print "error:", message
 
 
-	### APIs for shortcut ST2-Display
 
+
+
+
+
+
+	########## APIs for shortcut ST2-Display ##########
 
 	## show message on ST
 	def showStatusMessage(self, message):
@@ -436,13 +445,22 @@ class SublimeSocketAPI:
 
 	## show line on ST
 	def showLine(self, view, lineNum, comment):
-		print "showLine view is", view
+		# print "showLine view is", view
 		if view:
 			lines = []
 			regions = []
 			point = self.getLineCount_And_SetToArray(view, lineNum, lines)
 			regions.append(view.line(point))
-			view.add_regions(comment, regions, 'comment', 'dot', sublime.DRAW_OUTLINED)
+			
+			identity = str(uuid.uuid4())
+			# showLineDict = {}
+
+			view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
+
+	# erase all regions of view/condition
+	def eraseAllRegion(self):
+		print "eraseAllRegion: not yet applied"
+
 
 
 	## evaluate strings
@@ -628,7 +646,8 @@ class SublimeSocketAPI:
 
 		# Convert from 1 based to a 0 based line number
 		line = int(lineCount) - 1
-		print "line	", line
+		# print "line	", line
+
 		# Negative line numbers count from the end of the buffer
 		if line < 0:
 			lines, _ = view.rowcol(view.size())

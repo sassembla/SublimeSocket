@@ -110,45 +110,6 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
-
-            <option>
-ss@defineFilter:
-{
-    "name": "unity",
-    "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
-    "patterns": [
-        {
-            ".ts.*[(]([0-9].*?),.*:(.*)": {
-                "runnable": {
-                    "showLine": {
-                        "line": "groups[1]",
-                        "message": "groups[2]"
-                    }
-                }
-            }
-        },
-        {
-            "Compilation failed:(.*)": {
-                "runnable": {
-                    "showStatusMessage": {
-                        "message":"groups[0]"
-                    }
-                }
-            }
-        },
-        {
-            "(^Mono: successfully reloaded assembly)": {
-                "runnable": {
-                    "showStatusMessage": {
-                        "message":"groups[0]"
-                    }
-                }
-            }
-        }
-        
-    ]
-}
-            </option>
             <option>
 ss@defineFilter:
 {
@@ -160,7 +121,8 @@ ss@defineFilter:
                     "showLine": {
                         "line": "groups[1]",
                         "message": "message is groups[2]"
-                    }
+                    },
+                    "eraseAllRegion":{}
                 }
             }
         }

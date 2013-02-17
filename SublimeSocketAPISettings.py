@@ -24,6 +24,10 @@ SHOWSTATUSMESSAGE_MESSAGE	= "message"
 API_I_SHOWLINE			= "showLine"
 SHOWLINE_LINE				= "line"
 SHOWLINE_MESSAGE		= "message"
+
+API_I_ERASEALLREGION	= "eraseAllRegion"
+# EXPERIMENTAL
+
 # /internal APIs
 
 
@@ -48,6 +52,7 @@ API_FILTERING			= "filtering"
 FILTER_NAME				= "name"
 FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
+FILTER_DEBUG			= "debug"
 
 API_SETLISTENEREVENT	= "setListenerEvent"
 LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
