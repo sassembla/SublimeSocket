@@ -1,0 +1,41 @@
+//Unity filter
+//v 0.1.0
+
+defineFilter:
+{
+    "name": "unity",
+    "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
+    "patterns": [
+        {
+            ".ts.*[(]([0-9].*?),.*:(.*)": {
+                "runnable": {
+                    "showLine": {
+                        "line": "groups[1]",
+                        "message": "groups[2]"
+                    }
+                }
+            }
+        },
+        {
+            "Compilation failed:(.*)": {
+                "runnable": {
+                    "showStatusMessage": {
+                        "message":"groups[0]"
+                    }
+                }
+            }
+        },
+        {
+            "(^Mono: successfully reloaded assembly)": {
+                "runnable": {
+                    "showStatusMessage": {
+                        "message":"groups[0]"
+                    }
+                }
+            }
+        }
+    ]
+}
+->
+eval:
+["sublime.message_dialog('Unity filter setting over.')"]
