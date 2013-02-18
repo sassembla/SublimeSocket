@@ -32,7 +32,7 @@ ws.on('open', function() {
         "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
         "patterns": [
             {
-                ".ts.*[(]([0-9].*?),.*:(.*)": {
+                "[(]([0-9].*?),.*:(.*)": {
                     "runnable": {
                         "showLine": {
                             "line": "groups[1]",
@@ -57,7 +57,8 @@ ws.on('open', function() {
                             "message":"groups[0]"
                         }
                     }
-                }            }
+                }         
+           }
         ]
     };
 
