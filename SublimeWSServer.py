@@ -134,6 +134,21 @@ class SublimeWSServer:
 				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, view)
 
 		
+	## store region to viewDict-view in KVS
+	def storeRegionToView(self, view, lineNum, comment, identity):
+		key = view.file_name()
+		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
+
+		region = {}
+		region[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
+		region[SublimeSocketAPISettings.REGION_COMMENT] = comment
+		
+		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
+			specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS] = {}
+
+		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = region
+
+
 	## input to sublime from server.
 	# fire event in KVS, if exist.
 	def fireKVStoredItem(self, eventName, eventParam=None):

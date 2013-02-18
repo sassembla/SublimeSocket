@@ -144,6 +144,10 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
 				break
 
+			if case(SublimeSocketAPISettings.API_STOREREGION):
+				assert False, "storeRegion cannot call through API."
+				break
+
 			if case():
 				print "unknown command", command
 				break
@@ -300,7 +304,6 @@ class SublimeSocketAPI:
 				searched = eval(src)
 				
 				if searched:
-					
 					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
 						print "searched.group()",searched.group()
 						print "searched.groups()",searched.groups()
@@ -320,7 +323,6 @@ class SublimeSocketAPI:
 						# print "paramsSource", paramsSource
 
 						params = None
-
 						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
 						if type(paramsSource) == list:
 							# before	eval:["sublime.message_dialog('groups[0]')"]
@@ -337,7 +339,7 @@ class SublimeSocketAPI:
 								
 							# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
 							params = map(replaceGroupsInListKeyword, paramsSource)
-
+							
 						elif type(paramsSource) == dict:
 							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
 							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
@@ -346,16 +348,18 @@ class SublimeSocketAPI:
 								result = paramsSource[key]
 								
 								for index in range(currentGroupSize):
+									
 									# replace all expression
 									if re.findall(r'groups\[(' + str(index) + ')\]', result):
 										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
 
-
 								return {key:result}
-
 							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
-							if 1 == len(params_dicts):
+
+							if not params_dicts:
+								pass
+							elif 1 == len(params_dicts):
 								params = params_dicts[0]
 							else:
 								def reduceLeft(before, next):
@@ -365,18 +369,18 @@ class SublimeSocketAPI:
 									return before
 							
 								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
+							
 						else:
 							print "unknown type"
 
 						# execute
 						self.runAPI(command, params)
-
 						# report
 						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
-
+						
 					# increment filter-index for report
 					patternIndex = patternIndex + 1
-
+					
 			except Exception as e:
 				print "filter error", str(e)
 				return "filter error", str(e), "no:" + str(patternIndex)
@@ -452,11 +456,20 @@ class SublimeSocketAPI:
 			regions.append(view.line(point))
 			
 			identity = str(uuid.uuid4())
-			# showLineDict = {}
-
+			
+			# add to viewDict
+			self.storeRegion(view, lineNum, comment, identity)
+			
 			view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
 
-	# erase all regions of view/condition
+
+	### region control
+
+	## store region to server-viewDict
+	def storeRegion(self, view, lineNum, comment, identity):
+		self.server.storeRegionToView(view, lineNum, comment, identity)
+		
+	## erase all regions of view/condition
 	def eraseAllRegion(self):
 		print "eraseAllRegion: not yet applied"
 

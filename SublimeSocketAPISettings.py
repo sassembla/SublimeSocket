@@ -73,6 +73,10 @@ VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_CO
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
+API_STOREREGION		= "storeRegion"
+REGION_LINENUM		= "lineNum"
+REGION_COMMENT		= "comment"
+
 # API_RUNSHELL			= "runShell" # not so sweet
 
 API_OUTPUTMESSAGE	= "outputMessage"
@@ -89,5 +93,7 @@ DICT_VIEWS				= "DICT_VIEWS"
 DICT_FILTERS			= "DICT_FILTERS"
 DICT_EVENTLISTENERS	= "DICT_EVENTLISTENERS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
+
+SUBDICT_REGIONS		= "SUBDICT_REGIONS"
 
 
