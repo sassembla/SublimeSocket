@@ -5,7 +5,6 @@ import SublimeWSSettings
 import json
 
 from SublimeWSEncoder import SublimeWSEncoder
-from SublimeSocketInternalAPI import SublimeSocketInternalAPI
 import SublimeSocketAPISettings
 
 # import subprocess
