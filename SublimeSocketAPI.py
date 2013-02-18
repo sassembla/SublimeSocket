@@ -471,8 +471,8 @@ class SublimeSocketAPI:
 		
 	## erase all regions of view/condition
 	def eraseAllRegion(self):
-		print "eraseAllRegion: not yet applied"
-
+		self.server.deleteAllRegionsInAllView()
+		
 
 
 	## evaluate strings
