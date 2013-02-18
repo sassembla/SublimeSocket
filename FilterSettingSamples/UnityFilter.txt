@@ -1,11 +1,22 @@
 //Unity filter
-//v 0.1.1
+//v 0.5.0
 
 defineFilter:
 {
     "name": "unity",
     "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
     "patterns": [
+        
+        {
+            "Compilation failed:(.*)": {
+                "runnable": {
+                    "eraseAllRegion": {},
+                    "showStatusMessage": {
+                        "message":"groups[0]"
+                    }
+                }
+            }
+        },
         {
             "[(]([0-9].*?),.*:(.*)": {
                 "runnable": {
@@ -17,17 +28,9 @@ defineFilter:
             }
         },
         {
-            "Compilation failed:(.*)": {
-                "runnable": {
-                    "showStatusMessage": {
-                        "message":"groups[0]"
-                    }
-                }
-            }
-        },
-        {
             "(^Mono: successfully reloaded assembly)": {
                 "runnable": {
+                    "eraseAllRegion": {},
                     "showStatusMessage": {
                         "message":"groups[0]"
                     }

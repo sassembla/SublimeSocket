@@ -137,7 +137,7 @@ class SublimeSocketAPI:
 			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
 				view = self.server.currentTargetView()
 
-				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 0)
+				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 1)
 				break
 
 			if case(SublimeSocketAPISettings.API_I_ERASEALLREGION):

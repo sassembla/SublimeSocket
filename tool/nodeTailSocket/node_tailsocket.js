@@ -44,6 +44,7 @@ ws.on('open', function() {
             {
                 "Compilation failed:(.*)": {
                     "runnable": {
+                        "eraseAllRegion": {},
                         "showStatusMessage": {
                             "message":"groups[0]"
                         }
@@ -53,6 +54,7 @@ ws.on('open', function() {
             {
                 "(^Mono: successfully reloaded assembly)": {
                     "runnable": {
+                        "eraseAllRegion": {},
                         "showStatusMessage": {
                             "message":"groups[0]"
                         }

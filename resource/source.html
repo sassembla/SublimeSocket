@@ -118,11 +118,11 @@ ss@defineFilter:
         {
             ".py.([0-9].*?),.*:(.*)": {
                 "runnable": {
+                    "eraseAllRegion": {},
                     "showLine": {
                         "line": "groups[1]",
                         "message": "message is groups[0]"
-                    },
-                    "eraseAllRegion":{}
+                    }
                 }
             }
         }
@@ -131,7 +131,12 @@ ss@defineFilter:
 ->detectView+filtering: 
 {
     "name": "showLine",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+}
+->detectView+filtering: 
+{
+    "name": "showLine",
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
 }
             </option>
 
