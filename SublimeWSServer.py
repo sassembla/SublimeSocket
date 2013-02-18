@@ -148,28 +148,21 @@ class SublimeWSServer:
 
 		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = region
 
+
 	## delete all regions in all view 
 	def deleteAllRegionsInAllView(self):
-		# DICT_VIEWS の、　SUBDICT_REGIONS の、　key を合成する
 		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
-		def getIdentity(valueDict):
+		def deleteRegions(valueDict):
 			if valueDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
+				viewInstance = valueDict[SublimeSocketAPISettings.VIEW_SELF]
 				regionsDict = valueDict[SublimeSocketAPISettings.SUBDICT_REGIONS]
 				if regionsDict:
-					return regionsDict.keys()
+					for regionIdentity in regionsDict.keys():
+						viewInstance.erase_regions(regionIdentity)
 
-		identitiesWithNone = map(getIdentity, viewDict.values())
-		# distinct "None"
-		while None in identitiesWithNone: identitiesWithNone.remove(None)
+		map(deleteRegions, viewDict.values())
 
-		def expandLeft(before, next):
-			# expand all list
-			before.expand(next)
-			return before
-		
-		identities = reduce(expandLeft, identitiesWithNone[1:], identitiesWithNone[0])
-		return identities
 
 	## input to sublime from server.
 	# fire event in KVS, if exist.
