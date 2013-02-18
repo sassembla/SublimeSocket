@@ -67,11 +67,16 @@ TimerEvent ほか、SS上で動くもの
 	→専用の枠を持つ事で対応。必要であればinputグループみたいなのでストリームをわけるとかか。
 
 
+	リセット機構
+	viewに乗っているエラーを更新する。
+	
+	マウスオンでメッセージを表示したり候補に出したりする
+
 
 DOC:
 
 SublimeSocketAPI -Sequence
-	sublimesocket @ API : {JSONPARAM} -> API2 : {JSONPARAM} -> API3 : {JSONPARAM}>,,
+	sublimesocket @ API : {JSONPARAM} -> API2 : {JSONPARAM} -> API3 : {JSONPARAM}->,,
 	
 
 OutputAPIの整理
