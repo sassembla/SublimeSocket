@@ -204,6 +204,9 @@ class SublimeWSServer:
 				filePath = viewInstance.file_name()
 
 				viewInfo = {}
+				if viewDict.has_key(filePath):
+					viewInfo = viewDict[filePath]
+
 				viewInfo[SublimeSocketAPISettings.VIEW_ID] = viewInstance.id()
 				viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = viewInstance.buffer_id()
 				viewInfo[SublimeSocketAPISettings.VIEW_BASENAME] = os.path.basename(viewInstance.file_name())
