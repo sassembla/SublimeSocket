@@ -162,7 +162,7 @@ class SublimeWSServer:
 
 		regionDict = {}
 		regionDict[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
-		regionDict[SublimeSocketAPISettings.REGION_COMMENT] = message
+		regionDict[SublimeSocketAPISettings.REGION_MESSAGE] = message
 		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
@@ -293,7 +293,7 @@ class SublimeWSServer:
 					regionInfo = regionsDicts[key]
 
 					target = params[SublimeSocketAPISettings.PLAYREGIONS_TARGET]
-					message = regionInfo[SublimeSocketAPISettings.REGION_COMMENT]
+					message = regionInfo[SublimeSocketAPISettings.REGION_MESSAGE]
 					
 					if self.clients.has_key(target):
 						buf = self.api.encoder.text(str(message), mask=0)

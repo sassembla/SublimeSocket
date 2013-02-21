@@ -87,7 +87,7 @@ TARGETTED_VIEW		= "targettedView"
 
 API_STOREREGION		= "storeRegion"
 REGION_LINENUM		= "lineNum"
-REGION_COMMENT		= "comment"
+REGION_MESSAGE		= "message"
 REGION_SELF				= "region"
 
 # API_RUNSHELL			= "runShell" # not so sweet
