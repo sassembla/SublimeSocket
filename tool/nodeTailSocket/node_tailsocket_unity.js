@@ -11,7 +11,11 @@ tail = new Tail("/Users/sassembla/Library/Logs/Unity/Editor.log");
 ws.on('open', function() {
 	console.log("OPENED");
 	
-	var json = 
+    var inputIdentityJSON = 
+    {
+        "id" : "nodetail"
+    }
+	var defineFilterJSON = 
     {
         "name": "unity",
         "patterns": [
@@ -47,8 +51,26 @@ ws.on('open', function() {
            }
         ]
     };
+    var setReactorJSON = 
+    {
+        "target": "nodetail",
+        "event": "on_selection_modified",
+        "selector": {
+            "playRegions": {
+                "view": "will be replace to specific view",
+                "target": "nodetail",
+                "showatstatus":true
+            }
+        },
+        "replacefromto": {
+            "view": "view"
+        },
+        "interval": 100
+    };
 
-	ws.send("ss@defineFilter:"+JSON.stringify(json));
+	ws.send("ss@inputIdentity:"+JSON.stringify(inputIdentityJSON)
+        +"->defineFilter:"+JSON.stringify(defineFilterJSON)
+        +"->setReactor:"+JSON.stringify(setReactorJSON));
 });
 
 tail.on("line", function(message) {

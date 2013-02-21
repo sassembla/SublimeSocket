@@ -1,7 +1,13 @@
 //Unity filter
 //v 1.0.0
 
-defineFilter:
+
+inputIdentity:
+{
+    "id":"UnityEditor"
+}
+
+->defineFilter:
 {
     "name": "unity",
     "patterns": [
@@ -37,5 +43,23 @@ defineFilter:
         }
     ]
 }
+
+->setReactor:
+{
+    "target": "UnityEditor",
+    "event": "on_selection_modified",
+    "selector": {
+        "playRegions": {
+            "view": "will be replace to specific view",
+            "target": "UnityEditor",
+            "showatstatus":true
+        }
+    },
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100
+}
+
 ->eval:
 ["sublime.message_dialog('Unity filter setting over.')"]
