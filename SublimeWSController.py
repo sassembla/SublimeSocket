@@ -41,7 +41,8 @@ class SublimeWSController:
 				#check if API or not
 				if (self.isApi(data)):
 					headerAndParam = data.split(SublimeSocketAPISettings.API_DEFINE_DELIM, 1)
-					print "headerAndParam", headerAndParam
+
+					# print "headerAndParam", headerAndParam
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
 				break
 

@@ -156,13 +156,13 @@ class SublimeWSServer:
 
 	
 	## store region to viewDict-view in KVS
-	def storeRegionToView(self, view, lineNum, comment, identity, region):
+	def storeRegionToView(self, view, lineNum, message, identity, region):
 		key = view.file_name()
 		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
 
 		regionDict = {}
 		regionDict[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
-		regionDict[SublimeSocketAPISettings.REGION_COMMENT] = comment
+		regionDict[SublimeSocketAPISettings.REGION_MESSAGE] = message
 		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
@@ -238,7 +238,9 @@ class SublimeWSServer:
 				def runForeachAPI(command):
 					params = selector[command]
 
-					# replace parameters if flag exist
+					# print "params", params, "command", command
+
+					# replace parameters if key 'replace' exist
 					if reactorDict.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
 						for fromKey in reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO].keys():
 							toKey = reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO][fromKey]
@@ -248,7 +250,7 @@ class SublimeWSServer:
 
 					self.api.runAPI(command, params)
 
-				[runForeachAPI(x) for x in selector.keys()]
+				[runForeachAPI(command) for command in selector.keys()]
 				
 			# continue
 			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
@@ -256,15 +258,19 @@ class SublimeWSServer:
 
 	## play the event if params matches the regions that sink in view
 	def playRegionsWithMatch(self, params):
-		
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 			viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
-			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_VIEW), "playRegionsWithMatch requires 'view' param"
-			
+			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_VIEW), "playRegionsWithMatch require 'view' param"
+			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_TARGET), "playRegionsWithMatch requre 'target' param"
+
 			# specify regions that are selected.
 			viewInstance = params[SublimeSocketAPISettings.PLAYREGIONS_VIEW]
 			viewId = viewInstance.file_name()
+
+			# return if view not exist(include ST's console)
+			if not viewDict.has_key(viewId):
+				return
 
 			viewInfoDict = viewDict[viewId]
 			if viewInfoDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
@@ -285,17 +291,19 @@ class SublimeWSServer:
 				# play regions
 				def playRegionInfo(key):
 					regionInfo = regionsDicts[key]
-					comment = regionInfo[SublimeSocketAPISettings.REGION_COMMENT]
+
+					target = params[SublimeSocketAPISettings.PLAYREGIONS_TARGET]
+					message = regionInfo[SublimeSocketAPISettings.REGION_MESSAGE]
 					
-					print "clients", self.clients
-					# if client:
-					# 	buf = self.api.encoder.text("test", mask=0)
-					# 	client.send(buf)
+					if self.clients.has_key(target):
+						buf = self.api.encoder.text(str(message), mask=0)
+						self.clients[target].send(buf)
+
+					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_SHOWATSTATUS):
+						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, )
 
 				[playRegionInfo(region) for region in regionIdentitiesList]
 				
-
-
 
 	## input to sublime from server.
 	# fire event in KVS, if exist.
