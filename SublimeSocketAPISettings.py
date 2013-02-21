@@ -66,6 +66,8 @@ FILTER_DEBUG			= "debug"
 
 API_PLAYREGIONS		= "playRegions"
 PLAYREGIONS_VIEW	= "view"
+PLAYREGIONS_TARGET = "target"
+PLAYREGIONS_SHOWATSTATUS = "showatstatus"
 
 API_COLLECTVIEWS	= "collectViews"
 

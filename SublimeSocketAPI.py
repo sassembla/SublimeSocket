@@ -431,27 +431,19 @@ class SublimeSocketAPI:
 					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
 					return
 
-			# use _detectPrefixPath if exist(EXPERIMENTAL)
-			if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
-				filterDict = self.server.kvs.get(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH)
-				for prefix in filterDict.values():
-					for viewKey in viewKeys:
-						prefixRemovedViewKey = viewKey.replace(prefix, "")
-						if re.findall(prefixRemovedViewKey, viewSourceStr):
+			# # use _detectPrefixPath if exist(EXPERIMENTAL)
+			# if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
+			# 	filterDict = self.server.kvs.get(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH)
+			# 	for prefix in filterDict.values():
+			# 		for viewKey in viewKeys:
+			# 			prefixRemovedViewKey = viewKey.replace(prefix, "")
+			# 			if re.findall(prefixRemovedViewKey, viewSourceStr):
 
-							paramDict = {}
-							paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
+			# 				paramDict = {}
+			# 				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
 
-							self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
-							return
-
-		
-		# if client:
-		# 	message = "no view found opening in SublimeText. please open:"+str(viewSourceStr)
-		# 	buf = self.encoder.text(message, mask=0)
-		# 	client.send(buf)
-		# print "error:", message
-
+			# 				self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
+			# 				return
 
 
 
