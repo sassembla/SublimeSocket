@@ -4,7 +4,6 @@
 defineFilter:
 {
     "name": "unity",
-    "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
     "patterns": [
         
         {

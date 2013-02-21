@@ -56,7 +56,7 @@ KVS_CLEAR					= "clear"
 
 API_DEFINEFILTER	= "defineFilter"
 FILTER_PATTERNS		= "patterns"
-FILTER_DETECTPREFIXPATH = "_detectPrefixPath"#TESTING. not sweet.
+
 
 API_FILTERING			= "filtering"
 FILTER_NAME				= "name"

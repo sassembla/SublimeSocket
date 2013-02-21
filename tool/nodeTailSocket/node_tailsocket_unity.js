@@ -29,7 +29,6 @@ ws.on('open', function() {
 	var json = 
     {
         "name": "unity",
-        "_detectPrefixPath": "/Users/sassembla/Desktop/PanzaerStrike/",
         "patterns": [
             {
                 "[(]([0-9].*?),.*:(.*)": {

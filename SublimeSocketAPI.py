@@ -273,13 +273,6 @@ class SublimeSocketAPI:
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
 		
 
-		# EXPERIMENTAL. clientside should be send full-path!
-		if params.has_key(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH):
-			filterNameAndFILTER_DETECTPREFIXPATHArray = {}
-			filterNameAndFILTER_DETECTPREFIXPATHArray[filterName] = params[SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH]
-			self.server.setKV(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH, filterNameAndFILTER_DETECTPREFIXPATHArray)
-
-
 	## filtering. matching -> run API
 	def runFiltering(self, params, client):
 		# check filter name
@@ -419,9 +412,14 @@ class SublimeSocketAPI:
 	def detectViewInfo(self, params, client=None):
 		if self.server.viewDict():
 			viewSourceStr = params[SublimeSocketAPISettings.DETECT_SOURCE]
+			
+			# remove empty and 1 length string pattern.
+			if not viewSourceStr or len(viewSourceStr) is 1:
+				return
+
 			viewKeys = self.server.viewDict().keys()
 			
-			# straight full match in viewSourceStr. "/aaa/bbb/ccc.d something..." vs "/aaa/bbb/ccc.d"
+			# straight full match in viewSourceStr. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 				if re.findall(viewKey, viewSourceStr):
 
@@ -431,25 +429,17 @@ class SublimeSocketAPI:
 					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
 					return
 
-			# # use _detectPrefixPath if exist(EXPERIMENTAL)
-			# if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
-			# 	filterDict = self.server.kvs.get(SublimeSocketAPISettings.FILTER_DETECTPREFIXPATH)
-			# 	for prefix in filterDict.values():
-			# 		for viewKey in viewKeys:
-			# 			prefixRemovedViewKey = viewKey.replace(prefix, "")
-			# 			if re.findall(prefixRemovedViewKey, viewSourceStr):
+			# partial match in viewSourceStr. "ccc.d" vs "********* ccc.d ************"
+			viewDict = self.server.viewDict()
+			for viewKey in viewKeys:
+				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_BASENAME]
+				if viewBasename in viewSourceStr:
 
-			# 				paramDict = {}
-			# 				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
+					paramDict = {}
+					paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
 
-			# 				self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
-			# 				return
-
-
-
-
-
-
+					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
+					return
 
 	########## APIs for shortcut ST2-Display ##########
 
