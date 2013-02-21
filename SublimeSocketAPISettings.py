@@ -35,7 +35,9 @@ API_I_REACT					= "react"
 API_RUNSETTING		= "runSetting"
 RUNSETTING_FILEPATH	= "path"
 
-API_INPUTIDENTITY = "inputIdentity" 
+API_INPUTIDENTITY = "inputIdentity"
+IDENTITY_ID				= "id"
+
 API_KILLSERVER		=	"killServer"
 
 API_SETREACTOR		= "setReactor"
@@ -88,8 +90,9 @@ REGION_SELF				= "region"
 
 # API_RUNSHELL			= "runShell" # not so sweet
 
+API_BROADCASTMESSAGE	= "broadcastMessage"
 API_OUTPUTMESSAGE	= "outputMessage"
-# OUTPUT_TARGET			= "target"
+OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
 
 API_TIMEREVENT		= "timerEvent"

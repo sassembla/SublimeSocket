@@ -5,7 +5,7 @@ import SublimeWSSettings
 from SublimeWSDecoder import SublimeWSDecoder
 
 from SublimeWSController import SublimeWSController
-import uuid
+
 
 class SublimeWSClient:
 	CONNECTION_STATUS = {
@@ -17,13 +17,13 @@ class SublimeWSClient:
 
 	## Constructor
 	#  @param server WebSocket Server object attached to client.
-	def __init__(self, server):
+	def __init__(self, server, identity):
 		self.server = server
 		self.conn = ''
 		self.addr = ''
 		self.setStatus('CLOSED')
 		self.cont = SublimeWSController(self)
-		self.clientId = uuid.uuid4()
+		self.clientId = identity
 
 
 	## Set current connection status

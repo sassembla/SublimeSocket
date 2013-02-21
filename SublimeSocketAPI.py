@@ -67,8 +67,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
-				clientId = params["id"]
-				self.server.setKV("clientId", str(clientId))
+				self.server.updateClientId(client, params)
 				break
 
 			if case(SublimeSocketAPISettings.API_KILLSERVER):
@@ -123,6 +122,10 @@ class SublimeSocketAPI:
 			# if case(SublimeSocketAPISettings.API_RUNSHELL):
 			# 	self.runShell(params)
 			# 	break
+
+			if case(SublimeSocketAPISettings.API_BROADCASTMESSAGE):
+				self.broadcastMessage(params)
+				break
 
 			if case(SublimeSocketAPISettings.API_OUTPUTMESSAGE):
 				self.outputMessage(params)
@@ -200,18 +203,27 @@ class SublimeSocketAPI:
 	# 			print line
 
 
-	## emit message to client.
+	## emit message to clients.
 	# broadcast messages if no-"target" key.
-	def outputMessage(self, params):
-		buf = self.encoder.text("output:"+str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
-		# if params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET):
-		# 	print "not yet applied this keyword. for output."
-		# else:
-
-		clients = self.server.clients
+	def broadcastMessage(self, params):
+		buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+		
+		clients = self.server.clients.values()
 		for client in clients:
 			client.send(buf)
 
+	## output message to the specific client.
+	def outputMessage(self, params):
+		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "outputMessage require 'target' param"
+
+		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
+
+		print "self.server.clients", self.server.clients
+		assert self.server.clients.has_key(target), "server has no targetted clientId:"+target
+
+		client = self.server.clients[target]
+		buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+		client.send(buf)
 
 	## set target-view info
 	def setTargetView(self, params, client=None):

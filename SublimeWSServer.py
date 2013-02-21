@@ -9,6 +9,7 @@ from SublimeSocketAPI import SublimeSocketAPI
 import SublimeSocketAPISettings
 
 import json
+import uuid
 
 from PythonSwitch import PythonSwitch
 
@@ -17,7 +18,7 @@ SERVER_INTERVAL_SEC = 2000
 class SublimeWSServer:
 
 	def __init__(self):
-		self.clients = []
+		self.clients = {}
 		self.socket = ''
 		self.listening = False
 		self.kvs = KVS()
@@ -45,11 +46,12 @@ class SublimeWSServer:
 		self.listening = True
 		while self.listening:
 			(conn, addr) = self.socket.accept()
-			
-			client = SublimeWSClient(self)
-			self.clients.append(client)
 
-			print 'Clients num:', str(len(self.clients))
+			identity = str(uuid.uuid4())
+
+			# genereate client
+			client = SublimeWSClient(self, identity)
+			self.clients[identity] = client
 			
 			threading.Thread(target = client.handle, args = (conn,addr)).start()
 			
@@ -74,10 +76,26 @@ class SublimeWSServer:
 		for command in settingCommands:
 			self.api.runAPI(command)
 
+	## update specific client's id
+	def updateClientId(self, client, params):
+		assert client, "updateClientId requre 'client should not be None'"
+		assert params.has_key(SublimeSocketAPISettings.IDENTITY_ID), "updateClientId requre 'id' param"
+
+		newIdentity = params[SublimeSocketAPISettings.IDENTITY_ID]
+
+		client = self.clients[client.clientId]
+
+		# remove from dict
+		del self.clients[client.clientId]
+
+		# update
+		client.clientId = newIdentity
+		self.clients[newIdentity] = client	
 
 	## api 
 	def callAPI(self, apiData, clientId):
-		currentClient = [client for client in self.clients if client.clientId == clientId][0]
+		currentClient = [client for client in self.clients.values() if client.clientId == clientId][0]
+		
 		self.api.parse(apiData, currentClient)
 
 		
