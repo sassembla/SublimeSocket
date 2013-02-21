@@ -26,8 +26,8 @@ SHOWLINE_LINE				= "line"
 SHOWLINE_MESSAGE		= "message"
 
 API_I_ERASEALLREGION	= "eraseAllRegion"
-# EXPERIMENTAL
 
+API_I_REACT					= "react"
 # /internal APIs
 
 
@@ -37,6 +37,13 @@ RUNSETTING_FILEPATH	= "path"
 
 API_INPUTIDENTITY = "inputIdentity" 
 API_KILLSERVER		=	"killServer"
+
+API_SETREACTOR		= "setReactor"
+REACTOR_TARGET		= "target"
+REACTOR_EVENT			= "event"
+REACTOR_SELECTOR	= "selector"
+REACTOR_INTERVAL	= "interval"
+REACTIVE_EVENT		= ["on_modified", "on_selection_modified"]
 
 API_KEYVALUESTORE	= "kvs"
 KVS_SHOWALL				= "showAll"
@@ -53,9 +60,6 @@ FILTER_NAME				= "name"
 FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
 FILTER_DEBUG			= "debug"
-
-API_SETLISTENEREVENT	= "setListenerEvent"
-LISTEN_EVENTS			= ["on_modified"] #list of acceptable-listen event names.
 
 API_COLLECTVIEWS	= "collectViews"
 
@@ -76,6 +80,7 @@ TARGETTED_VIEW		= "targettedView"
 API_STOREREGION		= "storeRegion"
 REGION_LINENUM		= "lineNum"
 REGION_COMMENT		= "comment"
+REGION_SELF				= "region"
 
 # API_RUNSHELL			= "runShell" # not so sweet
 
@@ -91,7 +96,7 @@ API_EVAL					= "eval"
 #Dictionaries for collection of "Views", "filters", "events"
 DICT_VIEWS				= "DICT_VIEWS"
 DICT_FILTERS			= "DICT_FILTERS"
-DICT_EVENTLISTENERS	= "DICT_EVENTLISTENERS"
+DICT_REACTORS			= "DICT_REACTORS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
 
 SUBDICT_REGIONS		= "SUBDICT_REGIONS"

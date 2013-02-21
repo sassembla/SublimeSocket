@@ -108,12 +108,12 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_FILTERING):
 				# run filtering
-				result = self.runFiltering(params, client)
+				self.runFiltering(params, client)
 				break
 
-			if case(SublimeSocketAPISettings.API_SETLISTENEREVENT):
-				# set event to listener
-				self.setListenerEvent(params)
+			if case(SublimeSocketAPISettings.API_SETREACTOR):
+				# set reactor
+				self.setReactor(params, client)
 				break
 
 			# if case(SublimeSocketAPISettings.API_RUNSHELL):
@@ -182,10 +182,6 @@ class SublimeSocketAPI:
 
 		return "runSettings:"+str(removeCRLF_setting)
 
-
-	## set event onto KVS
-	def setListenerEvent(self, params):
-		self.server.setKV(SublimeSocketAPISettings.DICT_EVENTLISTENERS, params)
 
 
 	# ## run shellScript
@@ -394,6 +390,11 @@ class SublimeSocketAPI:
 			# print "no message"
 			pass
 
+	## set reactor for reactive-event
+	def setReactor(self, params, client):
+		self.server.setOrAddReactor(params, client)
+		pass
+
 
 	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
 	def detectViewInfo(self, params, client=None):
@@ -458,17 +459,19 @@ class SublimeSocketAPI:
 			identity = str(uuid.uuid4())
 			
 			# add to viewDict
-			self.storeRegion(view, lineNum, comment, identity)
+			self.storeRegion(view, lineNum, comment, identity, regions[0])
 			
 			view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
 
 
 	### region control
 
+
 	## store region to server-viewDict
-	def storeRegion(self, view, lineNum, comment, identity):
-		self.server.storeRegionToView(view, lineNum, comment, identity)
+	def storeRegion(self, view, lineNum, comment, identity, region):
+		self.server.storeRegionToView(view, lineNum, comment, identity, region)
 		
+
 	## erase all regions of view/condition
 	def eraseAllRegion(self):
 		self.server.deleteAllRegionsInAllView()

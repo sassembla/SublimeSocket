@@ -22,6 +22,7 @@ class SublimeWSServer:
 		self.listening = False
 		self.kvs = KVS()
 		self.api = SublimeSocketAPI(self)
+		self.temporaryEventDict = {}
 
 
 	def start(self, host, port):
@@ -112,12 +113,14 @@ class SublimeWSServer:
 
 		print "NO hit", viewParam
 		return False
+		
 
 	## return current targetted view or None.
 	def currentTargetView(self):
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW):
 			return self.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
 		return None
+
 
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
@@ -133,20 +136,21 @@ class SublimeWSServer:
 			for view in views:
 				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, view)
 
-		
+	
 	## store region to viewDict-view in KVS
-	def storeRegionToView(self, view, lineNum, comment, identity):
+	def storeRegionToView(self, view, lineNum, comment, identity, region):
 		key = view.file_name()
 		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
 
-		region = {}
-		region[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
-		region[SublimeSocketAPISettings.REGION_COMMENT] = comment
+		regionDict = {}
+		regionDict[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
+		regionDict[SublimeSocketAPISettings.REGION_COMMENT] = comment
+		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 			specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS] = {}
 
-		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = region
+		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = regionDict
 
 
 	## delete all regions in all view 
@@ -160,22 +164,77 @@ class SublimeWSServer:
 				if regionsDict:
 					for regionIdentity in regionsDict.keys():
 						viewInstance.erase_regions(regionIdentity)
+						del regionsDict[regionIdentity]
 
 		map(deleteRegions, viewDict.values())
 
 
+	## generate thread per selector. or add
+	def setOrAddReactor(self, params, client):
+		target = params[SublimeSocketAPISettings.REACTOR_TARGET]
+		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
+		selector = params[SublimeSocketAPISettings.REACTOR_SELECTOR]
+		interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
+
+		reactorsDict = {}
+		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_REACTORS):
+			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
+
+		reactDict = {}
+		reactDict[SublimeSocketAPISettings.REACTOR_SELECTOR] = selector
+		reactDict[SublimeSocketAPISettings.REACTOR_INTERVAL] = interval
+
+		# already set or not-> spawn dictionary for event.
+		if reactorsDict.has_key(event):
+			pass
+		else:
+			reactorsDict[event] = {}
+		
+		# store reactor			
+		reactorsDict[event][target] = reactDict
+		self.setKV(SublimeSocketAPISettings.DICT_REACTORS, reactorsDict)
+
+		# spawn event-loop for event execution
+		sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
+
+
+	## interval execution for event
+	def eventIntervals(self, target, event, selector, interval):
+
+		reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
+		
+		# if exist, continue
+		if reactorsDict[event][target]:
+
+			if self.temporaryEventDict.has_key(event):
+				# get latest event
+				eventParam = self.temporaryEventDict[event]
+				
+				# consume event
+				del self.temporaryEventDict[event]
+				
+				def runAPI(command):
+					params = selector[command]
+					
+					self.api.runAPI(command, params)
+
+				[runAPI(x) for x in selector.keys()]
+				
+			# continue
+			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
+
+		
 	## input to sublime from server.
 	# fire event in KVS, if exist.
 	def fireKVStoredItem(self, eventName, eventParam=None):
 		# print "fireKVStoredItem eventListen!", eventName,"eventParam",eventParam
-		# event listener adopt
-		if eventName in SublimeSocketAPISettings.LISTEN_EVENTS:
-			if self.isExistOnKVS(SublimeSocketAPISettings.DICT_EVENTLISTENERS):
-				commandAndParams = self.getV(SublimeSocketAPISettings.DICT_EVENTLISTENERS)[eventName].items()
 
-				command = commandAndParams[0][0]
-				params = commandAndParams[0][1]
-				self.api.runAPI(command, params)	
+		# event listener adopt
+		if eventName in SublimeSocketAPISettings.REACTIVE_EVENT:
+			
+			# store data temporary.
+			self.temporaryEventDict[eventName] = eventParam
+
 
 		# viewCollector "renew" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
@@ -217,6 +276,7 @@ class SublimeWSServer:
 				viewDict[filePath] = viewInfo
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
+
 		# viewCollector "del" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_DEL:
 			viewInstance = eventParam
@@ -237,7 +297,6 @@ class SublimeWSServer:
 			if viewDict.has_key(filePath):
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
-
 
 
 	## KVSControl
@@ -313,6 +372,7 @@ class SublimeWSServer:
 		
 		return "".join(printKV)
 
+
 	## return single key-value as string
 	def showValue(self, key):
 		if not self.kvs.get(key):
@@ -381,8 +441,5 @@ class KVS:
 	def clear(self):
 		self.keyValueDict.clear()
 		return True
-
-
-
 
 

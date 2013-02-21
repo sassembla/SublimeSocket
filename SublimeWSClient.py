@@ -17,7 +17,7 @@ class SublimeWSClient:
 
 	## Constructor
 	#  @param server WebSocket Server object attached to client.
-	def __init__(self,server):
+	def __init__(self, server):
 		self.server = server
 		self.conn = ''
 		self.addr = ''

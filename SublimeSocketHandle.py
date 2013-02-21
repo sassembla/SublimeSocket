@@ -75,7 +75,10 @@ class CaptureEditing(sublime_plugin.EventListener):
     # print "close!"
     self.update("on_close", view)
 
-
+  def on_selection_modified(self, view):
+    # print "on_selection_modified!"
+    self.update("on_selection_modified", view)
+    
 
   ## call when the event happen
   def update(self, eventName, param = None):
