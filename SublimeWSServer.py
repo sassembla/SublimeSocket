@@ -300,8 +300,8 @@ class SublimeWSServer:
 						self.clients[target].send(buf)
 
 					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_SHOWATSTATUS):
-						print "show at status!"
-						# self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, )
+						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, regionInfo)
+						self.api.printout(message)
 
 				[playRegionInfo(region) for region in regionIdentitiesList]
 				

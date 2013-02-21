@@ -684,6 +684,10 @@ class SublimeSocketAPI:
 		lineArray.append(pt)
 		return pt
 
+	## print message to console
+	def printout(self, message):
+		print "message:", message
+
 
 		
 
