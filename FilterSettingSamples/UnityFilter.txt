@@ -1,27 +1,26 @@
 //Unity filter
-//v 0.5.0
+//v 1.0.0
 
 defineFilter:
 {
     "name": "unity",
     "patterns": [
-        
-        {
-            "Compilation failed:(.*)": {
-                "runnable": {
-                    "eraseAllRegion": {},
-                    "showStatusMessage": {
-                        "message":"groups[0]"
-                    }
-                }
-            }
-        },
         {
             "[(]([0-9].*?),.*:(.*)": {
                 "runnable": {
                     "showLine": {
                         "line": "groups[1]",
                         "message": "groups[2]"
+                    }
+                }
+            }
+        },
+        {
+            "Compilation failed:(.*)": {
+                "runnable": {
+                    "eraseAllRegion": {},
+                    "showStatusMessage": {
+                        "message":"groups[0]"
                     }
                 }
             }
@@ -34,7 +33,7 @@ defineFilter:
                         "message":"groups[0]"
                     }
                 }
-            }
+            }         
         }
     ]
 }
