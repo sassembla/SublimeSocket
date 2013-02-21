@@ -75,6 +75,10 @@ class SublimeSocketAPI:
 				self.server.killServerSelf()
 				break
 
+			if case(SublimeSocketAPISettings.API_PLAYREGIONS):
+				self.playRegions(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_COLLECTVIEWS):
 				sublime.set_timeout(lambda: self.server.collectViews(), 0)
 				break
@@ -231,7 +235,10 @@ class SublimeSocketAPI:
 			else:
 				print "client", client, "result", result
 				
-
+	## play event that sink in regions
+	def playRegions(self, params):
+		self.server.playRegionsWithMatch(params)
+		
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
 		# check filter name

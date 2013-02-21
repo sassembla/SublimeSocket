@@ -43,6 +43,7 @@ REACTOR_TARGET		= "target"
 REACTOR_EVENT			= "event"
 REACTOR_SELECTOR	= "selector"
 REACTOR_INTERVAL	= "interval"
+REACTOR_REPLACEFROMTO		= "replacefromto"
 REACTIVE_EVENT		= ["on_modified", "on_selection_modified"]
 
 API_KEYVALUESTORE	= "kvs"
@@ -60,6 +61,9 @@ FILTER_NAME				= "name"
 FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
 FILTER_DEBUG			= "debug"
+
+API_PLAYREGIONS		= "playRegions"
+PLAYREGIONS_VIEW	= "view"
 
 API_COLLECTVIEWS	= "collectViews"
 
