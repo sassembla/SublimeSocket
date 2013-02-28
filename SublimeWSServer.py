@@ -193,7 +193,6 @@ class SublimeWSServer:
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
 		selector = params[SublimeSocketAPISettings.REACTOR_SELECTOR]
 		interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
-		replaceMap = params[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO]
 
 		reactorsDict = {}
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_REACTORS):
@@ -202,7 +201,9 @@ class SublimeWSServer:
 		reactDict = {}
 		reactDict[SublimeSocketAPISettings.REACTOR_SELECTOR] = selector
 		reactDict[SublimeSocketAPISettings.REACTOR_INTERVAL] = interval
-		reactDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO] = replaceMap
+
+		if params.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
+			reactDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO] = params[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO]
 
 		# already set or not-> spawn dictionary for event.
 		if reactorsDict.has_key(event):
