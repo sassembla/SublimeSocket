@@ -25,7 +25,7 @@ class SublimeSocketAPI:
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client=None):
-		# print "parse sourceData is ", data
+		print "parse sourceData is ", data, "len", len(data)
 		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
@@ -42,7 +42,7 @@ class SublimeSocketAPI:
 				try:
 					params = json.loads(command_params[1])
 				except Exception as e:
-					print "JSON parse error", e
+					print "JSON parse error", e, "source = ", command_params[1]
 					return
 
 			overlapCommandList = command.split(SublimeSocketAPISettings.API_OVERLAP_DELIM)
@@ -303,23 +303,39 @@ class SublimeSocketAPI:
 			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
 			# print "pattern is ", pattern
-			try:
-				(key, executablesDict) = pattern.items()[0]
-				src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-				# print "src is", src
+			(key, executablesDict) = pattern.items()[0]
+			src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
+			# print "src is", src
 
+			stage = ""
+			patternIndex = 0
+			
+			try:
+				stage = "preEval src:	"+src
 				# regexp match
 				searched = eval(src)
+
+				stage = "postEval"
 				
 				if searched:
+
+					stage = "on searched:	" + searched
+					
 					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
 						print "searched.group()",searched.group()
 						print "searched.groups()",searched.groups()
-											
+					
+					stage = "before executables"
+					
 					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
+					
+					stage = "executables ready. executables:	"+executables
 
 					currentGroupSize = len(searched.groups())
-					patternIndex = 0
+					
+
+					stage = "preKeyCheck currentGroupSize:	"+currentGroupSize
+
 					# run
 					for key in executables.keys():
 
@@ -365,6 +381,8 @@ class SublimeSocketAPI:
 							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
 
+							stage = "replaced per key:	" + key
+
 							if not params_dicts:
 								pass
 							elif 1 == len(params_dicts):
@@ -375,12 +393,16 @@ class SublimeSocketAPI:
 									for key in next.keys():
 										before[key] = next[key]
 									return before
-							
+								
 								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
+
+								stage = "params ready params:	" + params
 							
 						else:
 							print "unknown type"
 
+						stage = "preExecute	command:	"+command + "	/params:	" + params
+						
 						# execute
 						self.runAPI(command, params)
 						# report
@@ -390,7 +412,10 @@ class SublimeSocketAPI:
 					patternIndex = patternIndex + 1
 					
 			except Exception as e:
-				print "filter error", str(e)
+				print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict, "/stage:", stage
+				while True:
+					pass
+					
 				return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal

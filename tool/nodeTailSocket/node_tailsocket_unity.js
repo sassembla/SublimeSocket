@@ -7,6 +7,7 @@ var ws = new WebSocket('ws://127.0.0.1:8823/');
 
 Tail = require('tail').Tail;
 tail = new Tail("/Users/sassembla/Library/Logs/Unity/Editor.log");
+// tail = new Tail("/Users/sassembla/errors.log");
 
 ws.on('open', function() {
 	console.log("OPENED");
