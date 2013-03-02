@@ -319,7 +319,7 @@ class SublimeSocketAPI:
 				
 				if searched:
 
-					stage = "on searched:	" + searched
+					stage = "on searched"
 					
 					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
 						print "searched.group()",searched.group()
@@ -329,12 +329,12 @@ class SublimeSocketAPI:
 					
 					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
 					
-					stage = "executables ready. executables:	"+executables
+					stage = "executables ready."
 
 					currentGroupSize = len(searched.groups())
 					
 
-					stage = "preKeyCheck currentGroupSize:	"+currentGroupSize
+					stage = "preKeyCheck currentGroupSize:	"+str(currentGroupSize)
 
 					# run
 					for key in executables.keys():
@@ -381,13 +381,16 @@ class SublimeSocketAPI:
 							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
 
-							stage = "replaced per key:	" + key
+							stage = "replaced per key over1"
 
 							if not params_dicts:
+								stage = "replaced per key over2"
 								pass
 							elif 1 == len(params_dicts):
+								stage = "replaced per key over3"
 								params = params_dicts[0]
 							else:
+								stage = "replaced per key over4"
 								def reduceLeft(before, next):
 									# append all key-value pair.
 									for key in next.keys():
@@ -396,12 +399,12 @@ class SublimeSocketAPI:
 								
 								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
 
-								stage = "params ready params:	" + params
+							stage = "params replace all over"
 							
 						else:
 							print "unknown type"
 
-						stage = "preExecute	command:	"+command + "	/params:	" + params
+						stage = "preExecute	command:	"+command
 						
 						# execute
 						self.runAPI(command, params)
