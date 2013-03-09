@@ -33,8 +33,9 @@ class SublimeWSServer:
 		
 		self.socket.listen(0)
 		
-		print '\n', 'SublimeSocket WebSocketServing started @ ', host, ':', port, "\n"
-
+		serverStartMessage = 'SublimeSocket WebSocketServing started @ ' + str(host) + ':' + str(port)
+		print '\n', serverStartMessage, "\n"
+		sublime.set_timeout(lambda: sublime.status_message(serverStartMessage), 0)
 
 		# start serverControlIntervals
 		# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
@@ -183,8 +184,9 @@ class SublimeWSServer:
 					for regionIdentity in regionsDict.keys():
 						viewInstance.erase_regions(regionIdentity)
 						del regionsDict[regionIdentity]
-
-		map(deleteRegions, viewDict.values())
+	
+		if all(not d for d in viewDict):
+			map(deleteRegions, viewDict.values())
 
 
 	## generate thread per selector. or add
@@ -225,6 +227,12 @@ class SublimeWSServer:
 		reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 		
 		# if exist, continue
+		if not reactorsDict.has_key(event):
+			return
+
+		if not reactorsDict[event].has_key(target):
+			return
+
 		if reactorsDict[event][target]:
 			
 			reactorDict = reactorsDict[event][target]

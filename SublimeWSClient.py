@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sublime, sublime_plugin
+
 import threading, hashlib, base64
 import SublimeWSSettings
 
@@ -45,7 +47,10 @@ class SublimeWSClient:
 		
 		bytes = self.conn.recv(bufsize)
 		if not bytes:
-			print 'Client left with no bytes', repr(self.conn)
+			closingMessage = 'Client left with no bytes ' + repr(self.conn)
+
+			sublime.set_timeout(lambda: sublime.status_message(closingMessage), 0)
+
 			self.close()
 			return ''
 		return bytes
@@ -133,9 +138,14 @@ class SublimeWSClient:
 			'Sec-WebSocket-Version: %s\r\n'
 			'\r\n') % (headers['origin'], headers['host'], accept, headers['sec-websocket-version'])
 
-		print '--- HANDSHAKE ---'
-		print bytes
-		print '-----------------'
+		handshakeMessage = '--- HANDSHAKE ---\r\n'
+		handshakeMessage = handshakeMessage + '-----------------\r\n'
+		handshakeMessage = handshakeMessage + bytes + '\r\n'
+		handshakeMessage = handshakeMessage + '-----------------\r\n'
+		
+
+		sublime.set_timeout(lambda: sublime.status_message("handshaking.."), 0)
+		
 		self.send(bytes)
 
 	## Handle incoming datas

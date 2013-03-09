@@ -25,7 +25,7 @@ class SublimeSocketAPI:
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client=None):
-		print "parse sourceData is ", data, "len", len(data)
+		# print "parse sourceData is ", data, "len", len(data)
 		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
@@ -322,6 +322,7 @@ class SublimeSocketAPI:
 					stage = "on searched"
 					
 					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
+						# print "filterSource", filterSource
 						print "searched.group()",searched.group()
 						print "searched.groups()",searched.groups()
 					
