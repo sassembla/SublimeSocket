@@ -47,11 +47,11 @@ class SublimeWSController:
 				break
 
 			if case(SublimeWSSettings.OP_CONTINUATION):
-				print "continuation...(not yet do anything)"
+				# print "continuation...(not yet do anything)"
 				break
 
 			if case(SublimeWSSettings.OP_BINARY):
-				print "is binary", data
+				# print "is binary", data
 				# see msgpack branch
 				break
 

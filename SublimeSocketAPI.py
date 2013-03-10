@@ -135,6 +135,10 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.sublimeEval(params, client), 0)
 				break
 
+			if case(SublimeSocketAPISettings.API_SHOWATLOG):
+				self.showAtLog(params)
+				break
+
 
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
@@ -215,15 +219,22 @@ class SublimeSocketAPI:
 	## output message to the specific client.
 	def outputMessage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "outputMessage require 'target' param"
+		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "outputMessage require 'message' param"
 
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 
-		print "self.server.clients", self.server.clients
 		assert self.server.clients.has_key(target), "server has no targetted clientId:"+target
 
 		client = self.server.clients[target]
 		buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
 		client.send(buf)
+
+	## send message to the other via SS.
+	def showAtLog(self, params):
+		assert params.has_key(SublimeSocketAPISettings.LOG_MESSAGE), "showAtLog require 'message' param"
+		message = params[SublimeSocketAPISettings.LOG_MESSAGE]
+		print "ss:", message
+
 
 	## set target-view info
 	def setTargetView(self, params, client=None):

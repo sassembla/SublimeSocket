@@ -97,6 +97,9 @@ API_OUTPUTMESSAGE	= "outputMessage"
 OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
 
+API_SHOWATLOG			= "showAtLog"
+LOG_MESSAGE				= "message"
+
 API_TIMEREVENT		= "timerEvent"
 
 API_EVAL					= "eval"

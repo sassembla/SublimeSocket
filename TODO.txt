@@ -3,15 +3,20 @@ TODO
 
 TimerEvent ほか、SS上で動くもの
 	アイデアベースで、要る機能から作る。Filters
-	TimeEvent
+√	TimeEvent
 		setInterval(interval)	-return timerId
 		timerList							-return timerIds
 		remove(timerId)
+
+		→Reactorとして実装された。実行が重なりすぎる事で問題がでるようであれば、対処する。
+			現在03/10/13 17:47:54までは平和に動いている。
 
 	BufferPool
 		filled
 		updated
 		bufferList
+
+		対SuperSclalaCompiler(S2C)用ブランチで開発中
 
 √	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
 		√setKV(key,value) //unavailable from api directly
@@ -59,7 +64,7 @@ TimerEvent ほか、SS上で動くもの
 	送る側で判別したくないな。filterから合成すればいいか。
 
 
-√	書き込み対象Viewファイルの識別を行わないとな
+√	書き込み対象Viewファイルの識別
 	targetSettingみたいなのを行ってからrepl、で良い気がする。
 	それで、セット先のviewの有無が決まる。
 	開いてないファイルとかもあり得る。
@@ -67,10 +72,17 @@ TimerEvent ほか、SS上で動くもの
 	→専用の枠を持つ事で対応。必要であればinputグループみたいなのでストリームをわけるとかか。
 
 
-√	リセット機構
+√	表示リセット機構
 	viewに乗っているエラーを更新する。
 	
 	√マウスオンでメッセージを表示したり候補に出したりする
+	→undoなどで消しきれない要項が生まれる可能性があるので、view自体から管理外のものも消すように調整中。
+
+
+√	showAtLog
+	SublimeSocketのログコンソールに文言を表示
+	あっ、、コレ便利、、、
+
 
 
 DOC:
@@ -87,8 +99,12 @@ SublimeSocketAPI -Sequence
 		やりたい。イテレーションを区別出来れば可能なはず。
 
 	Go/Back
-		アクションを検知、開くアクションを迂回して実行させる
+		アクションを検知、開くアクションを迂回して外部からSTに対して実行させる
 
 	toolTip
 		完全に外部アプリケーションになる。
 		ツールチップを別ウインドウとして展開、押したらフィックスイベントを発動、など。
+		Growlで実装できるのでは
+
+
+
