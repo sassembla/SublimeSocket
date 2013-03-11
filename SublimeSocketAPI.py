@@ -512,8 +512,8 @@ class SublimeSocketAPI:
 
 
 	## store region to server-viewDict
-	def storeRegion(self, view, lineNum, comment, identity, region):
-		self.server.storeRegionToView(view, lineNum, comment, identity, region)
+	def storeRegion(self, view, lineNum, var, identity, region):
+		self.server.storeRegionToView(view, lineNum, var, identity, region)
 		
 
 	## erase all regions of view/condition

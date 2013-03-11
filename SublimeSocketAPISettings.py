@@ -68,6 +68,7 @@ API_PLAYREGIONS		= "playRegions"
 PLAYREGIONS_VIEW	= "view"
 PLAYREGIONS_TARGET = "target"
 PLAYREGIONS_TARGET_SELF = "self"
+PLAYREGIONS_RUNNABLE = "runnable"
 PLAYREGIONS_DEBUG	= "debug"
 
 API_COLLECTVIEWS	= "collectViews"
@@ -88,7 +89,7 @@ TARGETTED_VIEW		= "targettedView"
 
 API_STOREREGION		= "storeRegion"
 REGION_LINENUM		= "lineNum"
-REGION_MESSAGE		= "message"
+REGION_VAR				= "var"
 REGION_SELF				= "region"
 
 API_RUNSHELL			= "runShell"

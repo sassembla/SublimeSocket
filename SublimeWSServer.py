@@ -157,13 +157,13 @@ class SublimeWSServer:
 
 	
 	## store region to viewDict-view in KVS
-	def storeRegionToView(self, view, lineNum, message, identity, region):
+	def storeRegionToView(self, view, lineNum, var, identity, region):
 		key = view.file_name()
 		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
 
 		regionDict = {}
 		regionDict[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
-		regionDict[SublimeSocketAPISettings.REGION_MESSAGE] = message
+		regionDict[SublimeSocketAPISettings.REGION_VAR] = var
 		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
@@ -302,22 +302,24 @@ class SublimeWSServer:
 					regionInfo = regionsDicts[key]
 
 					target = params[SublimeSocketAPISettings.PLAYREGIONS_TARGET]
-					message = regionInfo[SublimeSocketAPISettings.REGION_MESSAGE]
+					var = regionInfo[SublimeSocketAPISettings.REGION_VAR]
 					
 					
-
-
-					# if have "target" param
-					if self.clients.has_key(target):
-						if target is SublimeSocketAPISettings.PLAYREGIONS_TARGET_SELF:
-							print "hereComes"
-						else:
-							buf = self.api.encoder.text(str(message), mask=0)
-							self.clients[target].send(buf)
+					if target is SublimeSocketAPISettings.PLAYREGIONS_TARGET_SELF:
+						print "herecomes, self,"
+					else:
+						# if have "target" param
+						if self.clients.has_key(target):
+							print "hereComes:send to the other client???"
+							# else:
+							# 	buf = self.api.encoder.text(str(message), mask=0)
+							# 	self.clients[target].send(buf)
 
 					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_DEBUG):
-						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, regionInfo)
-						self.api.printout(message)
+						messageDict = {}
+						messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = var
+						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
+						self.api.printout(var)
 
 				[playRegionInfo(region) for region in regionIdentitiesList]
 				
