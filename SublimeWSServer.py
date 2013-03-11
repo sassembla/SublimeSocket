@@ -304,11 +304,18 @@ class SublimeWSServer:
 					target = params[SublimeSocketAPISettings.PLAYREGIONS_TARGET]
 					message = regionInfo[SublimeSocketAPISettings.REGION_MESSAGE]
 					
-					if self.clients.has_key(target):
-						buf = self.api.encoder.text(str(message), mask=0)
-						self.clients[target].send(buf)
+					
 
-					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_SHOWATSTATUS):
+
+					# if have "target" param
+					if self.clients.has_key(target):
+						if target is SublimeSocketAPISettings.PLAYREGIONS_TARGET_SELF:
+							print "hereComes"
+						else:
+							buf = self.api.encoder.text(str(message), mask=0)
+							self.clients[target].send(buf)
+
+					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_DEBUG):
 						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, regionInfo)
 						self.api.printout(message)
 

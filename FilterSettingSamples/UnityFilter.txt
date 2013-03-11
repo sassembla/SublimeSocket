@@ -52,7 +52,7 @@ inputIdentity:
         "playRegions": {
             "view": "will be replace to specific view",
             "target": "UnityEditor",
-            "showatstatus":true
+            "debug":true
         }
     },
     "replacefromto": {
