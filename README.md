@@ -1,5 +1,5 @@
 # SublimeSocket
-###### version 0.8.0
+###### version 0.8.1
 WebSocket server for SublieText. Control SublimeTextAPI through the WebSocket protocol.
 
 
