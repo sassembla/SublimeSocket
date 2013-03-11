@@ -11,6 +11,8 @@ import SublimeSocketAPISettings
 import json
 import uuid
 
+import re
+
 from PythonSwitch import PythonSwitch
 
 SERVER_INTERVAL_SEC = 2000
@@ -216,7 +218,7 @@ class SublimeWSServer:
 		# store reactor			
 		reactorsDict[event][target] = reactDict
 		self.setKV(SublimeSocketAPISettings.DICT_REACTORS, reactorsDict)
-
+		
 		# spawn event-loop for event execution
 		sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
 
@@ -271,8 +273,7 @@ class SublimeWSServer:
 			viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
 			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_VIEW), "playRegionsWithMatch require 'view' param"
-			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_TARGET), "playRegionsWithMatch requre 'target' param"
-
+			
 			# specify regions that are selected.
 			viewInstance = params[SublimeSocketAPISettings.PLAYREGIONS_VIEW]
 			viewId = viewInstance.file_name()
@@ -301,25 +302,75 @@ class SublimeWSServer:
 				def playRegionInfo(key):
 					regionInfo = regionsDicts[key]
 
-					target = params[SublimeSocketAPISettings.PLAYREGIONS_TARGET]
 					var = regionInfo[SublimeSocketAPISettings.REGION_VAR]
 					
-					
-					if target is SublimeSocketAPISettings.PLAYREGIONS_TARGET_SELF:
-						print "herecomes, self,"
-					else:
-						# if have "target" param
-						if self.clients.has_key(target):
-							print "hereComes:send to the other client???"
-							# else:
-							# 	buf = self.api.encoder.text(str(message), mask=0)
-							# 	self.clients[target].send(buf)
+					executables = params[SublimeSocketAPISettings.PLAYREGIONS_RUNNABLE]
+
+					# run
+					for key in executables.keys():
+
+						# execute
+						command = key
+						# print "command", command
+						
+						paramsSource = executables[key]
+						# print "paramsSource", paramsSource
+
+						currentParams = ""
+
+						# replace the keyword "[var]" to 'var'.
+						if type(paramsSource) == list:
+							# before	eval:["sublime.message_dialog('[var]')"]
+							# after		eval:["sublime.message_dialog('THE_VALUE_OF_var')"]
+							
+							def replaceGroupsInListKeyword(param):
+								result = param
+								result = re.sub(r'\[var\]', var, result)
+								
+								return result
+								
+							# replace "VAR" expression in the value of list to 'var'
+							currentParams = map(replaceGroupsInListKeyword, paramsSource)
+							
+						elif type(paramsSource) == dict:
+							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
+							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
+
+							def replaceGroupsInDictionaryKeyword(key):
+								result = paramsSource[key]
+								
+								# replace all expression
+								value = re.sub(r'\[var\]', var, result)
+
+								return {key:value}
+							# replace "[var]" expression in the value of dictionary to 'var' value
+							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
+
+							if not params_dicts:
+								pass
+							elif 1 == len(params_dicts):
+								currentParams = params_dicts[0]
+							else:
+								def reduceLeft(before, next):
+									# append all key-value pair.
+									for key in next.keys():
+										before[key] = next[key]
+									return before
+								
+								currentParams = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
+							
+						# else:
+						# 	print "unknown type"
+						
+						# execute
+						self.api.runAPI(command, currentParams)
 
 					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_DEBUG):
-						messageDict = {}
-						messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = var
-						self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
-						self.api.printout(var)
+						if params[SublimeSocketAPISettings.PLAYREGIONS_DEBUG]:
+							messageDict = {}
+							messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = var
+							self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
+							self.api.printout(var)
 
 				[playRegionInfo(region) for region in regionIdentitiesList]
 				
