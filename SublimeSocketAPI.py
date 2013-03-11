@@ -203,7 +203,8 @@ class SublimeSocketAPI:
 		encodedRunnable = runnable.encode('utf8')
 
 		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DEBUG):
-			if params[SublimeSocketAPISettings.RUNSHELL_DEBUG]:
+			debugFlag = params[SublimeSocketAPISettings.RUNSHELL_DEBUG]
+			if debugFlag:
 				print encodedRunnable
 		
 		if len(runnable):
