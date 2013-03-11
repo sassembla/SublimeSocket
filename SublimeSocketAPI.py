@@ -7,10 +7,10 @@ import json
 from SublimeWSEncoder import SublimeWSEncoder
 import SublimeSocketAPISettings
 
-# import subprocess
-# import shlex
-# import os
-# import difflib
+import subprocess
+import shlex
+import os
+
 import re
 
 from PythonSwitch import PythonSwitch
@@ -119,9 +119,9 @@ class SublimeSocketAPI:
 				self.setReactor(params, client)
 				break
 
-			# if case(SublimeSocketAPISettings.API_RUNSHELL):
-			# 	self.runShell(params)
-			# 	break
+			if case(SublimeSocketAPISettings.API_RUNSHELL):
+				self.runShell(params)
+				break
 
 			if case(SublimeSocketAPISettings.API_BROADCASTMESSAGE):
 				self.broadcastMessage(params)
@@ -193,19 +193,21 @@ class SublimeSocketAPI:
 
 		return "runSettings:"+str(removeCRLF_setting)
 
+	## run shellScript
+	# params is array that will be evaluated as commandline marameters.
+	def runShell(self, params):
+		assert params.has_key(SublimeSocketAPISettings.RUNSHELL_PARAMARRAY), "runShell require 'paramArray'"
 
+		runnable = ' '.join(params[SublimeSocketAPISettings.RUNSHELL_PARAMARRAY])
 
-	# ## run shellScript
-	# # params is array that will be evaluated as commandline marameters.
-	# def runShell(self, params):
-	# 	runnable = ' '.join(params)
-	# 	if len(runnable):
-			
-	# 		# print "runnable", runnable
-	# 		self.process = subprocess.Popen(shlex.split(runnable.encode('utf8')), stdout=subprocess.PIPE, preexec_fn=os.setsid)
-	# 		for line in self.process.stdout:
-	# 			print line
+		encodedRunnable = runnable.encode('utf8')
 
+		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DEBUG):
+			if params[SublimeSocketAPISettings.RUNSHELL_DEBUG]:
+				print encodedRunnable
+		
+		if len(runnable):
+			self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
 	## emit message to clients.
 	# broadcast messages if no-"target" key.
@@ -233,7 +235,7 @@ class SublimeSocketAPI:
 	def showAtLog(self, params):
 		assert params.has_key(SublimeSocketAPISettings.LOG_MESSAGE), "showAtLog require 'message' param"
 		message = params[SublimeSocketAPISettings.LOG_MESSAGE]
-		print "ss:", message
+		print SublimeSocketAPISettings.LOG_prefix, message
 
 
 	## set target-view info

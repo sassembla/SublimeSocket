@@ -90,7 +90,9 @@ REGION_LINENUM		= "lineNum"
 REGION_MESSAGE		= "message"
 REGION_SELF				= "region"
 
-# API_RUNSHELL			= "runShell" # not so sweet
+API_RUNSHELL			= "runShell"
+RUNSHELL_DEBUG		= "debug"
+RUNSHELL_PARAMARRAY = "paramArray"
 
 API_BROADCASTMESSAGE	= "broadcastMessage"
 API_OUTPUTMESSAGE	= "outputMessage"
@@ -99,6 +101,7 @@ OUTPUT_MESSAGE		= "message"
 
 API_SHOWATLOG			= "showAtLog"
 LOG_MESSAGE				= "message"
+LOG_prefix				= "ss:"
 
 API_TIMEREVENT		= "timerEvent"
 
