@@ -149,14 +149,8 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.showStatusMessage(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE]), 0)
 				break
 
-			
-
 			if case(SublimeSocketAPISettings.API_I_ERASEALLREGION):
 				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
-				break
-
-			if case(SublimeSocketAPISettings.API_STOREREGION):
-				assert False, "storeRegion cannot call through API."
 				break
 
 			if case():
@@ -482,42 +476,42 @@ class SublimeSocketAPI:
 		view = params[SublimeSocketAPISettings.SHOWLINE_VIEW]
 		line = params[SublimeSocketAPISettings.SHOWLINE_LINE]
 		identity = params[SublimeSocketAPISettings.SHOWLINE_IDENTITY]
+		var = ""
 
 		if type(view) == str:
 			# use current-view if 'current' set
 			if params[SublimeSocketAPISettings.SHOWLINE_VIEW] == SublimeSocketAPISettings.SHOWLINE_VIEW_CURRENT:
 				view = self.server.currentTargetView()
 		elif type(view) == unicode :
-			viewPath = view
-			
-			paramDict = {}
-			paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
-			view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
+			if params[SublimeSocketAPISettings.SHOWLINE_VIEW] == SublimeSocketAPISettings.SHOWLINE_VIEW_CURRENT:
+				view = self.server.currentTargetView()
+			else:
+				viewPath = view
+				
+				paramDict = {}
+				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
+				view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
 		
-		sublime.set_timeout(lambda: self.internalShowLine(view, line, identity), 1)
-	def internalShowLine(self, view, line, identity):
+		sublime.set_timeout(lambda: self.internalShowLine(view, line, identity, var), 0)
+		
+
+	def internalShowLine(self, view, line, identity, var):
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
 		regions.append(view.line(point))
 		
 		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
-	
+		self.server.storeRegionToView(view, line, var, identity, regions[0])
 
 
 	### region control
 
 
-	## store region to server-viewDict
-	def storeRegion(self, view, lineNum, var, identity, region):
-		self.server.storeRegionToView(view, lineNum, var, identity, region)
-		
-
 	## erase all regions of view/condition
 	def eraseAllRegion(self):
 		self.server.deleteAllRegionsInAllView()
 		
-
 
 	## evaluate strings
 	# Not only eval.

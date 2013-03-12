@@ -80,10 +80,7 @@ VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_CO
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
-API_STOREREGION		= "storeRegion"
-REGION_EVENT			= "event"
-REGION_PARAM			= "param"
-REGION_IDENTITY		= "identity"
+
 
 API_RUNSHELL			= "runShell"
 RUNSHELL_DEBUG		= "debug"
@@ -117,5 +114,10 @@ DICT_REACTORS			= "DICT_REACTORS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
 
 SUBDICT_REGIONS		= "SUBDICT_REGIONS"
+REGION_SELF				= "region"
+REGION_IDENTITY		= "identity"
+REGION_EVENT			= "event"
+REGION_PARAM			= "param"
+REGION_LINE				= "line"
 
 

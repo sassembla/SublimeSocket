@@ -147,6 +147,7 @@ class SublimeWSServer:
 	def getViewInfo(self, viewParam):
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
 		
+		print "path", path
 		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
 		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
 		return viewInfo
@@ -160,13 +161,13 @@ class SublimeWSServer:
 
 	
 	## store region to viewDict-view in KVS
-	def storeRegionToView(self, view, lineNum, var, identity, region):
+	def storeRegionToView(self, view, line, param, identity, region):
 		key = view.file_name()
 		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
 
 		regionDict = {}
-		regionDict[SublimeSocketAPISettings.REGION_LINENUM] = lineNum
-		regionDict[SublimeSocketAPISettings.REGION_VAR] = var
+		regionDict[SublimeSocketAPISettings.REGION_LINE] = line
+		regionDict[SublimeSocketAPISettings.REGION_PARAM] = param
 		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
@@ -289,21 +290,25 @@ class SublimeWSServer:
 
 				selectedRegionSet = viewInstance.sel()
 				
+				# identity
 				def isRegionMatchInDict(dictKey):
 					currentRegion = regionsDicts[dictKey][SublimeSocketAPISettings.REGION_SELF]
 					
 					if selectedRegionSet.contains(currentRegion):
 						return dictKey
-					
-				regionIdentitiesListWithNone = [isRegionMatchInDict(x) for x in regionsDicts.keys()]
-				regionIdentitiesList = [x for x in regionIdentitiesListWithNone if x]
+				
+
+				regionIdentitiesListWithNone = [isRegionMatchInDict(key) for key in regionsDicts.keys()]
+
+				# collect if exist
+				regionIdentitiesList = [val for val in regionIdentitiesListWithNone if val]
 				
 
 				# emit event of regions
-				def enitRegionMatchEvent(key):
+				def emitRegionMatchEvent(key):
 					regionInfo = regionsDicts[key]
 
-					var = regionInfo[SublimeSocketAPISettings.REGION_VAR]
+					param = regionInfo[SublimeSocketAPISettings.REGION_PARAM]
 					
 					# executables = params[SublimeSocketAPISettings.PLAYREGIONS_RUNNABLE]
 
@@ -355,7 +360,7 @@ class SublimeWSServer:
 					# 				replacedValue = map(replace, firstVal)
 
 								
-					# 			return {key:replacedValue}
+					# 			return {key:replacedValue}v
 
 					# 		# replace "[var]" expression in the value of dictionary to 'var' value
 					# 		params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
@@ -387,7 +392,7 @@ class SublimeWSServer:
 							self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
 							self.api.printout(var)
 
-				[enitRegionMatchEvent(region) for region in regionIdentitiesList]
+				[emitRegionMatchEvent(region) for region in regionIdentitiesList]
 				
 
 	## input to sublime from server.
