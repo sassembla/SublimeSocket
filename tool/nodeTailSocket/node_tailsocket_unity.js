@@ -57,10 +57,9 @@ ws.on('open', function() {
         "target": "nodetail",
         "event": "on_selection_modified",
         "selector": {
-            "playRegions": {
+            "containsREgions": {
                 "view": "will be replace to specific view",
-                "target": "nodetail",
-                "showatstatus":true
+                "debug":true
             }
         },
         "replacefromto": {

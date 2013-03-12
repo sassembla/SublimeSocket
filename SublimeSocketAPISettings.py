@@ -64,10 +64,9 @@ FILTER_SOURCE			= "source"
 FILTER_RUNNABLE		= "runnable"
 FILTER_DEBUG			= "debug"
 
-API_PLAYREGIONS		= "playRegions"
-PLAYREGIONS_VIEW	= "view"
-PLAYREGIONS_RUNNABLE = "runnable"
-PLAYREGIONS_DEBUG	= "debug"
+API_CONTAINSREGIONS	= "containsRegions"
+CONTAINSREGIONS_VIEW	= "view"
+CONTAINSREGIONS_DEBUG	= "debug"
 
 API_COLLECTVIEWS	= "collectViews"
 

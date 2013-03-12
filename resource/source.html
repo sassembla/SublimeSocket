@@ -352,13 +352,8 @@ ss@setReactor:
     "target": "02/21/13 18:39:16",
     "event": "on_selection_modified",
     "selector": {
-        "playRegions": {
+        "containsRegions": {
             "view": "will be replace to specific view",
-            "runnable": {
-                "broadcastMessage": {
-                    "message": "text's been modified! [var]"
-                }
-            },
             "debug": true
         }
     },
@@ -375,13 +370,8 @@ ss@setReactor:
     "target": "02/21/13 18:39:16",
     "event": "on_selection_modified",
     "selector": {
-        "playRegions": {
+        "containsRegions": {
             "view": "will be replace to specific view",
-            "runnable": {
-                "eval": [
-                    "sublime.message_dialog('test[var]')"
-                ]
-            },
             "debug": true
         }
     },

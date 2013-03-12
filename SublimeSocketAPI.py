@@ -74,8 +74,8 @@ class SublimeSocketAPI:
 				self.server.killServerSelf()
 				break
 
-			if case(SublimeSocketAPISettings.API_PLAYREGIONS):
-				self.playRegions(params)
+			if case(SublimeSocketAPISettings.API_CONTAINSREGIONS):
+				self.containsRegions(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_COLLECTVIEWS):
@@ -261,9 +261,9 @@ class SublimeSocketAPI:
 			else:
 				print "client", client, "result", result
 				
-	## play event that sink in regions
-	def playRegions(self, params):
-		self.server.playRegionsWithMatch(params)
+	## is contains regions or not.
+	def containsRegions(self, params):
+		self.server.containsRegions(params)
 		
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):

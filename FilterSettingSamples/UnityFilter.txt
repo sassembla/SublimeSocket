@@ -49,9 +49,8 @@ inputIdentity:
     "target": "UnityEditor",
     "event": "on_selection_modified",
     "selector": {
-        "playRegions": {
+        "containsRegions": {
             "view": "will be replace to specific view",
-            "target": "UnityEditor",
             "debug":true
         }
     },

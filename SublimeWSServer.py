@@ -267,15 +267,15 @@ class SublimeWSServer:
 			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
 
 
-	## play the event if params matches the regions that sink in view
-	def playRegionsWithMatch(self, params):
+	## emit event if params matches the regions that sink in view
+	def containsRegions(self, params):
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 			viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
-			assert params.has_key(SublimeSocketAPISettings.PLAYREGIONS_VIEW), "playRegionsWithMatch require 'view' param"
+			assert params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_VIEW), "containsRegions require 'view' param"
 			
 			# specify regions that are selected.
-			viewInstance = params[SublimeSocketAPISettings.PLAYREGIONS_VIEW]
+			viewInstance = params[SublimeSocketAPISettings.CONTAINSREGIONS_VIEW]
 			viewId = viewInstance.file_name()
 
 			# return if view not exist(include ST's console)
@@ -298,94 +298,95 @@ class SublimeWSServer:
 				regionIdentitiesList = [x for x in regionIdentitiesListWithNone if x]
 				
 
-				# play regions
-				def playRegionInfo(key):
+				# emit event of regions
+				def enitRegionMatchEvent(key):
 					regionInfo = regionsDicts[key]
 
 					var = regionInfo[SublimeSocketAPISettings.REGION_VAR]
 					
-					executables = params[SublimeSocketAPISettings.PLAYREGIONS_RUNNABLE]
+					# executables = params[SublimeSocketAPISettings.PLAYREGIONS_RUNNABLE]
 
-					# run
-					for key in executables.keys():
+					# # run
+					# for key in executables.keys():
 
-						# execute
-						command = key
-						# print "command", command
+					# 	# execute
+					# 	command = key
+					# 	# print "command", command
 						
-						paramsSource = executables[key]
-						# print "paramsSource", paramsSource
+					# 	paramsSource = executables[key]
+					# 	# print "paramsSource", paramsSource
 
-						currentParams = ""
+					# 	currentParams = ""
 
-						# replace the keyword "[var]" to 'var'.
-						if type(paramsSource) == list:
-							# before	eval:["sublime.message_dialog('[var]')"]
-							# after		eval:["sublime.message_dialog('THE_VALUE_OF_var')"]
+					# 	# replace the keyword "[var]" to 'var'.
+					# 	if type(paramsSource) == list:
+					# 		# before	eval:["sublime.message_dialog('[var]')"]
+					# 		# after		eval:["sublime.message_dialog('THE_VALUE_OF_var')"]
 							
-							def replaceGroupsInListKeyword(param):
-								result = param
+					# 		def replaceGroupsInListKeyword(param):
+					# 			result = param
 
-								if type(result) == str:
-									result = re.sub(r'\[var\]', var, result)
+					# 			if type(result) == str:
+					# 				result = re.sub(r'\[var\]', var, result)
 								
-								return result
+					# 			return result
 								
-							# replace "VAR" expression in the value of list to 'var'
-							currentParams = map(replaceGroupsInListKeyword, paramsSource)
+					# 		# replace "VAR" expression in the value of list to 'var'
+					# 		currentParams = map(replaceGroupsInListKeyword, paramsSource)
 							
-						elif type(paramsSource) == dict:
-							# before {u'line': u'[var]', u'message': u'message is [var]'}
-							# after	 {u'line': u'THE_VALUE_OF_var', u'message': u'message is THE_VALUE_OF_var'}
+					# 	elif type(paramsSource) == dict:
+					# 		# before {u'line': u'[var]', u'message': u'message is [var]'}
+					# 		# after	 {u'line': u'THE_VALUE_OF_var', u'message': u'message is THE_VALUE_OF_var'}
 
-							def replaceGroupsInDictionaryKeyword(key):
-								firstVal = paramsSource[key]
+					# 		def replaceGroupsInDictionaryKeyword(key):
+					# 			firstVal = paramsSource[key]
 								
-								replacedValue = firstVal
-								assert type(firstVal) != dict, "dict cannnot be convertable in playRegion."
+					# 			replacedValue = firstVal
+					# 			assert type(firstVal) != dict, "dict cannnot be convertable in playRegion."
 								
-								if type(firstVal) == str:
-									# replace all expression in firstVal
-									replacedValue = re.sub(r'\[var\]', var, firstVal)
+					# 			if type(firstVal) == str:
+					# 				# replace all expression in firstVal
+					# 				replacedValue = re.sub(r'\[var\]', var, firstVal)
 
-								elif type(firstVal) == list:
-									def replace (content):
-										return re.sub(r'\[var\]', var, content)
-									replacedValue = map(replace, firstVal)
+					# 			elif type(firstVal) == list:
+					# 				def replace (content):
+					# 					return re.sub(r'\[var\]', var, content)
+					# 				replacedValue = map(replace, firstVal)
 
 								
-								return {key:replacedValue}
+					# 			return {key:replacedValue}
 
-							# replace "[var]" expression in the value of dictionary to 'var' value
-							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
+					# 		# replace "[var]" expression in the value of dictionary to 'var' value
+					# 		params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
 
-							if not params_dicts:
-								pass
-							elif 1 == len(params_dicts):
-								currentParams = params_dicts[0]
-							else:
-								def reduceLeft(before, next):
-									# append all key-value pair.
-									for key in next.keys():
-										before[key] = next[key]
-									return before
+					# 		if not params_dicts:
+					# 			pass
+					# 		elif 1 == len(params_dicts):
+					# 			currentParams = params_dicts[0]
+					# 		else:
+					# 			def reduceLeft(before, next):
+					# 				# append all key-value pair.
+					# 				for key in next.keys():
+					# 					before[key] = next[key]
+					# 				return before
 								
-								currentParams = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
+					# 			currentParams = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
 							
-						# else:
-						# 	print "unknown type"
+					# 	# else:
+					# 	# 	print "unknown type"
 						
-						# execute
-						self.api.runAPI(command, currentParams)
+					# 	# execute
+					# 	self.api.runAPI(command, currentParams)
 
-					if params.has_key(SublimeSocketAPISettings.PLAYREGIONS_DEBUG):
-						if params[SublimeSocketAPISettings.PLAYREGIONS_DEBUG]:
+					if params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG):
+						debug = params[SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG]
+						if debug:
 							messageDict = {}
 							messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = var
 							self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
 							self.api.printout(var)
 
-				[playRegionInfo(region) for region in regionIdentitiesList]
+				[enitRegionMatchEvent(region) for region in regionIdentitiesList]
 				
 
 	## input to sublime from server.
