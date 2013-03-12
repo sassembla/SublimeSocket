@@ -147,7 +147,6 @@ class SublimeWSServer:
 	def getViewInfo(self, viewParam):
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
 		
-		print "path", path
 		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
 		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
 		return viewInfo
@@ -309,7 +308,7 @@ class SublimeWSServer:
 				def emitRegionMatchEvent(key):
 					regionInfo = regionsDicts[key]
 
-					param = regionInfo[SublimeSocketAPISettings.REGION_PARAM]
+					message = regionInfo[SublimeSocketAPISettings.REGION_MESSAGE]
 					
 					# executables = params[SublimeSocketAPISettings.PLAYREGIONS_RUNNABLE]
 
@@ -389,9 +388,9 @@ class SublimeWSServer:
 						debug = params[SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG]
 						if debug:
 							messageDict = {}
-							messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = var
+							messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = message
 							self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
-							self.api.printout(var)
+							self.api.printout(message)
 
 				[emitRegionMatchEvent(region) for region in regionIdentitiesList]
 				
