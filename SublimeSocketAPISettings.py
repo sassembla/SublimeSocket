@@ -95,12 +95,11 @@ API_SHOWATLOG			= "showAtLog"
 LOG_MESSAGE				= "message"
 LOG_prefix				= "ss:"
 
-API_SHOWLINE			= "showLine"
-SHOWLINE_VIEW			= "view"
-SHOWLINE_VIEW_CURRENT = "current"
-SHOWLINE_LINE			= "line"
-SHOWLINE_MESSAGE	= "message"
-SHOWLINE_IDENTITY	= "identity"
+API_APPENDREGION	= "appendRegion"
+APPENDREGION_VIEW	= "view"
+APPENDREGION_VIEW_CURRENT = "current"
+APPENDREGION_LINE	= "line"
+APPENDREGION_MESSAGE	= "message"
 
 API_TIMEREVENT		= "timerEvent"
 
@@ -114,10 +113,10 @@ DICT_REACTORS			= "DICT_REACTORS"
 DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
 
 SUBDICT_REGIONS		= "SUBDICT_REGIONS"
-REGION_SELF				= "region"
 REGION_IDENTITY		= "identity"
+REGION_SELF				= "region"
 REGION_EVENT			= "event"
-REGION_PARAM			= "param"
+REGION_MESSAGE		= "message"
 REGION_LINE				= "line"
 
 

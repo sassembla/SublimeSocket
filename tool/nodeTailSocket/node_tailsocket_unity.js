@@ -23,7 +23,7 @@ ws.on('open', function() {
             {
                 "[(]([0-9].*?),.*:(.*)": {
                     "runnable": {
-                        "showLine": {
+                        "appendRegion": {
                             "line": "groups[1]",
                             "message": "groups[2]"
                         }

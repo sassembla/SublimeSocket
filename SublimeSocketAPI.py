@@ -139,8 +139,8 @@ class SublimeSocketAPI:
 				self.showAtLog(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_SHOWLINE):
-				self.showLine(params)
+			if case(SublimeSocketAPISettings.API_APPENDREGION):
+				self.appendRegion(params)
 				break
 
 
@@ -467,23 +467,24 @@ class SublimeSocketAPI:
 		sublime.status_message(message)
 		
 
-	## show line on ST
-	def showLine(self, params):
-		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_VIEW), "showLine require 'view' param"
-		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_LINE), "showLine require 'line' param"
-		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_IDENTITY), "showLine require 'identity' param"
+	## append region on ST
+	def appendRegion(self, params):
+		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_VIEW), "appendRegion require 'view' param"
+		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_LINE), "appendRegion require 'line' param"
+		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_MESSAGE), "appendRegion require 'message' param"
 
-		view = params[SublimeSocketAPISettings.SHOWLINE_VIEW]
-		line = params[SublimeSocketAPISettings.SHOWLINE_LINE]
-		identity = params[SublimeSocketAPISettings.SHOWLINE_IDENTITY]
-		var = ""
+		view = params[SublimeSocketAPISettings.APPENDREGION_VIEW]
+		line = params[SublimeSocketAPISettings.APPENDREGION_LINE]
+		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
 
+		identity = str(uuid.uuid4())
+		
 		if type(view) == str:
 			# use current-view if 'current' set
-			if params[SublimeSocketAPISettings.SHOWLINE_VIEW] == SublimeSocketAPISettings.SHOWLINE_VIEW_CURRENT:
+			if params[SublimeSocketAPISettings.APPENDREGION_VIEW] == SublimeSocketAPISettings.APPENDREGION_VIEW_CURRENT:
 				view = self.server.currentTargetView()
 		elif type(view) == unicode :
-			if params[SublimeSocketAPISettings.SHOWLINE_VIEW] == SublimeSocketAPISettings.SHOWLINE_VIEW_CURRENT:
+			if params[SublimeSocketAPISettings.APPENDREGION_VIEW] == SublimeSocketAPISettings.APPENDREGION_VIEW_CURRENT:
 				view = self.server.currentTargetView()
 			else:
 				viewPath = view
@@ -492,17 +493,19 @@ class SublimeSocketAPI:
 				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
 				view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
 		
-		sublime.set_timeout(lambda: self.internalShowLine(view, line, identity, var), 0)
+		sublime.set_timeout(lambda: self.internalappendRegion(view, line, identity, message), 0)
 		
-
-	def internalShowLine(self, view, line, identity, var):
+	def internalappendRegion(self, view, line, identity, message):
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
 		regions.append(view.line(point))
 		
+		# show
 		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
-		self.server.storeRegionToView(view, line, var, identity, regions[0])
+
+		# store region
+		self.server.storeRegionToView(view, identity, regions[0], line, message)
 
 
 	### region control

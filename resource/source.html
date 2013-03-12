@@ -115,19 +115,21 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
-ss@showLine:
+ss@appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
-    "line": 10
+    "line": 10,
+    "message": "herecomes daredevil"
 }
             </option>
             <option>
-ss@showLine:
+ss@appendRegion:
 {
     "view": "current",
     "identity": "03/12/13 18:46:17",
-    "line": 10
+    "line": 10,
+    "message": "herecomes daredevil"
 }
 ->willBeEroorForNoCurrentViewIfCurrentViewNotSet:
 {}
@@ -137,11 +139,12 @@ ss@setTargetView:
 {
     "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
 }
-->showLine:
+->appendRegion:
 {
     "view": "current",
     "identity": "03/12/13 18:46:17",
-    "line": 10
+    "line": 10,
+    "message": "herecomes daredevil"
 }
             </option>
             <option>
@@ -184,13 +187,13 @@ ss@filtering:
             <option>
 ss@defineFilter:
 {
-    "name": "showLine",
+    "name": "appendRegion",
     "patterns": [
         {
             ".py.([0-9].*?),.*:(.*)": {
                 "runnable": {
                     "eraseAllRegion": {},
-                    "showLine": {
+                    "appendRegion": {
                         "line": "groups[1]",
                         "message": "message is groups[0]"
                     }
@@ -201,12 +204,12 @@ ss@defineFilter:
 }
 ->detectView+filtering: 
 {
-    "name": "showLine",
+    "name": "appendRegion",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
 }
 ->detectView+filtering: 
 {
-    "name": "showLine",
+    "name": "appendRegion",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
 }
             </option>

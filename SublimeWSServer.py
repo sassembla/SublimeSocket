@@ -161,15 +161,16 @@ class SublimeWSServer:
 
 	
 	## store region to viewDict-view in KVS
-	def storeRegionToView(self, view, line, param, identity, region):
+	def storeRegionToView(self, view, identity, region, line, message):
 		key = view.file_name()
 		specificViewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[key]
 
 		regionDict = {}
 		regionDict[SublimeSocketAPISettings.REGION_LINE] = line
-		regionDict[SublimeSocketAPISettings.REGION_PARAM] = param
+		regionDict[SublimeSocketAPISettings.REGION_MESSAGE] = message
 		regionDict[SublimeSocketAPISettings.REGION_SELF] = region
 		
+		# generate SUBDICT_REGIONS if not exist yet.
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 			specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS] = {}
 
