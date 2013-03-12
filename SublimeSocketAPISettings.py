@@ -21,10 +21,6 @@ SS_EVENT_COLLECT = "ss_collect"
 API_I_SHOWSTATUSMESSAGE		= "showStatusMessage"
 SHOWSTATUSMESSAGE_MESSAGE	= "message"
 
-API_I_SHOWLINE			= "showLine"
-SHOWLINE_LINE				= "line"
-SHOWLINE_MESSAGE		= "message"
-
 API_I_ERASEALLREGION	= "eraseAllRegion"
 
 API_I_REACT					= "react"
@@ -85,9 +81,9 @@ VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
 API_STOREREGION		= "storeRegion"
-REGION_LINENUM		= "lineNum"
-REGION_VAR				= "var"
-REGION_SELF				= "region"
+REGION_EVENT			= "event"
+REGION_PARAM			= "param"
+REGION_IDENTITY		= "identity"
 
 API_RUNSHELL			= "runShell"
 RUNSHELL_DEBUG		= "debug"
@@ -101,6 +97,12 @@ OUTPUT_MESSAGE		= "message"
 API_SHOWATLOG			= "showAtLog"
 LOG_MESSAGE				= "message"
 LOG_prefix				= "ss:"
+
+API_SHOWLINE			= "showLine"
+SHOWLINE_VIEW			= "view"
+SHOWLINE_LINE			= "line"
+SHOWLINE_MESSAGE	= "message"
+SHOWLINE_IDENTITY	= "identity"
 
 API_TIMEREVENT		= "timerEvent"
 

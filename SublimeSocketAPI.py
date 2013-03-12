@@ -139,17 +139,20 @@ class SublimeSocketAPI:
 				self.showAtLog(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_SHOWLINE):
+				if not params.has_key(SublimeSocketAPISettings.SHOWLINE_VIEW):
+					params[SublimeSocketAPISettings.SHOWLINE_VIEW] = self.server.currentTargetView()
+
+				sublime.set_timeout(lambda: self.showLine(params), 1)
+				break
+
 
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
 				sublime.set_timeout(lambda: self.showStatusMessage(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE]), 0)
 				break
 
-			if case(SublimeSocketAPISettings.API_I_SHOWLINE):
-				view = self.server.currentTargetView()
-
-				sublime.set_timeout(lambda: self.showLine(view, params[SublimeSocketAPISettings.SHOWLINE_LINE], params[SublimeSocketAPISettings.SHOWLINE_MESSAGE]), 1)
-				break
+			
 
 			if case(SublimeSocketAPISettings.API_I_ERASEALLREGION):
 				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
@@ -474,20 +477,24 @@ class SublimeSocketAPI:
 		
 
 	## show line on ST
-	def showLine(self, view, lineNum, comment):
-		# print "showLine view is", view
-		if view:
-			lines = []
-			regions = []
-			point = self.getLineCount_And_SetToArray(view, lineNum, lines)
-			regions.append(view.line(point))
-			
-			identity = str(uuid.uuid4())
-			
-			# add to viewDict
-			self.storeRegion(view, lineNum, comment, identity, regions[0])
-			
-			view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
+	def showLine(self, params):
+		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_VIEW), "showLine require 'view' param"
+		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_LINE), "showLine require 'line' param"
+		assert params.has_key(SublimeSocketAPISettings.SHOWLINE_IDENTITY), "showLine require 'identity' param"
+
+		view = params[SublimeSocketAPISettings.SHOWLINE_VIEW]
+		line = params[SublimeSocketAPISettings.SHOWLINE_LINE]
+		identity = params[SublimeSocketAPISettings.SHOWLINE_IDENTITY]
+
+		# print "showLine view is", view	
+		lines = []
+		regions = []
+		point = self.getLineCount_And_SetToArray(view, line, lines)
+		regions.append(view.line(point))
+		
+		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
+
+
 
 
 	### region control
