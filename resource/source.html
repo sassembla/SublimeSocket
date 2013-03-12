@@ -115,6 +115,55 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@setReactor:
+{
+    "target": "02/21/13 18:39:16",
+    "event": "on_selection_modified",
+    "selector": {
+        "containsRegions": {
+            "view": "will be replace to specific view",
+            "emit" : "ss_errorEmitted",
+            "debug": true
+        }
+    },
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100
+}
+->setReactor:
+{
+    "target": "02/21/13 18:39:16",
+    "event": "ss_errorEmitted",
+    "selector": {
+        "runShell": {
+            "paramArray": [
+                "terminal-notifier",
+                "-message",
+                "\"Hello, this is my message\"",
+                "-title",
+                "\"Message Title\"",
+                "-execute",
+                "\"open -a 'Sublime Text 2.App'\""
+            ],
+            "debug": true
+        }
+    },
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100
+}
+->appendRegion:
+{
+    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "identity": "03/12/13 18:46:17",
+    "line": 10,
+    "message": "herecomes daredevil"
+}
+
+            </option>
+            <option>
 ss@appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
@@ -195,7 +244,8 @@ ss@defineFilter:
                     "eraseAllRegion": {},
                     "appendRegion": {
                         "line": "groups[1]",
-                        "message": "message is groups[0]"
+                        "message": "message is groups[0]",
+                        "view": "current"
                     }
                 }
             }

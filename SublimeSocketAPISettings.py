@@ -15,7 +15,8 @@ API_OVERLAP_DELIM	= "+"					# overlap commands. share parameters with multiple A
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
 # SublimeSocket internal event definition
-SS_EVENT_COLLECT = "ss_collect"
+SS_EVENT_COLLECT	= "ss_collect"
+SS_EVENT_ERROREMITTED	= "ss_errorEmitted"
 
 # internal APIs/
 API_I_SHOWSTATUSMESSAGE		= "showStatusMessage"
@@ -42,7 +43,8 @@ REACTOR_EVENT			= "event"
 REACTOR_SELECTOR	= "selector"
 REACTOR_INTERVAL	= "interval"
 REACTOR_REPLACEFROMTO		= "replacefromto"
-REACTIVE_EVENT		= ["on_modified", "on_selection_modified"]
+REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified"]
+REACTIVE_ONEBYONE_EVENT = ["ss_errorEmitted"]
 
 API_KEYVALUESTORE	= "kvs"
 KVS_SHOWALL				= "showAll"
@@ -62,6 +64,7 @@ FILTER_DEBUG			= "debug"
 
 API_CONTAINSREGIONS	= "containsRegions"
 CONTAINSREGIONS_VIEW	= "view"
+CONTAINSREGIONS_EMIT	= "emit"
 CONTAINSREGIONS_DEBUG	= "debug"
 
 API_COLLECTVIEWS	= "collectViews"
