@@ -325,7 +325,9 @@ class SublimeWSServer:
 							
 							def replaceGroupsInListKeyword(param):
 								result = param
-								result = re.sub(r'\[var\]', var, result)
+
+								if type(result) == str:
+									result = re.sub(r'\[var\]', var, result)
 								
 								return result
 								
@@ -333,16 +335,27 @@ class SublimeWSServer:
 							currentParams = map(replaceGroupsInListKeyword, paramsSource)
 							
 						elif type(paramsSource) == dict:
-							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
-							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
+							# before {u'line': u'[var]', u'message': u'message is [var]'}
+							# after	 {u'line': u'THE_VALUE_OF_var', u'message': u'message is THE_VALUE_OF_var'}
 
 							def replaceGroupsInDictionaryKeyword(key):
-								result = paramsSource[key]
+								firstVal = paramsSource[key]
 								
-								# replace all expression
-								value = re.sub(r'\[var\]', var, result)
+								replacedValue = firstVal
+								assert type(firstVal) != dict, "dict cannnot be convertable in playRegion."
+								
+								if type(firstVal) == str:
+									# replace all expression in firstVal
+									replacedValue = re.sub(r'\[var\]', var, firstVal)
 
-								return {key:value}
+								elif type(firstVal) == list:
+									def replace (content):
+										return re.sub(r'\[var\]', var, content)
+									replacedValue = map(replace, firstVal)
+
+								
+								return {key:replacedValue}
+
 							# replace "[var]" expression in the value of dictionary to 'var' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
 

@@ -205,7 +205,7 @@ class SublimeSocketAPI:
 		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DEBUG):
 			debugFlag = params[SublimeSocketAPISettings.RUNSHELL_DEBUG]
 			if debugFlag:
-				print encodedRunnable
+				print "encodedRunnable", encodedRunnable
 		
 		if len(runnable):
 			self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
