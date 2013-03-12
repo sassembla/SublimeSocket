@@ -140,10 +140,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_SHOWLINE):
-				if not params.has_key(SublimeSocketAPISettings.SHOWLINE_VIEW):
-					params[SublimeSocketAPISettings.SHOWLINE_VIEW] = self.server.currentTargetView()
-
-				sublime.set_timeout(lambda: self.showLine(params), 1)
+				self.showLine(params)
 				break
 
 
@@ -486,15 +483,26 @@ class SublimeSocketAPI:
 		line = params[SublimeSocketAPISettings.SHOWLINE_LINE]
 		identity = params[SublimeSocketAPISettings.SHOWLINE_IDENTITY]
 
-		# print "showLine view is", view	
+		if type(view) == str:
+			# use current-view if 'current' set
+			if params[SublimeSocketAPISettings.SHOWLINE_VIEW] == SublimeSocketAPISettings.SHOWLINE_VIEW_CURRENT:
+				view = self.server.currentTargetView()
+		elif type(view) == unicode :
+			viewPath = view
+			
+			paramDict = {}
+			paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
+			view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
+		
+		sublime.set_timeout(lambda: self.internalShowLine(view, line, identity), 1)
+	def internalShowLine(self, view, line, identity):
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
 		regions.append(view.line(point))
 		
 		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
-
-
+	
 
 
 	### region control

@@ -115,15 +115,22 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
-ss@setTargetView:
+ss@showLine:
 {
-    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
-}
-->showLine+alpha:
-{
+    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 10
 }
+            </option>
+            <option>
+ss@showLine:
+{
+    "view": "current",
+    "identity": "03/12/13 18:46:17",
+    "line": 10
+}
+->willBeEroorForNoCurrentView:
+{}
             </option>
             <option>
 ss@setTargetView:
@@ -132,6 +139,7 @@ ss@setTargetView:
 }
 ->showLine:
 {
+    "view": "current",
     "identity": "03/12/13 18:46:17",
     "line": 10
 }

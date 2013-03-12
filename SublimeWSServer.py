@@ -138,14 +138,15 @@ class SublimeWSServer:
 
 	## return current targetted view or None.
 	def currentTargetView(self):
-		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW):
-			return self.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
-		return None
+		assert self.isExistOnKVS(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW), "no current view set."
+		return self.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
+
 
 
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
+		
 		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
 		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
 		return viewInfo

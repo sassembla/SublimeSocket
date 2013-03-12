@@ -100,6 +100,7 @@ LOG_prefix				= "ss:"
 
 API_SHOWLINE			= "showLine"
 SHOWLINE_VIEW			= "view"
+SHOWLINE_VIEW_CURRENT = "current"
 SHOWLINE_LINE			= "line"
 SHOWLINE_MESSAGE	= "message"
 SHOWLINE_IDENTITY	= "identity"
