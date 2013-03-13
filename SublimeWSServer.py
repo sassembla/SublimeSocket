@@ -146,7 +146,7 @@ class SublimeWSServer:
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
-		print "path", path		
+
 		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
 		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
 		return viewInfo
@@ -198,7 +198,11 @@ class SublimeWSServer:
 		target = params[SublimeSocketAPISettings.REACTOR_TARGET]
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
 		selector = params[SublimeSocketAPISettings.REACTOR_SELECTOR]
-		interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
+
+		# set default interval
+		interval = 0
+		if params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL):
+			interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
 
 		reactorsDict = {}
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_REACTORS):
@@ -221,8 +225,9 @@ class SublimeWSServer:
 		reactorsDict[event][target] = reactDict
 		self.setKV(SublimeSocketAPISettings.DICT_REACTORS, reactorsDict)
 		
-		# spawn event-loop for event execution
-		sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
+		if 0 < interval:
+			# spawn event-loop for event execution
+			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
 
 
 	## interval execution for event
@@ -280,6 +285,7 @@ class SublimeWSServer:
 			viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
 			assert params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_VIEW), "containsRegions require 'view' param"
+			assert params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_TARGET), "containsRegions require 'target' param"
 			assert params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_EMIT), "containsRegions require 'emit' param"
 
 
@@ -313,19 +319,23 @@ class SublimeWSServer:
 				if not regionIdentitiesList:
 					return
 
-
+				target = params[SublimeSocketAPISettings.CONTAINSREGIONS_TARGET]
 				emit = params[SublimeSocketAPISettings.CONTAINSREGIONS_EMIT]
 				
 				# emit event of regions
 				def emitRegionMatchEvent(key):
 					regionInfo = regionsDicts[key]
-					message = regionInfo[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
 
+					# append target
+					regionInfo[SublimeSocketAPISettings.REACTOR_TARGET] = target
+					print "regionInfo is",regionInfo 
 					self.fireKVStoredItem(emit, regionInfo)
 					
 					if params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG):
 						debug = params[SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG]
 						if debug:
+							message = regionInfo[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
+
 							messageDict = {}
 							messageDict[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE] = message
 							self.api.runAPI(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE, messageDict)
@@ -344,9 +354,19 @@ class SublimeWSServer:
 			# store data temporary.
 			self.temporaryEventDict[eventName] = eventParam
 
+
 		if eventName in SublimeSocketAPISettings.REACTIVE_ONEBYONE_EVENT:
-			# emit now
-			pass
+			# emit now if exist
+			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
+			print "reactorsDict", reactorsDict
+			
+			# if exist, continue
+			if reactorsDict.has_key(eventName):
+				target = eventParam[SublimeSocketAPISettings.REACTOR_TARGET]
+				reactDict = reactorsDict[eventName][target]
+				
+				print "reactDict",reactDict
+
 
 		# viewCollector "renew" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
