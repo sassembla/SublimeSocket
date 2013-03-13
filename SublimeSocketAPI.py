@@ -190,10 +190,17 @@ class SublimeSocketAPI:
 	## run shellScript
 	# params is array that will be evaluated as commandline marameters.
 	def runShell(self, params):
-		assert params.has_key(SublimeSocketAPISettings.RUNSHELL_PARAMARRAY), "runShell require 'paramArray'"
+		assert params.has_key(SublimeSocketAPISettings.RUNSHELL_MAIN), "runShell require 'main' param"
+		main = params[SublimeSocketAPISettings.RUNSHELL_MAIN]
+		
+		def genKeyValuePair(key):
+			val = str(params[key])
+			return key + ' ' + val
 
-		runnable = ' '.join(params[SublimeSocketAPISettings.RUNSHELL_PARAMARRAY])
+		kvPairArray = [genKeyValuePair(key) for key in params.keys() if key not in SublimeSocketAPISettings.RUNSHELL_LIST_IGNORES]
+		kvPairArray.insert(0, main) 
 
+		runnable = ' '.join(kvPairArray)
 		encodedRunnable = runnable.encode('utf8')
 
 		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DEBUG):
@@ -201,7 +208,7 @@ class SublimeSocketAPI:
 			if debugFlag:
 				print "encodedRunnable", encodedRunnable
 		
-		if len(runnable):
+		if len(encodedRunnable):
 			self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
 
 	## emit message to clients.

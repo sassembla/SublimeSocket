@@ -138,15 +138,10 @@ ss@setReactor:
     "event": "ss_errorEmitted",
     "selector": {
         "runShell": {
-            "paramArray": [
-                "terminal-notifier",
-                "-message",
-                "\"Hello, this is my message\"",
-                "-title",
-                "\"Message Title\"",
-                "-execute",
-                "\"open -a 'Sublime Text 2.App'\""
-            ],
+            "main": "terminal-notifier",
+            "-message": "\"Hello, this is my message\"",
+            "-title": "\"Message Title\"",
+            "-execute": "\"open -a 'Sublime Text 2.App'\"",
             "debug": true
         }
     }
@@ -196,22 +191,20 @@ ss@setTargetView:
             <option>
 ss@runShell:
 {
-    "paramArray": [
-        "terminal-notifier",
-        "-message",
-        "\"Hello, this is my message\"",
-        "-title",
-        "\"Message Title\"",
-        "-execute",
-        "\"open -a 'Sublime Text 2.App'\""
-    ],
+    "main": "terminal-notifier",
+    "-message": "\"Hello, this is my message\"",
+    "-title": "\"Message Title\"",
+    "-execute": "\"open -a 'Sublime Text 2.App'\"",
     "debug": true
 }
             </option>
             <option>
 ss@runShell:
 {
-    "paramArray": ["/usr/local/bin/growlnotify", "-m", "message!", "-t", "Saved!", "-a", "\"Sublime Text 2\""],
+    "main": "/usr/local/bin/growlnotify",
+    "-m": "message!",
+    "-t": "Saved!",
+    "-a": "\"Sublime Text 2\"",
     "debug": true
 }
             </option>

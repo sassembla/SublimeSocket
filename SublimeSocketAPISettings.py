@@ -85,11 +85,10 @@ VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_CO
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 TARGETTED_VIEW		= "targettedView"
 
-
-
 API_RUNSHELL			= "runShell"
+RUNSHELL_MAIN			= "main"
 RUNSHELL_DEBUG		= "debug"
-RUNSHELL_PARAMARRAY = "paramArray"
+RUNSHELL_LIST_IGNORES = [RUNSHELL_MAIN, RUNSHELL_DEBUG]
 
 API_BROADCASTMESSAGE	= "broadcastMessage"
 API_OUTPUTMESSAGE	= "outputMessage"
