@@ -43,6 +43,7 @@ REACTOR_EVENT			= "event"
 REACTOR_SELECTOR	= "selector"
 REACTOR_INTERVAL	= "interval"
 REACTOR_REPLACEFROMTO		= "replacefromto"
+
 REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified"]
 REACTIVE_ONEBYONE_EVENT = ["ss_errorEmitted"]
 

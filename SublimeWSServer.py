@@ -358,15 +358,15 @@ class SublimeWSServer:
 		if eventName in SublimeSocketAPISettings.REACTIVE_ONEBYONE_EVENT:
 			# emit now if exist
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
-			print "reactorsDict", reactorsDict
 			
 			# if exist, continue
 			if reactorsDict.has_key(eventName):
 				target = eventParam[SublimeSocketAPISettings.REACTOR_TARGET]
 				reactDict = reactorsDict[eventName][target]
 				
-				print "reactDict",reactDict
+				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTOR]
 
+				self.runAllSelector(reactDict, selector, eventParam)
 
 		# viewCollector "renew" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
