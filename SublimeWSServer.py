@@ -185,8 +185,7 @@ class SublimeWSServer:
 		def eraseAllRegionsAtView(viewInstance):
 			print "file_name()",viewInstance.file_name()
 
-			# これ、全文検索だ。regionの検索じゃない、、allEraseMapもつしかないのか、、
-			regions = viewInstance.find_all(SublimeSocketAPISettings.REGION_UUID_PREFIX)
+			regions = ""
 			print "i", regions
 			for a in regions:
 				print "a", a, "substr", viewInstance.substr(a)
