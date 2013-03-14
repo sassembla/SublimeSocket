@@ -146,10 +146,13 @@ class SublimeWSServer:
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
+		
+		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
-		viewInfo = self.getV(SublimeSocketAPISettings.DICT_VIEWS)[path]
-		viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
-		return viewInfo
+		if viewDict.has_key(path):
+			viewInfo = viewDict[path]
+			viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
+			return viewInfo
 
 
 	## collect current views
@@ -178,19 +181,38 @@ class SublimeWSServer:
 
 	## delete all regions in all view 
 	def deleteAllRegionsInAllView(self):
-		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
-		def deleteRegions(valueDict):
-			if valueDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
-				viewInstance = valueDict[SublimeSocketAPISettings.VIEW_SELF]
-				regionsDict = valueDict[SublimeSocketAPISettings.SUBDICT_REGIONS]
-				if regionsDict:
-					for regionIdentity in regionsDict.keys():
-						viewInstance.erase_regions(regionIdentity)
-						del regionsDict[regionIdentity]
+		def eraseAllRegionsAtView(viewInstance):
+			print "file_name()",viewInstance.file_name()
+
+			# これ、全文検索だ。regionの検索じゃない、、allEraseMapもつしかないのか、、
+			regions = viewInstance.find_all(SublimeSocketAPISettings.REGION_UUID_PREFIX)
+			print "i", regions
+			for a in regions:
+				print "a", a, "substr", viewInstance.substr(a)
+			# identities
+			# identity = 
+			# viewInstance.erase_regions(regionIdentity)
+
+		def eraseAllRegionsAtWindows(windowInstance):
+			views = windowInstance.views()
+			map(eraseAllRegionsAtView, views)
+
+		map(eraseAllRegionsAtWindows, sublime.windows())
+
+		# viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
+
+		# def deleteRegions(valueDict):
+		# 	if valueDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
+		# 		viewInstance = valueDict[SublimeSocketAPISettings.VIEW_SELF]
+		# 		regionsDict = valueDict[SublimeSocketAPISettings.SUBDICT_REGIONS]
+		# 		if regionsDict:
+		# 			for regionIdentity in regionsDict.keys():
+		# 				viewInstance.erase_regions(regionIdentity)
+		# 				del regionsDict[regionIdentity]
 	
-		if all(not d for d in viewDict):
-			map(deleteRegions, viewDict.values())
+		# if all(not d for d in viewDict):
+		# 	map(deleteRegions, viewDict.values())
 
 
 	## generate thread per selector. or add

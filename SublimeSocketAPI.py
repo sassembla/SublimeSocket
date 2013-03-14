@@ -195,6 +195,11 @@ class SublimeSocketAPI:
 		
 		def genKeyValuePair(key):
 			val = str(params[key])
+
+			val = val.replace(" ", "_");
+			val = val.replace("(", "");
+			val = val.replace(")", "");
+			
 			return key + ' ' + val
 
 		kvPairArray = [genKeyValuePair(key) for key in params.keys() if key not in SublimeSocketAPISettings.RUNSHELL_LIST_IGNORES]
@@ -484,7 +489,7 @@ class SublimeSocketAPI:
 		line = params[SublimeSocketAPISettings.APPENDREGION_LINE]
 		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
 
-		identity = str(uuid.uuid4())
+		identity = SublimeSocketAPISettings.REGION_UUID_PREFIX+str(uuid.uuid4())
 		
 		if type(view) == str:
 			# use current-view if 'current' set

@@ -27,6 +27,8 @@ API_I_ERASEALLREGION	= "eraseAllRegion"
 API_I_REACT					= "react"
 # /internal APIs
 
+# region identifier prefix
+REGION_UUID_PREFIX = "ss_"
 
 # public APIs
 API_RUNSETTING		= "runSetting"
