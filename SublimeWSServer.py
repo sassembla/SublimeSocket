@@ -27,6 +27,8 @@ class SublimeWSServer:
 		self.api = SublimeSocketAPI(self)
 		self.temporaryEventDict = {}
 
+		self.deletedRegionIdPool = []
+
 
 	def start(self, host, port):
 		self.socket = socket.socket()
@@ -175,43 +177,32 @@ class SublimeWSServer:
 		# generate SUBDICT_REGIONS if not exist yet.
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 			specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS] = {}
+			specificViewDict[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS] = []
 
 		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = regionDict
 
 
 	## delete all regions in all view 
 	def deleteAllRegionsInAllView(self):
+		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
+		
+		def eraseAllRegionsAtViewDict(viewDictValue):
+			if viewDictValue.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
+				viewInstance = viewDictValue[SublimeSocketAPISettings.VIEW_SELF]
+				regionsDict = viewDictValue[SublimeSocketAPISettings.SUBDICT_REGIONS]
+				
+				if regionsDict:
+					for regionIdentity in regionsDict.keys():
+						viewInstance.erase_regions(regionIdentity)
+						viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].append(regionIdentity)
+						del regionsDict[regionIdentity]
+				
+				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS]]
 
-		def eraseAllRegionsAtView(viewInstance):
-			print "file_name()",viewInstance.file_name()
-
-			regions = ""
-			print "i", regions
-			for a in regions:
-				print "a", a, "substr", viewInstance.substr(a)
-			# identities
-			# identity = 
-			# viewInstance.erase_regions(regionIdentity)
-
-		def eraseAllRegionsAtWindows(windowInstance):
-			views = windowInstance.views()
-			map(eraseAllRegionsAtView, views)
-
-		map(eraseAllRegionsAtWindows, sublime.windows())
-
-		# viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
-
-		# def deleteRegions(valueDict):
-		# 	if valueDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
-		# 		viewInstance = valueDict[SublimeSocketAPISettings.VIEW_SELF]
-		# 		regionsDict = valueDict[SublimeSocketAPISettings.SUBDICT_REGIONS]
-		# 		if regionsDict:
-		# 			for regionIdentity in regionsDict.keys():
-		# 				viewInstance.erase_regions(regionIdentity)
-		# 				del regionsDict[regionIdentity]
-	
 		# if all(not d for d in viewDict):
-		# 	map(deleteRegions, viewDict.values())
+		# 	print "all ", d
+		map(eraseAllRegionsAtViewDict, viewDict.values())
+
 
 
 	## generate thread per selector. or add

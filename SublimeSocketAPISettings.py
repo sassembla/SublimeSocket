@@ -5,10 +5,8 @@
 ### COMMANDS	=		COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME : JSON_EXPRESSION -> ...
 ### COMMANDS	=		COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME + COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> ...
 
-
 API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
-
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_OVERLAP_DELIM	= "+"					# overlap commands. share parameters with multiple APIs.	
@@ -125,5 +123,7 @@ REGION_SELF				= "region"
 REGION_EVENT			= "event"
 REGION_MESSAGE		= "message"
 REGION_LINE				= "line"
+
+SUBARRAY_DELETED_REGIONS		= "SUBARRAY_DELETED_REGIONS"
 
 
