@@ -340,7 +340,6 @@ class SublimeWSServer:
 
 					# append target
 					regionInfo[SublimeSocketAPISettings.REACTOR_TARGET] = target
-					print "regionInfo is",regionInfo 
 					self.fireKVStoredItem(emit, regionInfo)
 					
 					if params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_DEBUG):
