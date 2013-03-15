@@ -22,32 +22,40 @@ ws.on('open', function() {
         "patterns": [
             {
                 "[(]([0-9].*?),.*:(.*)": {
-                    "runnable": {
-                        "appendRegion": {
-                            "line": "groups[1]",
-                            "message": "groups[2]"
+                    "selectors": [
+                        {
+                            "appendRegion": {
+                                "line": "groups[1]",
+                                "message": "groups[2]"
+                            }
                         }
-                    }
+                    ]
                 }
             },
             {
                 "Compilation failed:(.*)": {
-                    "runnable": {
-                        "eraseAllRegion": {},
-                        "showStatusMessage": {
-                            "message":"groups[0]"
+                    "selectors": [
+                        {
+                            "eraseAllRegion": {}
+                        },{
+                            "showStatusMessage": {
+                                "message":"groups[0]"
+                            }
                         }
                     }
                 }
             },
             {
                 "(^Mono: successfully reloaded assembly)": {
-                    "runnable": {
-                        "eraseAllRegion": {},
-                        "showStatusMessage": {
-                            "message":"groups[0]"
+                    "selectors": [
+                        {
+                            "eraseAllRegion": {}
+                        },{
+                            "showStatusMessage": {
+                                "message":"groups[0]"
+                            }
                         }
-                    }
+                    ]
                 }         
            }
         ]
@@ -56,12 +64,14 @@ ws.on('open', function() {
     {
         "target": "nodetail",
         "event": "on_selection_modified",
-        "selector": {
-            "containsREgions": {
-                "view": "will be replace to specific view",
-                "debug":true
+        "selectors": [
+            {
+                "containsREgions": {
+                    "view": "will be replace to specific view",
+                    "debug":true
+                }
             }
-        },
+        ],
         "replacefromto": {
             "view": "view"
         },

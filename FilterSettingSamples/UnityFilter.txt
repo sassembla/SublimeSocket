@@ -1,5 +1,5 @@
 //Unity filter
-//v 1.0.1
+//v 1.0.2
 
 defineFilter:
 {
@@ -56,6 +56,8 @@ defineFilter:
         {
             "containsRegions": {
                 "view": "will be replace to specific view",
+                "target": "UnityEditor",
+                "emit": "ss_errorEmitted",
                 "debug": true
             }
         }
