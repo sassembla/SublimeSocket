@@ -72,7 +72,7 @@ CONTAINSREGIONS_DEBUG	= "debug"
 API_COLLECTVIEWS	= "collectViews"
 
 API_DETECTVIEW		= "detectView"
-DETECT_SOURCE			= "source"
+DETECT_PATH				= "path"
 
 API_SETTARGETVIEW	= "setTargetView"
 VIEW_PATH					= "path"

@@ -83,7 +83,8 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_DETECTVIEW):
-				self.detectViewInfo(params, client)
+				print "API_DETECTVIEW", params
+				self.detectView(params, client)
 				break
 
 			if case(SublimeSocketAPISettings.API_SETTARGETVIEW):
@@ -146,7 +147,7 @@ class SublimeSocketAPI:
 
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
-				sublime.set_timeout(lambda: self.showStatusMessage(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE]), 0)
+				sublime.set_timeout(lambda: self.showStatusMessage(params), 0)
 				break
 
 			if case(SublimeSocketAPISettings.API_I_ERASEALLREGION):
@@ -248,6 +249,7 @@ class SublimeSocketAPI:
 	## set target-view info
 	def setTargetView(self, params, client=None):
 		if self.server.isViewDefined(params):
+			print "ヒット！"
 			# update currentTargetView
 			viewInfo = self.server.getViewInfo(params)
 
@@ -290,6 +292,7 @@ class SublimeSocketAPI:
 		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
 		# store
+		print "filterNameAndPatternsArray", filterNameAndPatternsArray
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
 		
 
@@ -343,19 +346,20 @@ class SublimeSocketAPI:
 						print "searched.groups()",searched.groups()
 					
 
-					executables = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
+					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
 					
 					currentGroupSize = len(searched.groups())
 					
 					# run
-					for key in executables.keys():
-
-						# execute
-						command = key
-						# print "command", command
+					for executableDict in executablesArray:
+						print "executableDict", executableDict
 						
-						paramsSource = executables[key]
-						# print "paramsSource", paramsSource
+						# execute
+						command = executableDict.keys()[0]
+						print "command", command
+						
+						paramsSource = executableDict[command]
+						print "paramsSource", paramsSource
 
 						params = None
 						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
@@ -440,9 +444,10 @@ class SublimeSocketAPI:
 
 
 	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
-	def detectViewInfo(self, params, client=None):
+	def detectView(self, params, client=None):
+		assert params.has_key(SublimeSocketAPISettings.DETECT_PATH), "detectView require 'path' param"
 		if self.server.viewDict():
-			viewSourceStr = params[SublimeSocketAPISettings.DETECT_SOURCE]
+			viewSourceStr = params[SublimeSocketAPISettings.DETECT_PATH]
 			
 			# remove empty and 1 length string pattern.
 			if not viewSourceStr or len(viewSourceStr) is 1:
@@ -475,8 +480,10 @@ class SublimeSocketAPI:
 	########## APIs for shortcut ST2-Display ##########
 
 	## show message on ST
-	def showStatusMessage(self, message):
-		sublime.status_message(message)
+	def showStatusMessage(self, params):
+		assert params.has_key(SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE), "showStatusMessage require 'message' param"
+		
+		sublime.status_message(params[SublimeSocketAPISettings.SHOWSTATUSMESSAGE_MESSAGE])
 		
 
 	## append region on ST

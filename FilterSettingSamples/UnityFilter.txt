@@ -1,45 +1,49 @@
 //Unity filter
-//v 1.0.0
+//v 1.0.1
 
-
-inputIdentity:
-{
-    "id":"UnityEditor"
-}
-
-->defineFilter:
+defineFilter:
 {
     "name": "unity",
     "patterns": [
         {
             "[(]([0-9].*?),.*:(.*)": {
-                "runnable": {
-                    "appendRegion": {
-                        "line": "groups[1]",
-                        "message": "groups[2]"
+                "runnable": [
+                    {
+                        "appendRegion": {
+                            "line": "groups[1]",
+                            "message": "groups[2]"
+                        }
                     }
-                }
+                ]
             }
         },
         {
             "Compilation failed:(.*)": {
-                "runnable": {
-                    "eraseAllRegion": {},
-                    "showStatusMessage": {
-                        "message":"groups[0]"
+                "runnable": [
+                    {
+                        "eraseAllRegion": {}
+                    },
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
                     }
-                }
+                ]
             }
         },
         {
             "(^Mono: successfully reloaded assembly)": {
-                "runnable": {
-                    "eraseAllRegion": {},
-                    "showStatusMessage": {
-                        "message":"groups[0]"
+                "runnable": [
+                    {
+                        "eraseAllRegion": {}
+                    },
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
                     }
-                }
-            }         
+                ]
+            }
         }
     ]
 }
