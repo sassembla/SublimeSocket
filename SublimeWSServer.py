@@ -125,7 +125,6 @@ class SublimeWSServer:
 	
 	## return the view has been defined or not
 	def isViewDefined(self, viewParam):
-		print "isViewDefined viewParam is", viewParam
 		if not self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
 			print "target view does not exist in KVS. :", viewParam
 			return False
@@ -148,7 +147,6 @@ class SublimeWSServer:
 
 	## return specific view instance from viewDict.
 	def getViewInfo(self, viewParam):
-		print "getViewInfo viewParam is", viewParam
 		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
 		
 		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)

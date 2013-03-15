@@ -249,7 +249,6 @@ class SublimeSocketAPI:
 	## set target-view info
 	def setTargetView(self, params, client=None):
 		if self.server.isViewDefined(params):
-			print "ヒット！"
 			# update currentTargetView
 			viewInfo = self.server.getViewInfo(params)
 
