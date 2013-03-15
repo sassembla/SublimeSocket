@@ -121,7 +121,7 @@ ss@defineFilter:
     "patterns": [
         {
             "something": {
-                "runnable": [
+                "selectors": [
                     {
                         "a": {}
                     },
@@ -157,14 +157,16 @@ ss@setReactor:
 {
     "target": "02/21/13 18:39:16",
     "event": "on_selection_modified",
-    "selector": {
-        "containsRegions": {
-            "view": "will be replace to specific view",
-            "target": "02/21/13 18:39:16",
-            "emit" : "ss_errorEmitted",
-            "debug": true
+    "selectors": [
+        {
+            "containsRegions": {
+                "view": "will be replace to specific view",
+                "target": "02/21/13 18:39:16",
+                "emit": "ss_errorEmitted",
+                "debug": true
+            }
         }
-    },
+    ],
     "replacefromto": {
         "view": "view"
     },
@@ -174,15 +176,17 @@ ss@setReactor:
 {
     "target": "02/21/13 18:39:16",
     "event": "ss_errorEmitted",
-    "selector": {
-        "runShell": {
-            "main": "terminal-notifier",
-            "-message": "\"Hello, this is my message\"",
-            "-title": "\"Message Title\"",
-            "-execute": "\"open -a 'Sublime Text 2.App'\"",
-            "debug": true
+    "selectors": [
+        {
+            "runShell": {
+                "main": "terminal-notifier",
+                "-message": "\"Hello, this is my message\"",
+                "-title": "\"Message Title\"",
+                "-execute": "\"open -a 'Sublime Text 2.App'\"",
+                "debug": true
+            }
         }
-    }
+    ]
 }
 ->appendRegion:
 {
@@ -268,7 +272,7 @@ ss@defineFilter:
     "patterns": [
         {
             ".py.([0-9].*?),.*:(.*)": {
-                "runnable": [
+                "selectors": [
                     {
                         "eraseAllRegion": {}
                     },
@@ -318,7 +322,7 @@ ss@defineFilter:
     "patterns": [
         {
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
-                "runnable": [
+                "selectors": [
                     {
                         "eval": [
                             "sublime.message_dialog('groups[1]')"
@@ -413,7 +417,7 @@ ss@defineFilter:
     "patterns": [
         {
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
-                "runnable": [
+                "selectors": [
                     {
                         "eval": [
                             "sublime.message_dialog('onlySetFilter groups[1]')"
@@ -433,7 +437,7 @@ ss@defineFilter:
     "patterns": [
         {
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
-                "runnable": [
+                "selectors": [
                     {
                         "eval": [
                             "sublime.message_dialog('singleParam groups[0]')",
@@ -461,7 +465,7 @@ ss@defineFilter:
     "patterns": [
         {
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
-                "runnable": [
+                "selectors": [
                     {
                         "showStatusMessage": {
                             "message": "herecomes! groups[0]"
@@ -484,14 +488,16 @@ ss@setReactor:
 {
     "target": "02/21/13 18:39:16",
     "event": "on_selection_modified",
-    "selector": {
-        "containsRegions": {
-            "view": "will be replace to specific view",
-            "target": "02/21/13 18:39:16",
-            "emit" : "ss_errorEmitted",
-            "debug": true
+    "selectors": [
+        {
+            "containsRegions": {
+                "view": "will be replace to specific view",
+                "target": "02/21/13 18:39:16",
+                "emit": "ss_errorEmitted",
+                "debug": true
+            }
         }
-    },
+    ],
     "replacefromto": {
         "view": "view"
     },
@@ -504,14 +510,16 @@ ss@setReactor:
 {
     "target": "02/21/13 18:39:16",
     "event": "on_selection_modified",
-    "selector": {
-        "containsRegions": {
-            "view": "will be replace to specific view",
-            "target": "02/21/13 18:39:16",
-            "emit" : "ss_errorEmitted",
-            "debug": true
+    "selectors": [
+        {
+            "containsRegions": {
+                "view": "will be replace to specific view",
+                "target": "02/21/13 18:39:16",
+                "emit": "ss_errorEmitted",
+                "debug": true
+            }
         }
-    },
+    ],
     "replacefromto": {
         "view": "view"
     },
@@ -524,11 +532,13 @@ ss@setReactor:
 {
     "target": "02/20/13 16:53:35",
     "event": "on_modified",
-    "selector": {
-        "broadcastMessage": {
-            "message": "text's been modified!"
+    "selectors": [
+        {
+            "broadcastMessage": {
+                "message": "text's been modified!"
+            }
         }
-    },
+    ],
     "interval": 100
 }
             </option>

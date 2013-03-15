@@ -345,7 +345,7 @@ class SublimeSocketAPI:
 						print "searched.groups()",searched.groups()
 					
 
-					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_RUNNABLE]
+					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
 					
 					currentGroupSize = len(searched.groups())
 					

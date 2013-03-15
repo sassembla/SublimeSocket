@@ -7,7 +7,7 @@ defineFilter:
     "patterns": [
         {
             "[(]([0-9].*?),.*:(.*)": {
-                "runnable": [
+                "selectors": [
                     {
                         "appendRegion": {
                             "line": "groups[1]",
@@ -19,7 +19,7 @@ defineFilter:
         },
         {
             "Compilation failed:(.*)": {
-                "runnable": [
+                "selectors": [
                     {
                         "eraseAllRegion": {}
                     },
@@ -33,7 +33,7 @@ defineFilter:
         },
         {
             "(^Mono: successfully reloaded assembly)": {
-                "runnable": [
+                "selectors": [
                     {
                         "eraseAllRegion": {}
                     },
@@ -52,12 +52,14 @@ defineFilter:
 {
     "target": "UnityEditor",
     "event": "on_selection_modified",
-    "selector": {
-        "containsRegions": {
-            "view": "will be replace to specific view",
-            "debug":true
+    "selectors": [
+        {
+            "containsRegions": {
+                "view": "will be replace to specific view",
+                "debug": true
+            }
         }
-    },
+    ],
     "replacefromto": {
         "view": "view"
     },

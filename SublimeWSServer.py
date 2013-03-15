@@ -212,8 +212,9 @@ class SublimeWSServer:
 	def setOrAddReactor(self, params, client):
 		target = params[SublimeSocketAPISettings.REACTOR_TARGET]
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
-		selector = params[SublimeSocketAPISettings.REACTOR_SELECTOR]
+		selectorsArray = params[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
+		
 		# set default interval
 		interval = 0
 		if params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL):
@@ -224,7 +225,7 @@ class SublimeWSServer:
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 
 		reactDict = {}
-		reactDict[SublimeSocketAPISettings.REACTOR_SELECTOR] = selector
+		reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS] = selectorsArray
 		reactDict[SublimeSocketAPISettings.REACTOR_INTERVAL] = interval
 
 		if params.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
@@ -242,11 +243,11 @@ class SublimeWSServer:
 		
 		if 0 < interval:
 			# spawn event-loop for event execution
-			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
+			sublime.set_timeout(lambda: self.eventIntervals(target, event, selectorsArray, interval), interval)
 
 
 	## interval execution for event
-	def eventIntervals(self, target, event, selector, interval):
+	def eventIntervals(self, target, event, selectorsArray, interval):
 
 		reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 		
@@ -269,13 +270,16 @@ class SublimeWSServer:
 				del self.temporaryEventDict[event]
 
 				# run all selector
-				self.runAllSelector(reactorDict, selector, eventParam)
+				self.runAllSelector(reactorDict, selectorsArray, eventParam)
 
 			# continue
-			sublime.set_timeout(lambda: self.eventIntervals(target, event, selector, interval), interval)
+			sublime.set_timeout(lambda: self.eventIntervals(target, event, selectorsArray, interval), interval)
 
-	def runAllSelector(self, reactorDict, selector, eventParam):
-		def runForeachAPI(command):
+	def runAllSelector(self, reactorDict, selectorsArray, eventParam):
+		def runForeachAPI(selector):
+			# {u'broadcastMessage': {u'message': u"text's been modified!"}}
+
+			command = selector.keys()[0]
 			params = selector[command]
 
 			# print "params", params, "command", command
@@ -290,7 +294,7 @@ class SublimeWSServer:
 
 			self.api.runAPI(command, params)
 
-		[runForeachAPI(command) for command in selector.keys()]
+		[runForeachAPI(selector) for selector in selectorsArray]
 
 
 
@@ -378,7 +382,7 @@ class SublimeWSServer:
 				target = eventParam[SublimeSocketAPISettings.REACTOR_TARGET]
 				reactDict = reactorsDict[eventName][target]
 				
-				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTOR]
+				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
 				self.runAllSelector(reactDict, selector, eventParam)
 
