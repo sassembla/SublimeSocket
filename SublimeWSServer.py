@@ -291,6 +291,7 @@ class SublimeWSServer:
 	## emit event if params matches the regions that sink in view
 	def containsRegions(self, params):
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
+			
 			viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 
 			assert params.has_key(SublimeSocketAPISettings.CONTAINSREGIONS_VIEW), "containsRegions require 'view' param"
@@ -315,7 +316,6 @@ class SublimeWSServer:
 				# identity
 				def isRegionMatchInDict(dictKey):
 					currentRegion = regionsDicts[dictKey][SublimeSocketAPISettings.REGION_SELF]
-					# print "currentRegionがこれ", currentRegion
 					if selectedRegionSet.contains(currentRegion):
 						return dictKey
 				
@@ -325,17 +325,12 @@ class SublimeWSServer:
 				# collect if exist
 				regionIdentitiesList = [val for val in regionIdentitiesListWithNone if val]
 				
-				size = len(regionIdentitiesList)
-				if size is len(regionIdentitiesList):
-					# print "regionIdentitiesListが空なので帰る",regionIdentitiesList 
-					return
 
 				target = params[SublimeSocketAPISettings.CONTAINSREGIONS_TARGET]
 				emit = params[SublimeSocketAPISettings.CONTAINSREGIONS_EMIT]
 				
 				# emit event of regions
 				def emitRegionMatchEvent(key):
-					print "emitRegionMatchEvent　この領域からの発生"
 					regionInfo = regionsDicts[key]
 
 					# append target
