@@ -83,7 +83,6 @@ class SublimeSocketAPI:
 				break
 
 			if case(SublimeSocketAPISettings.API_DETECTVIEW):
-				print "API_DETECTVIEW", params
 				self.detectView(params, client)
 				break
 
@@ -266,8 +265,12 @@ class SublimeSocketAPI:
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
 			else:
-				print "client", client, "result", result
-				
+				pass
+				# print "client", client, "result", result
+
+		else:
+			assert False, "no view Found! さあどうしよう！:"+params
+
 	## is contains regions or not.
 	def containsRegions(self, params):
 		self.server.containsRegions(params)
@@ -291,7 +294,6 @@ class SublimeSocketAPI:
 		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
 
 		# store
-		print "filterNameAndPatternsArray", filterNameAndPatternsArray
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
 		
 
@@ -351,14 +353,12 @@ class SublimeSocketAPI:
 					
 					# run
 					for executableDict in executablesArray:
-						print "executableDict", executableDict
 						
 						# execute
 						command = executableDict.keys()[0]
-						print "command", command
+						# print "command", command
 						
 						paramsSource = executableDict[command]
-						print "paramsSource", paramsSource
 
 						params = None
 						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
@@ -494,8 +494,6 @@ class SublimeSocketAPI:
 		view = params[SublimeSocketAPISettings.APPENDREGION_VIEW]
 		line = params[SublimeSocketAPISettings.APPENDREGION_LINE]
 		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
-
-		identity = SublimeSocketAPISettings.REGION_UUID_PREFIX+str(uuid.uuid4())
 		
 		if type(view) == str:
 			# use current-view if 'current' set
@@ -511,13 +509,15 @@ class SublimeSocketAPI:
 				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
 				view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
 		
-		sublime.set_timeout(lambda: self.internalappendRegion(view, line, identity, message), 0)
+		sublime.set_timeout(lambda: self.internalAppendRegion(view, line, message), 0)
 		
-	def internalappendRegion(self, view, line, identity, message):
+	def internalAppendRegion(self, view, line, message):
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
 		regions.append(view.line(point))
+
+		identity = SublimeSocketAPISettings.REGION_UUID_PREFIX + str(regions[0])
 		
 		# show
 		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)

@@ -189,6 +189,7 @@ class SublimeWSServer:
 	def deleteAllRegionsInAllView(self):
 		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 		
+		print "viewDict before", viewDict
 		def eraseAllRegionsAtViewDict(viewDictValue):
 			if viewDictValue.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 				viewInstance = viewDictValue[SublimeSocketAPISettings.VIEW_SELF]
@@ -198,13 +199,19 @@ class SublimeWSServer:
 					for regionIdentity in regionsDict.keys():
 						viewInstance.erase_regions(regionIdentity)
 						viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].append(regionIdentity)
+						print "regionsDict before", regionsDict
 						del regionsDict[regionIdentity]
+						print "regionsDict after", regionsDict
 				
 				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS]]
+				
 
 		# if all(not d for d in viewDict):
 		# 	print "all ", d
 		map(eraseAllRegionsAtViewDict, viewDict.values())
+		print "viewDict after", viewDict
+
+		# self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
 
 
@@ -325,7 +332,7 @@ class SublimeWSServer:
 				# identity
 				def isRegionMatchInDict(dictKey):
 					currentRegion = regionsDicts[dictKey][SublimeSocketAPISettings.REGION_SELF]
-					
+					# print "currentRegionがこれ", currentRegion
 					if selectedRegionSet.contains(currentRegion):
 						return dictKey
 				
@@ -334,8 +341,10 @@ class SublimeWSServer:
 
 				# collect if exist
 				regionIdentitiesList = [val for val in regionIdentitiesListWithNone if val]
-
-				if not regionIdentitiesList:
+				
+				size = len(regionIdentitiesList)
+				if size is len(regionIdentitiesList):
+					# print "regionIdentitiesListが空なので帰る",regionIdentitiesList 
 					return
 
 				target = params[SublimeSocketAPISettings.CONTAINSREGIONS_TARGET]
@@ -343,6 +352,7 @@ class SublimeWSServer:
 				
 				# emit event of regions
 				def emitRegionMatchEvent(key):
+					print "emitRegionMatchEvent　この領域からの発生"
 					regionInfo = regionsDicts[key]
 
 					# append target

@@ -45,7 +45,7 @@ REACTOR_INTERVAL	= "interval"
 REACTOR_REPLACEFROMTO		= "replacefromto"
 
 REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified"]
-REACTIVE_ONEBYONE_EVENT = ["ss_errorEmitted"]
+REACTIVE_ONEBYONE_EVENT = [SS_EVENT_ERROREMITTED]
 
 API_KEYVALUESTORE	= "kvs"
 KVS_SHOWALL				= "showAll"
