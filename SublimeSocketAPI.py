@@ -45,12 +45,7 @@ class SublimeSocketAPI:
 					print "JSON parse error", e, "source = ", command_params[1]
 					return
 
-			overlapCommandList = command.split(SublimeSocketAPISettings.API_OVERLAP_DELIM)
-			if 1 < len(overlapCommandList):
-				for command in overlapCommandList:
-					self.runAPI(command, params, client)
-			else:
-				self.runAPI(command, params, client)
+			self.runAPI(command, params, client)
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params=None, client=None):
