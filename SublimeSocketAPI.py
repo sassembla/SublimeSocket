@@ -429,7 +429,6 @@ class SublimeSocketAPI:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_BASENAME]
 
 				if viewBasename in viewSourceStr:
-
 					return viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]
 
 		# totally, return None and do nothing
@@ -461,6 +460,9 @@ class SublimeSocketAPI:
 		
 		if viewInstance:
 			sublime.set_timeout(lambda: self.internal_appendRegion(viewInstance, line, message, condition), 0)
+
+		else:
+			print "appendRegion:no view found from Sublime Text's buffer,", view,line,message,condition
 		
 	def internal_appendRegion(self, view, line, message, condition):
 		lines = []
