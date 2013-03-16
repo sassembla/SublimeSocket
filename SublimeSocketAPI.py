@@ -56,6 +56,8 @@ class SublimeSocketAPI:
 	def runAPI(self, command, params=None, client=None):
 		evalResults = "empty"
   	
+		print "runAPI command", command
+						
   	# python-switch
 		for case in PythonSwitch(command):
 			if case(SublimeSocketAPISettings.API_RUNSETTING):
@@ -455,16 +457,17 @@ class SublimeSocketAPI:
 		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
 		condition = params[SublimeSocketAPISettings.APPENDREGION_CONDITION]
 		
+		
+
 		# find view
 		viewInstance = self.internal_detectViewInstance(view)
-		
-		if viewInstance:
-			sublime.set_timeout(lambda: self.internal_appendRegion(viewInstance, line, message, condition), 0)
-
-		else:
-			print "appendRegion:no view found from Sublime Text's buffer,", view,line,message,condition
+		sublime.set_timeout(lambda: self.internal_appendRegion(viewInstance, line, message, condition), 0)
 		
 	def internal_appendRegion(self, view, line, message, condition):
+		if not view:
+			print "appendRegion:no view found from Sublime Text's buffer,", view,line,message,condition
+			return
+
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
