@@ -461,25 +461,32 @@ class SublimeSocketAPI:
 
 		# find view
 		viewInstance = self.internal_detectViewInstance(view)
-		sublime.set_timeout(lambda: self.internal_appendRegion(viewInstance, line, message, condition), 0)
-		
-	def internal_appendRegion(self, view, line, message, condition):
-		if not view:
-			print "appendRegion:no view found from Sublime Text's buffer,", view,line,message,condition
-			return
 
+		# run in main thread
+		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_print(view, viewInstance, line, message, condition), 0)
+	
+
+	def checkIfViewExist_appendRegion_Else_print(self, view, viewInstance, line, message, condition):
+		# this check should be run in main thread
+		if viewInstance:
+			self.internal_appendRegion(viewInstance, line, message, condition)
+
+		else:
+			print "appendRegion:no view found from Sublime Text's buffer, view:", view, "line:",line, "message:",message, "condition",condition
+
+	def internal_appendRegion(self, viewInstance, line, message, condition):
 		lines = []
 		regions = []
-		point = self.getLineCount_And_SetToArray(view, line, lines)
-		regions.append(view.line(point))
+		point = self.getLineCount_And_SetToArray(viewInstance, line, lines)
+		regions.append(viewInstance.line(point))
 
 		identity = SublimeSocketAPISettings.REGION_UUID_PREFIX + str(regions[0])
 		
 		# show
-		view.add_regions(identity, regions, condition, 'dot', sublime.DRAW_OUTLINED)
+		viewInstance.add_regions(identity, regions, condition, 'dot', sublime.DRAW_OUTLINED)
 
 		# store region
-		self.server.storeRegionToView(view, identity, regions[0], line, message)
+		self.server.storeRegionToView(viewInstance, identity, regions[0], line, message)
 
 
 	### region control
