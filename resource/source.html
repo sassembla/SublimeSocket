@@ -148,7 +148,8 @@ ss@appendRegion:
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 10,
-    "message": "herecomes daredevil"
+    "message": "herecomes daredevil",
+    "condition": "keyword"
 }
 ->eraseAllRegion: {}
             </option>
@@ -193,43 +194,34 @@ ss@setReactor:
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 10,
-    "message": "herecomes daredevil"
+    "message": "herecomes daredevil",
+    "condition": "keyword"
 }
 
             </option>
+
             <option>
 ss@appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
-    "line": 10,
-    "message": "herecomes daredevil"
+    "line": 11,
+    "message": "herecomes daredevil",
+    "condition": "keyword"
 }
             </option>
+
             <option>
 ss@appendRegion:
 {
-    "view": "current",
+    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
-    "line": 10,
-    "message": "herecomes daredevil"
-}
-->willBeEroorForNoCurrentViewIfCurrentViewNotSet:
-{}
-            </option>
-            <option>
-ss@setTargetView:
-{
-    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
-}
-->appendRegion:
-{
-    "view": "current",
-    "identity": "03/12/13 18:46:17",
-    "line": 10,
-    "message": "herecomes daredevil"
+    "line": 12,
+    "message": "herecomes daredevil",
+    "condition": "keyword"
 }
             </option>
+
             <option>
 ss@runShell:
 {
@@ -240,6 +232,7 @@ ss@runShell:
     "debug": true
 }
             </option>
+
             <option>
 ss@runShell:
 {
@@ -250,6 +243,7 @@ ss@runShell:
     "debug": true
 }
             </option>
+
             <option>
 ss@showAtLog:
 {
@@ -257,6 +251,7 @@ ss@showAtLog:
 }
 
             </option>
+
             <option>
 ss@filtering:
 {
@@ -268,10 +263,10 @@ ss@filtering:
             <option>
 ss@defineFilter:
 {
-    "name": "appendRegion",
+    "name": "appendRegionFilter",
     "patterns": [
         {
-            ".py.([0-9].*?),.*:(.*)": {
+            ".py.*[(]([0-9].*?),.*:(.*)": {
                 "selectors": [
                     {
                         "eraseAllRegion": {}
@@ -280,7 +275,8 @@ ss@defineFilter:
                         "appendRegion": {
                             "line": "groups[1]",
                             "message": "message is groups[0]",
-                            "view": "current"
+                            "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+                            "condition": "keyword"
                         }
                     }
                 ]
@@ -290,12 +286,13 @@ ss@defineFilter:
 }
 ->filtering: 
 {
-    "name": "appendRegion",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+    "name": "appendRegionFilter2",
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
+    "debug": true
 }
 ->filtering: 
 {
-    "name": "appendRegion",
+    "name": "appendRegionFilter3",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
 }
             </option>
@@ -318,10 +315,6 @@ ss@defineFilter:
         }
     ]
 }
-->setTargetView:
-{
-    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
-}
 ->filtering:
 {
     "name": "s",
@@ -334,13 +327,6 @@ ss@filtering:
 {
     "name": "s",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
-}
-            </option>
-
-            <option>
-ss@setTargetView:
-{
-    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py"
 }
             </option>
 

@@ -121,34 +121,11 @@ class SublimeWSServer:
 				return True
 		return False
 
-	## return current targetted view or None.
-	def currentTargetView(self):
-		assert self.isExistOnKVS(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW), "no current view set."
-		return self.getV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW)[SublimeSocketAPISettings.VIEW_SELF]
-
-
-
-	## return specific view instance from viewDict.
-	def getViewInfo(self, viewParam):
-		path = viewParam[SublimeSocketAPISettings.VIEW_PATH]
-		
-		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
-
-		if viewDict.has_key(path):
-			viewInfo = viewDict[path]
-			viewInfo[SublimeSocketAPISettings.VIEW_PATH] = path
-			return viewInfo
-
-		print "開いてる奴にヒットしなかったので、その旨を通知", viewParam
-		return None
-
-
 	## collect current views
 	def collectViews(self):
 		for views in [window.views() for window in sublime.windows()]:
 			for view in views:
 				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, view)
-
 	
 	## store region to viewDict-view in KVS
 	def storeRegionToView(self, view, identity, region, line, message):
@@ -163,7 +140,7 @@ class SublimeWSServer:
 		# generate SUBDICT_REGIONS if not exist yet.
 		if not specificViewDict.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 			specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS] = {}
-			specificViewDict[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS] = []
+			specificViewDict[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS] = {}
 
 		specificViewDict[SublimeSocketAPISettings.SUBDICT_REGIONS][identity] = regionDict
 
@@ -172,7 +149,6 @@ class SublimeWSServer:
 	def deleteAllRegionsInAllView(self):
 		viewDict = self.getV(SublimeSocketAPISettings.DICT_VIEWS)
 		
-		print "viewDict before", viewDict
 		def eraseAllRegionsAtViewDict(viewDictValue):
 			if viewDictValue.has_key(SublimeSocketAPISettings.SUBDICT_REGIONS):
 				viewInstance = viewDictValue[SublimeSocketAPISettings.VIEW_SELF]
@@ -181,22 +157,16 @@ class SublimeWSServer:
 				if regionsDict:
 					for regionIdentity in regionsDict.keys():
 						viewInstance.erase_regions(regionIdentity)
-						viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].append(regionIdentity)
-						print "regionsDict before", regionsDict
+						viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS][regionIdentity] = 1
+						
 						del regionsDict[regionIdentity]
-						print "regionsDict after", regionsDict
-				
-				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS]]
+						
+				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].keys()]
 				
 
 		# if all(not d for d in viewDict):
 		# 	print "all ", d
 		map(eraseAllRegionsAtViewDict, viewDict.values())
-		print "viewDict after", viewDict
-
-		# self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
-
-
 
 	## generate thread per selector. or add
 	def setOrAddReactor(self, params, client):

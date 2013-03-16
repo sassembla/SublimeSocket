@@ -9,7 +9,6 @@ API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
-API_OVERLAP_DELIM	= "+"					# overlap commands. share parameters with multiple APIs.	
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
 # SublimeSocket internal event definition
@@ -17,12 +16,11 @@ SS_EVENT_COLLECT	= "ss_collect"
 SS_EVENT_ERROREMITTED	= "ss_errorEmitted"
 
 # internal APIs/
-API_I_SHOWSTATUSMESSAGE		= "showStatusMessage"
+API_I_SHOWSTATUSMESSAGE	= "showStatusMessage"
 SHOWSTATUSMESSAGE_MESSAGE	= "message"
 
 API_I_ERASEALLREGION	= "eraseAllRegion"
 
-API_I_REACT					= "react"
 # /internal APIs
 
 # region identifier prefix

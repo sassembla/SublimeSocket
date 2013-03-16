@@ -1,4 +1,4 @@
-
+// requires ws, nodetail
 var WebSocket = require('ws');
 
 var assert = require('assert');

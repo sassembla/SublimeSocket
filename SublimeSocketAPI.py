@@ -56,7 +56,7 @@ class SublimeSocketAPI:
 	def runAPI(self, command, params=None, client=None):
 		evalResults = "empty"
   	
-		print "runAPI command", command
+		# print "runAPI command", command
 						
   	# python-switch
 		for case in PythonSwitch(command):
@@ -266,16 +266,13 @@ class SublimeSocketAPI:
 
 	## filtering. matching -> run API
 	def runFiltering(self, params, client):
-		# check filter name
-		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
-			print "no filterName key."
-			return
+		assert params.has_key(SublimeSocketAPISettings.FILTER_NAME), "filtering require 'filterName' param"
 
 		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
 
 		# check filterName exists or not
 		if not self.server.isFilterDefined(filterName):
-			print "please define filter before　using. requested filterName is :", filterName
+			print "filterName:"+str(filterName)+" is not yet defined."
 			return
 
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
@@ -296,7 +293,11 @@ class SublimeSocketAPI:
 			# print "pattern is ", pattern
 			(key, executablesDict) = pattern.items()[0]
 			src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
-			# print "src is", src
+			
+			debug = params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]
+
+			if debug:
+				print "filtering regexp:", src
 
 			patternIndex = 0
 			
@@ -306,12 +307,10 @@ class SublimeSocketAPI:
 
 				
 				if searched:
-
-					
-					if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]:
-						# print "filterSource", filterSource
-						print "searched.group()",searched.group()
-						print "searched.groups()",searched.groups()
+					if debug:
+						print "filtering filterSource", filterSource
+						print "filtering searched.group()",searched.group()
+						print "filtering searched.groups()",searched.groups()
 					
 
 					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
@@ -376,8 +375,11 @@ class SublimeSocketAPI:
 								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
 							
 						else:
-							print "unknown type"
+							print "filtering warning:unknown type"
 						
+						if debug:
+							print "filtering command:", command, "params:", params
+
 						# execute
 						self.runAPI(command, params)
 						
@@ -386,7 +388,10 @@ class SublimeSocketAPI:
 						
 					# increment filter-index for report
 					patternIndex = patternIndex + 1
-					
+				else:
+					if debug:
+						print "filtering not match"
+
 			except Exception as e:
 				print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
 				while True:
@@ -418,15 +423,16 @@ class SublimeSocketAPI:
 			if not viewSourceStr or len(viewSourceStr) is 1:
 				return None
 
-			viewKeys = self.server.viewDict().keys()
-						
+				
+			viewDict = self.server.viewDict()
+			viewKeys = viewDict.keys()
+			
 			# straight full match in viewSourceStr. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 				if re.findall(viewKey, viewSourceStr):
 					return viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]
 
 			# partial match in viewSourceStr. "ccc.d" vs "********* ccc.d ************"
-			viewDict = self.server.viewDict()
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_BASENAME]
 
