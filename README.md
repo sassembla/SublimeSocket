@@ -5,11 +5,8 @@ WebSocket server for SublieText. Control SublimeTextAPI through the WebSocket pr
 
 
 #Demo movie
-[movie: implemented TestConsole](http://www.youtube.com/watch?v=JGBRNrKjrtE)
+[movie: Work with Unity](http://www.youtube.com/watch?v=3sXamdk30fY&feature=youtu.be)
 
-[movie: Work with Unity](http://www.youtube.com/watch?v=JSdpa_LXa8c&feature=youtu.be)
-
-[movie: Work with Unity part2](http://www.youtube.com/watch?v=JSdpa_LXa8c&feature=youtu.be)
 
 #CommandPalette >  
 ##### SublimeSocket: on
@@ -44,5 +41,4 @@ and tail-WebSocket node.js component using that unity filter.
 
 
 #ToDo
-* stop server graceful
 * ST3 adopt
