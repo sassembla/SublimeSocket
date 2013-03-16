@@ -113,7 +113,6 @@ class SublimeWSServer:
 		self.listening = False
 		self.socket.close()		
 
-
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
 		if self.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
@@ -121,22 +120,6 @@ class SublimeWSServer:
 			if filterName in filterDict:
 				return True
 		return False
-	
-	
-	## return the view has been defined or not
-	def isViewDefined(self, viewParam):
-		if not self.isExistOnKVS(SublimeSocketAPISettings.DICT_VIEWS):
-			print "target view does not exist in KVS. :", viewParam
-			return False
-
-		# use file_name if path exists. (PATH)
-		if viewParam.has_key(SublimeSocketAPISettings.VIEW_PATH):
-			if viewParam[SublimeSocketAPISettings.VIEW_PATH] in self.kvs.get(SublimeSocketAPISettings.DICT_VIEWS):
-				return True
-
-		print "NO hit", viewParam
-		return False
-		
 
 	## return current targetted view or None.
 	def currentTargetView(self):
@@ -493,7 +476,7 @@ class SublimeWSServer:
 				break
 
 
-	## 
+	## return view dict
 	def viewDict(self):
 		return self.kvs.get(SublimeSocketAPISettings.DICT_VIEWS)
 

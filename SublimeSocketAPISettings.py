@@ -71,20 +71,6 @@ CONTAINSREGIONS_DEBUG	= "debug"
 
 API_COLLECTVIEWS	= "collectViews"
 
-API_DETECTVIEW		= "detectView"
-DETECT_PATH				= "path"
-
-API_SETTARGETVIEW	= "setTargetView"
-VIEW_PATH					= "path"
-VIEW_ID						= "viewId"
-VIEW_BUFFERID			= "bufferId"
-VIEW_BASENAME			= "basename"
-VIEW_VNAME				= "vname"
-VIEW_SELF					= "view"
-VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_COLLECT] #list of acceptable-view renew event names.
-VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
-TARGETTED_VIEW		= "targettedView"
-
 API_RUNSHELL			= "runShell"
 RUNSHELL_MAIN			= "main"
 RUNSHELL_DEBUG		= "debug"
@@ -101,10 +87,9 @@ LOG_prefix				= "ss:"
 
 API_APPENDREGION	= "appendRegion"
 APPENDREGION_VIEW	= "view"
-APPENDREGION_VIEW_CURRENT = "current"
 APPENDREGION_LINE	= "line"
 APPENDREGION_MESSAGE	= "message"
-
+APPENDREGION_CONDITION = "condition"
 
 API_TIMEREVENT		= "timerEvent"
 
@@ -113,9 +98,23 @@ API_EVAL					= "eval"
 
 #Dictionaries for collection of "Views", "filters", "events"
 DICT_VIEWS				= "DICT_VIEWS"
+
+VIEW_PATH					= "path"
+VIEW_ID						= "viewId"
+VIEW_BUFFERID			= "bufferId"
+VIEW_BASENAME			= "basename"
+VIEW_VNAME				= "vname"
+VIEW_SELF					= "view"
+
+VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_COLLECT] #list of acceptable-view renew event names.
+VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
+
+
 DICT_FILTERS			= "DICT_FILTERS"
+
+
 DICT_REACTORS			= "DICT_REACTORS"
-DICT_CURRENTTARGETVIEW	= "DICT_CURRENTTARGETVIEW"
+
 
 SUBDICT_REGIONS		= "SUBDICT_REGIONS"
 REGION_IDENTITY		= "identity"

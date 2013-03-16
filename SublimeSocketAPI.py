@@ -82,14 +82,6 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.server.collectViews(), 0)
 				break
 
-			if case(SublimeSocketAPISettings.API_DETECTVIEW):
-				self.detectView(params, client)
-				break
-
-			if case(SublimeSocketAPISettings.API_SETTARGETVIEW):
-				self.setTargetView(params, client)
-				break
-
 			if case(SublimeSocketAPISettings.API_KEYVALUESTORE):
 				result = self.server.KVSControl(params)
 				
@@ -243,33 +235,6 @@ class SublimeSocketAPI:
 		assert params.has_key(SublimeSocketAPISettings.LOG_MESSAGE), "showAtLog require 'message' param"
 		message = params[SublimeSocketAPISettings.LOG_MESSAGE]
 		print SublimeSocketAPISettings.LOG_prefix, message
-
-
-	## set target-view info
-	def setTargetView(self, params, client=None):
-		if self.server.isViewDefined(params):
-			# update currentTargetView
-			viewInfo = self.server.getViewInfo(params)
-
-			self.server.setKV(SublimeSocketAPISettings.DICT_CURRENTTARGETVIEW, viewInfo)
-
-			v = viewInfo.items()
-			printKV = []
-			for kvTuple in v:
-				kvsStr = str(kvTuple[0]) + " : " + str(kvTuple[1])+ "	/	"
-				printKV.append(kvsStr)
-
-			result = "".join(printKV)
-			
-			if client and result:
-				buf = self.encoder.text(result, mask=0)
-				client.send(buf)
-			else:
-				pass
-				# print "client", client, "result", result
-
-		else:
-			assert False, "no view Found! さあどうしよう！:"+params
 
 	## is contains regions or not.
 	def containsRegions(self, params):
@@ -443,38 +408,32 @@ class SublimeSocketAPI:
 
 
 	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
-	def detectView(self, params, client=None):
-		assert params.has_key(SublimeSocketAPISettings.DETECT_PATH), "detectView require 'path' param"
+	def internal_detectViewInstance(self, path):
 		if self.server.viewDict():
-			viewSourceStr = params[SublimeSocketAPISettings.DETECT_PATH]
-			
+			viewSourceStr = path
+
 			# remove empty and 1 length string pattern.
 			if not viewSourceStr or len(viewSourceStr) is 1:
-				return
+				return None
 
 			viewKeys = self.server.viewDict().keys()
-			
+						
 			# straight full match in viewSourceStr. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 				if re.findall(viewKey, viewSourceStr):
-
-					paramDict = {}
-					paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
-
-					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
-					return
+					return viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]
 
 			# partial match in viewSourceStr. "ccc.d" vs "********* ccc.d ************"
 			viewDict = self.server.viewDict()
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_BASENAME]
+
 				if viewBasename in viewSourceStr:
 
-					paramDict = {}
-					paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewKey
+					return viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]
 
-					self.runAPI(SublimeSocketAPISettings.API_SETTARGETVIEW, paramDict, client)
-					return
+		# totally, return None and do nothing
+		return None
 
 	########## APIs for shortcut ST2-Display ##########
 
@@ -490,28 +449,20 @@ class SublimeSocketAPI:
 		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_VIEW), "appendRegion require 'view' param"
 		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_LINE), "appendRegion require 'line' param"
 		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_MESSAGE), "appendRegion require 'message' param"
-
+		assert params.has_key(SublimeSocketAPISettings.APPENDREGION_CONDITION), "appendRegion require 'condition' param"
+		
 		view = params[SublimeSocketAPISettings.APPENDREGION_VIEW]
 		line = params[SublimeSocketAPISettings.APPENDREGION_LINE]
 		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
+		condition = params[SublimeSocketAPISettings.APPENDREGION_CONDITION]
 		
-		if type(view) == str:
-			# use current-view if 'current' set
-			if params[SublimeSocketAPISettings.APPENDREGION_VIEW] == SublimeSocketAPISettings.APPENDREGION_VIEW_CURRENT:
-				view = self.server.currentTargetView()
-		elif type(view) == unicode :
-			if params[SublimeSocketAPISettings.APPENDREGION_VIEW] == SublimeSocketAPISettings.APPENDREGION_VIEW_CURRENT:
-				view = self.server.currentTargetView()
-			else:
-				viewPath = view
-				
-				paramDict = {}
-				paramDict[SublimeSocketAPISettings.VIEW_PATH] = viewPath
-				view = self.server.getViewInfo(paramDict)[SublimeSocketAPISettings.VIEW_SELF]
+		# find view
+		viewInstance = self.internal_detectViewInstance(view)
 		
-		sublime.set_timeout(lambda: self.internalAppendRegion(view, line, message), 0)
+		if viewInstance:
+			sublime.set_timeout(lambda: self.internal_appendRegion(viewInstance, line, message, condition), 0)
 		
-	def internalAppendRegion(self, view, line, message):
+	def internal_appendRegion(self, view, line, message, condition):
 		lines = []
 		regions = []
 		point = self.getLineCount_And_SetToArray(view, line, lines)
@@ -520,7 +471,7 @@ class SublimeSocketAPI:
 		identity = SublimeSocketAPISettings.REGION_UUID_PREFIX + str(regions[0])
 		
 		# show
-		view.add_regions(identity, regions, "keyword", 'dot', sublime.DRAW_OUTLINED)
+		view.add_regions(identity, regions, condition, 'dot', sublime.DRAW_OUTLINED)
 
 		# store region
 		self.server.storeRegionToView(view, identity, regions[0], line, message)
