@@ -42,7 +42,7 @@ REACTOR_SELECTORS	= "selectors"
 REACTOR_INTERVAL	= "interval"
 REACTOR_REPLACEFROMTO		= "replacefromto"
 
-REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified"]
+REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
 REACTIVE_ONEBYONE_EVENT = [SS_EVENT_ERROREMITTED]
 
 API_KEYVALUESTORE	= "kvs"

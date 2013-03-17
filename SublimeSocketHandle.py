@@ -60,23 +60,24 @@ class CaptureEditing(sublime_plugin.EventListener):
     self.update("on_modified", view)
     
   def on_new(self, view):
-    # print "new!"
     self.update("on_new", view)
 
   def on_clone(self, view):
-    # print "clone!"
     self.update("on_clone", view)
 
   def on_load(self, view):
-    # print "load!"
     self.update("on_load", view)
 
   def on_close(self, view):
-    # print "close!"
     self.update("on_close", view)
 
+  def on_pre_save(self, view):
+    self.update("on_pre_save", view)
+
+  def on_post_save(self, view):
+    self.update("on_post_save", view)
+    
   def on_selection_modified(self, view):
-    # print "on_selection_modified!"
     self.update("on_selection_modified", {"view":view})
     
 
