@@ -180,14 +180,24 @@ class SublimeSocketAPI:
 	# params is array that will be evaluated as commandline marameters.
 	def runShell(self, params):
 		assert params.has_key(SublimeSocketAPISettings.RUNSHELL_MAIN), "runShell require 'main' param"
+
+		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DELAY):
+			delay = params[SublimeSocketAPISettings.RUNSHELL_DELAY]
+			del params[SublimeSocketAPISettings.RUNSHELL_DELAY]
+			
+			sublime.set_timeout(lambda: self.runShell(params), delay)
+
+			return
+
 		main = params[SublimeSocketAPISettings.RUNSHELL_MAIN]
 		
 		def genKeyValuePair(key):
 			val = str(params[key])
 
-			val = val.replace(" ", "_");
-			val = val.replace("(", "");
-			val = val.replace(")", "");
+			val = val.replace(" ", SublimeSocketAPISettings.RUNSHELL_REPLACE_SPACE);
+			val = val.replace("(", SublimeSocketAPISettings.RUNSHELL_REPLACE_RIGHTBRACE);
+			val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
+			val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
 			
 			return key + ' ' + val
 

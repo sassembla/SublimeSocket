@@ -163,10 +163,8 @@ class SublimeWSServer:
 						
 				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].keys()]
 				
-
-		# if all(not d for d in viewDict):
-		# 	print "all ", d
-		map(eraseAllRegionsAtViewDict, viewDict.values())
+		if viewDict:
+			map(eraseAllRegionsAtViewDict, viewDict.values())
 
 	## generate thread per selector. or add
 	def setOrAddReactor(self, params, client):
