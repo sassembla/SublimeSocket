@@ -172,6 +172,9 @@ class SublimeWSServer:
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
 		selectorsArray = params[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
+		# delete when set the reactor of the event.
+		if self.temporaryEventDict.has_key(event):
+			del self.temporaryEventDict[event]
 		
 		# set default interval
 		interval = 0
@@ -225,7 +228,7 @@ class SublimeWSServer:
 				eventParam = self.temporaryEventDict[event]
 				
 				# consume event
-				del self.temporaryEventDict[event]
+				del self.temporaryEventDict[event]#
 
 				# run all selector
 				self.runAllSelector(reactorDict, selectorsArray, eventParam)
