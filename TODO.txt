@@ -1,5 +1,8 @@
 TODO
 
+ST3対応
+	betaに挑む。
+	
 
 TimerEvent ほか、SS上で動くもの
 	アイデアベースで、要る機能から作る。Filters
@@ -17,6 +20,7 @@ TimerEvent ほか、SS上で動くもの
 		bufferList
 
 		対SuperSclalaCompiler(S2C)用ブランチで開発中
+		バッファでのコンパイル投入のために、なにか仕掛けが欲しい。出来ればエディタ側。
 
 √	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
 		√setKV(key,value) //unavailable from api directly
@@ -84,10 +88,16 @@ TimerEvent ほか、SS上で動くもの
 	あっ、、コレ便利、、、
 
 
-runShell
+√	runShell
 	外部プロセス実行
-
+	√	パラメータを配列からkvに変換
+	√	delayを追加（あんまり良い事無い気がする）
+	√	文字列中の半角スペース" "を_へと置き換え　妥協した。
+	√	@s@s@　マークを半角スペース" "へと変換　出力側で" "をこの値に変換できるなら、spaceが出せる。　妥協した。
 	
+
+
+
 
 DOC:
 SublimeSocketAPI -Sequence
@@ -104,11 +114,14 @@ SublimeSocketAPI -Sequence
 
 	Go/Back
 		アクションを検知、開くアクションを迂回して外部からSTに対して実行させる
+		アクションはSwipeにしたいけど。
 
 	toolTip
 		完全に外部アプリケーションになる。
 		ツールチップを別ウインドウとして展開、押したらフィックスイベントを発動、など。
 		Growlで実装できるのでは
+		→完了、GrowlではなくMacのNotifierを使用できる。
+			実装自体はrunShellを使用している。
 
 
 

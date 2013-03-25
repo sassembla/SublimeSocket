@@ -1,7 +1,9 @@
 # SublimeSocket
-###### version 0.8.2
-WebSocket server for SublieText. Control SublimeTextAPI through the WebSocket protocol.
+###### version 0.8.3
+WebSocket server for SublieText.   
+Control SublimeTextAPI through the WebSocket protocol.  
 
+Keep SublimeText "LIGHT".
 
 
 #Demo movie
@@ -20,24 +22,23 @@ WebSocket server for SublieText. Control SublimeTextAPI through the WebSocket pr
 **-> show SublimeSocket's preference.**  
 
 ##### SublimeSocket: off
-**-> not yet work!!**  
-Please restart SublimeText manually. or use preferences's kill button.
+Please restart SublimeText manually.
   
 
 #Input & Filtering data to SublimeText
 SublimeSocket can show "error" regions through the filtered-data from WebSocket.
 
-here is sample filter for Unity3D.  
+The sample filter for Unity3D:  
 [https://github.com/sassembla/SublimeSocket/...UnityFilter.txt](https://github.com/sassembla/SublimeSocket/blob/unity/FilterSettingSamples/UnityFilter.txt)  
 
-and tail-WebSocket node.js component using that unity filter.
+The tail-WebSocket node.js component:  
 [/tool/nodeTailSocket/node_tailsocket_unity.js](https://github.com/sassembla/SublimeSocket/blob/master/tool/nodeTailSocket/node_tailsocket.js)    
 
 
 
 #Purpose/Motivation
 * Enable control ST2 from other process, browser, websocket clients.
-* Remove all heavy-process running with ST2. More light, less energy.
+* Pick out all heavy-process from SublimeText.
 
 
 #ToDo
