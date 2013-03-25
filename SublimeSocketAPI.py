@@ -192,13 +192,24 @@ class SublimeSocketAPI:
 		main = params[SublimeSocketAPISettings.RUNSHELL_MAIN]
 		
 		def genKeyValuePair(key):
-			val = str(params[key])
+			val = ""
 
-			val = val.replace(" ", SublimeSocketAPISettings.RUNSHELL_REPLACE_SPACE);
-			val = val.replace("(", SublimeSocketAPISettings.RUNSHELL_REPLACE_RIGHTBRACE);
-			val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
-			val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
-			
+			if type(params[key]) == list:
+				val = ' '.join(params[key])
+			else:
+				val = str(params[key])
+
+				val = val.replace(" ", SublimeSocketAPISettings.RUNSHELL_REPLACE_SPACE);
+				val = val.replace("(", SublimeSocketAPISettings.RUNSHELL_REPLACE_RIGHTBRACE);
+				val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
+				val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
+
+			if len(val) is 0:
+				return key
+
+			if len(key) is 0:
+				return val
+
 			return key + ' ' + val
 
 		kvPairArray = [genKeyValuePair(key) for key in params.keys() if key not in SublimeSocketAPISettings.RUNSHELL_LIST_IGNORES]
@@ -207,13 +218,22 @@ class SublimeSocketAPI:
 		runnable = ' '.join(kvPairArray)
 		encodedRunnable = runnable.encode('utf8')
 
+		debugFlag = False
+
 		if params.has_key(SublimeSocketAPISettings.RUNSHELL_DEBUG):
 			debugFlag = params[SublimeSocketAPISettings.RUNSHELL_DEBUG]
-			if debugFlag:
-				print "encodedRunnable", encodedRunnable
+			
+
+		if debugFlag:
+			print "encodedRunnable", encodedRunnable
 		
 		if len(encodedRunnable):
 			self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
+			
+			if debugFlag:
+				print "run", encodedRunnable
+				for line in self.process.stdout:
+					print line
 
 	## emit message to clients.
 	# broadcast messages if no-"target" key.
@@ -250,9 +270,7 @@ class SublimeSocketAPI:
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
 		# check filter name
-		if not params.has_key(SublimeSocketAPISettings.FILTER_NAME):
-			print "no filterName key."
-			return
+		assert params.has_key(SublimeSocketAPISettings.FILTER_NAME), "defineFilter require 'name' key."
 
 		# load defined filters
 		filterNameAndPatternsArray = {}
