@@ -84,16 +84,32 @@ ws.on('open', function() {
                 }
             },
             {
-                 "^completed": {
+                 "^typescript compile succeeded.": {
                     "selectors": [
                         {
                             "showStatusMessage": {
-                                "message": "typescript compile finished."
+                                "message": "typescript compile succeeded."
                             }
                         },
                         {
                             "showAtLog": {
-                                "message": "typescript compile finished."
+                                "message": "typescript compile succeeded."
+                            }
+                        },
+                    ]
+                }
+            },
+            {
+                 "^typescript compile failure.": {
+                    "selectors": [
+                        {
+                            "showStatusMessage": {
+                                "message": "typescript compile failure."
+                            }
+                        },
+                        {
+                            "showAtLog": {
+                                "message": "typescript compile failure."
                             }
                         },
                     ]
