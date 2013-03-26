@@ -1,3 +1,10 @@
 export PATH=/usr/local/bin
-echo $1
-/usr/local/bin/tsc /Users/sassembla/Desktop/tscomp/*.ts 2>> /Users/sassembla/Desktop/tscomp/tsc.log
+
+#$1 = .ts files array
+#$2 = logFilePath
+
+echo start > $2
+
+#tsc includes "node" call
+/usr/local/bin/tsc $1 2>> $2
+echo completed >> $2

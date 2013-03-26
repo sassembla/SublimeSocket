@@ -27,7 +27,7 @@ ws.on('open', function() {
         "name": "typescript",
         "patterns": [
             {
-                "(.*)[.]t.*[(]([0-9]).*: (.*)": {
+                "(.*)[.]ts[ ][(]([0-9]*),.*: (.*)": {
                     "selectors": [
                         {
                             "showStatusMessage": {
@@ -47,6 +47,55 @@ ws.on('open', function() {
                                 "condition": "keyword"
                             }
                         }
+                    ]
+                }
+            },
+            {
+                "(.*)[.]ts[(]([0-9]*),.*: (.*)": {
+                    "selectors": [
+                        {
+                            "showStatusMessage": {
+                                "message": "groups[0]"
+                            }
+                        },
+                        {
+                            "showAtLog": {
+                                "message": "groups[0]"
+                            }
+                        },
+                        {
+                            "appendRegion": {
+                                "line": "groups[2]",
+                                "message": "\"groups[3]\"",
+                                "view": "groups[1].ts",
+                                "condition": "keyword"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                 "^start": {
+                    "selectors": [
+                        {
+                            "eraseAllRegion":{}
+                        }
+                    ]
+                }
+            },
+            {
+                 "^completed": {
+                    "selectors": [
+                        {
+                            "showStatusMessage": {
+                                "message": "typescript compile finished."
+                            }
+                        },
+                        {
+                            "showAtLog": {
+                                "message": "typescript compile finished."
+                            }
+                        },
                     ]
                 }
             }
@@ -102,7 +151,7 @@ ws.on('open', function() {
                     "":[
                         "\"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tool/nodeTailSocket/tscwithenv.sh\"",
                         "/Users/sassembla/Desktop/tscomp/*.ts",
-                        "2>>","/Users/sassembla/Desktop/tscomp/tsc.log"
+                        "/Users/sassembla/Desktop/tscomp/tsc.log"
                     ]
                 }
             }
@@ -124,15 +173,12 @@ ws.on('open', function() {
                 }
             },
             {
-                "eraseAllRegion":{}
-            },
-            {
                 "runShell": {
                     "main": "/bin/sh",
                     "":[
                         "\"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tool/nodeTailSocket/tscwithenv.sh\"",
                         "/Users/sassembla/Desktop/tscomp/*.ts",
-                        "2>>","/Users/sassembla/Desktop/tscomp/tsc.log"
+                        "/Users/sassembla/Desktop/tscomp/tsc.log"
                     ]
                 }
             }
@@ -158,8 +204,8 @@ tail.on("line", function(message) {
 	var json = 
     {
         "name": "typescript",
-        "source": message
-        // "debug": true
+        "source": message,
+        "debug": true
     };
     
 	apiModifiedData = "ss@filtering:" + JSON.stringify(json);

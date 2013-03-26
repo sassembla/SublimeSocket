@@ -280,8 +280,17 @@ class SublimeSocketAPI:
 
 		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
 
+		patterns = params[SublimeSocketAPISettings.FILTER_PATTERNS]
+		assert type(patterns) == list, "defineFilter require: filterPatterns must be list."
+
+		def mustBeSingleDict(filterDict):
+			assert len(filterDict) is 1, "defineFilter. too many filter in one dictionary. len is "+str(len(filterDict))
+			
+
+		[mustBeSingleDict(currentFilterDict) for currentFilterDict in patterns]
+
 		# key = filterName, value = the match patterns of filter.
-		filterNameAndPatternsArray[filterName] = params[SublimeSocketAPISettings.FILTER_PATTERNS]
+		filterNameAndPatternsArray[filterName] = patterns
 
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_FILTERS, filterNameAndPatternsArray)
@@ -317,7 +326,10 @@ class SublimeSocketAPI:
 			(key, executablesDict) = pattern.items()[0]
 			src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
 			
-			debug = params.has_key(SublimeSocketAPISettings.FILTER_DEBUG) and params[SublimeSocketAPISettings.FILTER_DEBUG]
+			debug = False
+			if type(params) == dict:
+				if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
+					debug = params[SublimeSocketAPISettings.FILTER_DEBUG]
 
 			if debug:
 				print "filtering regexp:", src
