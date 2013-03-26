@@ -1,4 +1,8 @@
-// TypeScript ver 0.5.0
+// TypeScript ver 0.7.0
+
+// process.argv.forEach(function (val, index, array) {
+//   console.log(index + ': ' + val);
+// });
 
 // requires ws, nodetail
 var WebSocket = require('ws');
@@ -8,9 +12,9 @@ var assert = require('assert');
 var ws = new WebSocket('ws://127.0.0.1:8823/');
 
 Tail = require('tail').Tail;
-
-// ログの出力場、適当にソースコンパイルに巻き込まれないところ、かつ平和なところ、、
-var logPath = "/Users/sassembla/Desktop/tscomp/tsc.log";
+var tscwithenvPath = process.argv[2];
+var targetFilePath = process.argv[3]+"/*.ts";
+var logPath = process.argv[3] + "/tscompile.log";
 
 
 tail = new Tail(logPath);
@@ -165,9 +169,9 @@ ws.on('open', function() {
                 "runShell": {
                     "main": "/bin/sh",
                     "":[
-                        "\"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tool/nodeTailSocket/tscwithenv.sh\"",
-                        "/Users/sassembla/Desktop/tscomp/*.ts",
-                        "/Users/sassembla/Desktop/tscomp/tsc.log"
+                        tscwithenvPath,
+                        targetFilePath,
+                        logPath
                     ]
                 }
             }
@@ -192,9 +196,9 @@ ws.on('open', function() {
                 "runShell": {
                     "main": "/bin/sh",
                     "":[
-                        "\"/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tool/nodeTailSocket/tscwithenv.sh\"",
-                        "/Users/sassembla/Desktop/tscomp/*.ts",
-                        "/Users/sassembla/Desktop/tscomp/tsc.log"
+                        tscwithenvPath,
+                        targetFilePath,
+                        logPath
                     ]
                 }
             }
@@ -220,8 +224,8 @@ tail.on("line", function(message) {
 	var json = 
     {
         "name": "typescript",
-        "source": message,
-        "debug": true
+        "source": message
+        // "debug": true
     };
     
 	apiModifiedData = "ss@filtering:" + JSON.stringify(json);
