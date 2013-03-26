@@ -211,7 +211,11 @@ class SublimeWSServer:
 	def eventIntervals(self, target, event, selectorsArray, interval):
 
 		reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
-		
+
+		# return if empty
+		if not reactorsDict:
+			return
+
 		# if exist, continue
 		if not reactorsDict.has_key(event):
 			return

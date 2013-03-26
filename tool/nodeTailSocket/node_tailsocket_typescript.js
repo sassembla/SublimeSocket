@@ -1,4 +1,4 @@
-// TypeScript ver 0.0.0
+// TypeScript ver 0.5.0
 
 // requires ws, nodetail
 var WebSocket = require('ws');
@@ -108,7 +108,6 @@ ws.on('open', function() {
             }
         ]
     };
-
     var saveReactorJSON = {
         "target": "typescript",
         "event": "on_post_save",
@@ -139,9 +138,8 @@ ws.on('open', function() {
             }
         ] 
     };
-
     var setUpDone = [
-        "sublime.status_message('SublimeSocket : node-compilation sequence ready!')"
+        "sublime.status_message('SublimeSocket : typescript-compilation sequence ready!')"
     ];
 
 	ws.send("ss@inputIdentity:"+JSON.stringify(inputIdentityJSON)
