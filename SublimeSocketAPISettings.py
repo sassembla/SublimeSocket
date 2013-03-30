@@ -81,7 +81,7 @@ RUNSHELL_REPLACE_At_s_At_s_At			= " "
 
 
 API_BROADCASTMESSAGE	= "broadcastMessage"
-API_OUTPUTMESSAGE	= "outputMessage"
+API_MONOCASTMESSAGE		= "monocastMessage"
 OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
 

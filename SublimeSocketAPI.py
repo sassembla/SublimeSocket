@@ -116,8 +116,8 @@ class SublimeSocketAPI:
 				self.broadcastMessage(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_OUTPUTMESSAGE):
-				self.outputMessage(params)
+			if case(SublimeSocketAPISettings.API_MONOCASTMESSAGE):
+				self.monocastMessage(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_EVAL):
@@ -198,15 +198,21 @@ class SublimeSocketAPI:
 		def genKeyValuePair(key):
 			val = ""
 
-			if type(params[key]) == list:
-				val = ' '.join(params[key])
-			else:
-				val = str(params[key])
 
+			def replaceValParts(val):
 				val = val.replace(" ", SublimeSocketAPISettings.RUNSHELL_REPLACE_SPACE);
 				val = val.replace("(", SublimeSocketAPISettings.RUNSHELL_REPLACE_RIGHTBRACE);
 				val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
 				val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
+
+				return val
+
+			if type(params[key]) == list:
+				replaced = [replaceValParts(v) for v in params[key]]
+				val = ' '.join(replaced)
+			else:
+				val = replaceValParts(str(params[key]))
+
 
 			if len(val) is 0:
 				return key
@@ -248,10 +254,10 @@ class SublimeSocketAPI:
 		for client in clients:
 			client.send(buf)
 
-	## output message to the specific client.
-	def outputMessage(self, params):
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "outputMessage require 'target' param"
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "outputMessage require 'message' param"
+	## send message to the specific client.
+	def monocastMessage(self, params):
+		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "monocastMessage require 'target' param"
+		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "monocastMessage require 'message' param"
 
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 
@@ -521,21 +527,17 @@ class SublimeSocketAPI:
 		debug = False
 		if params.has_key(SublimeSocketAPISettings.NOTIFY_DEBUG):
 			debug = params[SublimeSocketAPISettings.NOTIFY_DEBUG]
-
-		command = "/bin/sh \"" + sublime.packages_path() + "/SublimeSocket/tool/notification/MacNotifier.sh\""
-		runnable = command+" -t "+title+" -m "+message+" -replaceunderscore"
-
-		# run shell
-		encodedRunnable = runnable.encode('utf8')
-
-		if debug:
-			print "encodedRunnable", encodedRunnable
-
-		self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
 		
-		if debug:
-			for line in self.process.stdout:
-				print line
+		exe = "\"" + sublime.packages_path() + "/SublimeSocket/tool/notification/MacNotifier.sh\""
+		exeArray = ["-t", title, "-m", message, "-replaceunderscore", "", ]
+
+		shellParams = {
+			SublimeSocketAPISettings.RUNSHELL_MAIN: "/bin/sh",
+			exe: exeArray,
+			SublimeSocketAPISettings.RUNSHELL_DEBUG: debug
+		}
+		
+		self.runShell(shellParams)
 
 		
 	def checkIfViewExist_appendRegion_Else_print(self, view, viewInstance, line, message, condition):

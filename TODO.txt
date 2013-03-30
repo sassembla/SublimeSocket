@@ -39,7 +39,7 @@ TimerEvent ほか、SS上で動くもの
 √	setEvent
 		√イベントに対してリスナをセット可能
 
-√	outputMessage
+√	monocastMessage
 		√リスナに対して簡単なメッセージをセット可能
 
 √	eval エラーハンドリング
