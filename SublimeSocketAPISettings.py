@@ -95,6 +95,11 @@ APPENDREGION_LINE	= "line"
 APPENDREGION_MESSAGE	= "message"
 APPENDREGION_CONDITION = "condition"
 
+API_NOTIFY				= "notify"
+NOTIFY_TITLE			= "title"
+NOTIFY_MESSAGE		= "message"
+NOTIFY_DEBUG			= "debug"
+
 API_TIMEREVENT		= "timerEvent"
 
 API_EVAL					= "eval"

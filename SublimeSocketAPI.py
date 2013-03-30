@@ -132,6 +132,10 @@ class SublimeSocketAPI:
 				self.appendRegion(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_NOTIFY):
+				self.notify(params)
+				break
+
 
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
@@ -507,6 +511,33 @@ class SublimeSocketAPI:
 		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_print(view, viewInstance, line, message, condition), 0)
 	
 
+	def notify(self, params):
+		assert params.has_key(SublimeSocketAPISettings.NOTIFY_TITLE), "notify require 'title' param"
+		assert params.has_key(SublimeSocketAPISettings.NOTIFY_MESSAGE), "notify require 'message' param"
+
+		title = params[SublimeSocketAPISettings.NOTIFY_TITLE]
+		message = params[SublimeSocketAPISettings.NOTIFY_MESSAGE]
+
+		debug = False
+		if params.has_key(SublimeSocketAPISettings.NOTIFY_DEBUG):
+			debug = params[SublimeSocketAPISettings.NOTIFY_DEBUG]
+
+		command = "/bin/sh \"" + sublime.packages_path() + "/SublimeSocket/tool/notification/MacNotifier.sh\""
+		runnable = command+" -t "+title+" -m "+message+" -replaceunderscore"
+
+		# run shell
+		encodedRunnable = runnable.encode('utf8')
+
+		if debug:
+			print "encodedRunnable", encodedRunnable
+
+		self.process = subprocess.Popen(shlex.split(encodedRunnable), stdout=subprocess.PIPE, preexec_fn=os.setsid)
+		
+		if debug:
+			for line in self.process.stdout:
+				print line
+
+		
 	def checkIfViewExist_appendRegion_Else_print(self, view, viewInstance, line, message, condition):
 		# this check should be run in main thread
 		if viewInstance:
