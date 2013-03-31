@@ -53,15 +53,14 @@ class Socketoff(sublime_plugin.TextCommand):
 
 # threading
 class SublimeSocketThread(threading.Thread):
-  def __init__(self, host, port, timeout):
+  def __init__(self, host, port):
     threading.Thread.__init__(self)
     self._server = SublimeWSServer()
     self._host = host
     self._port = port
-    self._timeout = timeout
 
   def run(self):
-    self._server.start(self._host, self._port, self._timeout)
+    self._server.start(self._host, self._port)
 
 
   # send eventName and data to server
