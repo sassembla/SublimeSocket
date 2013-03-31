@@ -47,8 +47,9 @@ class SublimeWSClient:
 		
 		bytes = self.conn.recv(bufsize)
 		if not bytes:
-			closingMessage = 'Client left with no bytes ' + repr(self.conn)
-
+			leftMessage = 'Client left with no bytes ' + repr(self.conn)
+			closingMessage = leftMessage
+			print "ss:", leftMessage
 			sublime.set_timeout(lambda: sublime.status_message(closingMessage), 0)
 
 			self.close()
@@ -158,10 +159,8 @@ class SublimeWSClient:
 		try:
 			self.handshake()
 		except ValueError as error:
-			print "should kill", error
-			# self.server.remove(self)
-			# self.close()
-			# raise ValueError('Client rejected: ' + str(error))
+			self.close()
+			raise ValueError('Client rejected: ' + str(error))
 		else:
 			decoder = SublimeWSDecoder()
 			self.setStatus('OPEN')
@@ -189,6 +188,7 @@ class SublimeWSClient:
 	## Close connection (don't forget to remove client from WebSocket Server first !)
 	def close(self):
 		if not self.hasStatus('CLOSED'):
+			self.server.deleteClientId(self.clientId)
 			self.setStatus('CLOSED')
 			self.conn.close()
 

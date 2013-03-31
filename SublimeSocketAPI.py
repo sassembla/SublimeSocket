@@ -67,8 +67,8 @@ class SublimeSocketAPI:
 				self.server.updateClientId(client, params)
 				break
 
-			if case(SublimeSocketAPISettings.API_KILLSERVER):
-				self.server.killServerSelf()
+			if case(SublimeSocketAPISettings.API_TEARDOWN):
+				self.server.tearDown()
 				break
 
 			if case(SublimeSocketAPISettings.API_CONTAINSREGIONS):

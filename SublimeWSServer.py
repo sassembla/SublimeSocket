@@ -32,34 +32,39 @@ class SublimeWSServer:
 
 	def start(self, host, port):
 		self.socket = socket.socket()
+
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.socket.bind((host,port))
-		
-		self.socket.listen(0)
-		
-		serverStartMessage = 'SublimeSocket WebSocketServing started @ ' + str(host) + ':' + str(port)
-		print '\n', serverStartMessage, "\n"
-		sublime.set_timeout(lambda: sublime.status_message(serverStartMessage), 0)
 
-		# start serverControlIntervals
-		# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
-
-		# load settings
-		sublime.set_timeout(lambda: self.loadSettings(), 0)
-
-
-		self.listening = True
-		while self.listening:
-			(conn, addr) = self.socket.accept()
-
-			identity = str(uuid.uuid4())
-
-			# genereate client
-			client = SublimeWSClient(self, identity)
-			self.clients[identity] = client
+		try:
+			self.socket.bind((host,port))
 			
-			threading.Thread(target = client.handle, args = (conn,addr)).start()
+			self.socket.listen(0)
 			
+			serverStartMessage = 'SublimeSocket WebSocketServing started @ ' + str(host) + ':' + str(port)
+			print '\n', serverStartMessage, "\n"
+			sublime.set_timeout(lambda: sublime.status_message(serverStartMessage), 0)
+
+			# start serverControlIntervals
+			# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
+
+			# load settings
+			sublime.set_timeout(lambda: self.loadSettings(), 0)
+
+
+			self.listening = True
+			while self.listening:
+				(conn, addr) = self.socket.accept()
+
+				identity = str(uuid.uuid4())
+
+				# genereate client
+				client = SublimeWSClient(self, identity)
+				self.clients[identity] = client
+				
+				threading.Thread(target = client.handle, args = (conn,addr)).start()
+		
+		except socket.error, msg:
+			print "error", msg[1]
 
 	## interval
 	def intervals(self):
@@ -88,14 +93,19 @@ class SublimeWSServer:
 
 		newIdentity = params[SublimeSocketAPISettings.IDENTITY_ID]
 
-		client = self.clients[client.clientId]
+		currentClient = self.clients[client.clientId]
 
-		# remove from dict
-		del self.clients[client.clientId]
+		# del from list
+		self.deleteClientId(currentClient.clientId)
 
 		# update
 		client.clientId = newIdentity
 		self.clients[newIdentity] = client	
+
+	# remove from Client dict
+	def deleteClientId(self, clientId):
+		del self.clients[clientId]
+
 
 	## api 
 	def callAPI(self, apiData, clientId):
@@ -105,7 +115,7 @@ class SublimeWSServer:
 
 		
 	## kill server. with all connection(maybe some bugs include. will not be close immediately, at least 1 reload need,,)
-	def killServerSelf(self):
+	def tearDown(self):
 		for client in self.clients:
 			self.clients.remove(client)
 			client.close()
@@ -324,6 +334,13 @@ class SublimeWSServer:
 
 				[emitRegionMatchEvent(region) for region in regionIdentitiesList]
 				
+	def showCurrentConnections(self):
+		print "ss: server:", self.socket.gettimeout()
+		
+		print "ss: connections:"
+		for client in self.clients:
+			print client.connectionId
+
 
 	## input to sublime from server.
 	# fire event in KVS, if exist.

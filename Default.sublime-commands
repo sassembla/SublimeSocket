@@ -15,6 +15,11 @@
     },
 
     {
+        "caption": "SublimeSocket: status",
+        "command": "statuscheck"
+    },
+
+    {
         "caption": "SublimeSocket: off",
         "command": "socketoff"
     }

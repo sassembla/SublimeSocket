@@ -33,7 +33,7 @@ RUNSETTING_FILEPATH	= "path"
 API_INPUTIDENTITY = "inputIdentity"
 IDENTITY_ID				= "id"
 
-API_KILLSERVER		=	"killServer"
+API_TEARDOWN			=	"tearDown"
 
 API_SETREACTOR		= "setReactor"
 REACTOR_TARGET		= "target"

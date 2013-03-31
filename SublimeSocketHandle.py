@@ -16,7 +16,12 @@ class Socketon(sublime_plugin.TextCommand):
     global thread
 
     if thread is not None and thread.is_alive():
-      return sublime.message_dialog('SublimeSocket Already Running')
+      alreadyRunningMessage = "SublimeSocket Already Running."
+
+      sublime.status_message(alreadyRunningMessage)
+      print "ss:", alreadyRunningMessage
+
+      return 
         
     host = sublime.load_settings("SublimeSocket.sublime-settings").get('host')
     port = sublime.load_settings("SublimeSocket.sublime-settings").get('port')
@@ -29,29 +34,45 @@ class On_then_openpref(sublime_plugin.TextCommand):
     Socketon.startServer()
     Openpreference.openSublimeSocketPreference()
       
+
+class Statuscheck(sublime_plugin.TextCommand):
+  def run(self, edit):
+    global thread
+    if thread is not None and thread.is_alive():
+      thread.currentConnections()
+    else:
+      notActivatedMessage = "SublimeSocket not yet activated."
+      sublime.status_message(notActivatedMessage)
+      print "ss:", notActivatedMessage
+
 class Socketoff(sublime_plugin.TextCommand):
   def run(self, edit):
     global thread
-    print "thread is,, ", thread.is_alive()
-    print "off.... not yet implimented as standalone. Plase use preference > Kill Button"        
-
+    if thread is not None and thread.is_alive():
+      thread.closeAllConnections()
 
 # threading
 class SublimeSocketThread(threading.Thread):
-  def __init__(self, host, port):
+  def __init__(self, host, port, timeout):
     threading.Thread.__init__(self)
     self._server = SublimeWSServer()
     self._host = host
     self._port = port
+    self._timeout = timeout
 
   def run(self):
-    self._server.start(self._host, self._port)
+    self._server.start(self._host, self._port, self._timeout)
 
 
   # send eventName and data to server
   def toServer(self, eventName, eventParam=None):
     self._server.fireKVStoredItem(eventName, eventParam)
     
+  def currentConnections(self):
+    self._server.showCurrentConnections()
+  
+  def closeAllConnections(self):
+    self._server.tearDown()
 
 # event listeners
 class CaptureEditing(sublime_plugin.EventListener):
