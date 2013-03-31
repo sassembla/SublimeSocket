@@ -260,12 +260,11 @@ class SublimeSocketAPI:
 		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "monocastMessage require 'message' param"
 
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
-
-		assert self.server.clients.has_key(target), "server has no targetted clientId:"+target
-
-		client = self.server.clients[target]
-		buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
-		client.send(buf)
+		
+		if self.server.clients.has_key(target):
+			client = self.server.clients[target]
+			buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+			client.send(buf)
 
 	## send message to the other via SS.
 	def showAtLog(self, params):

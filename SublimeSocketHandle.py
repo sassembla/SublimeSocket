@@ -69,7 +69,13 @@ class SublimeSocketThread(threading.Thread):
 
   # call through thread-initialize
   def run(self):
-    self._server.start(self._host, self._port)
+    result = self._server.start(self._host, self._port)
+    
+    if result is 0:
+      pass
+    else:
+      self.tearDownServer()
+
 
   def set(self, host, port):
     self._host = host

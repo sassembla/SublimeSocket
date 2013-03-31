@@ -1,13 +1,16 @@
 # SublimeSocket
-###### version 0.8.3
-WebSocket server for SublieText.   
-Control SublimeTextAPI through the WebSocket protocol.  
+###### version 0.8.4
+**API Server** for the SublieText.   
+Control SublimeTextAPI via WebSocket protocol.  
 
-Keep SublimeText "LIGHT".
+・Keep SublimeText "LIGHT".   
+・Enable Tooltip as Notification.
 
 
 #Demo movie
-[movie: Work with Unity](http://www.youtube.com/watch?v=3sXamdk30fY&feature=youtu.be)
+[Work with Unity	:	Build and show parameters and errors](https://vimeo.com/62957311)
+
+[Work with TypeScript	:	Build and show errors](https://vimeo.com/62707591)
 
 
 #CommandPalette >  
@@ -21,6 +24,9 @@ Keep SublimeText "LIGHT".
 ##### SublimeSocket: open preference
 **-> show SublimeSocket's preference.**  
 
+##### SublimeSocket: status
+**-> show SublimeSocket's status and current connections.**  
+
 ##### SublimeSocket: off
 Please restart SublimeText manually.
   
@@ -33,6 +39,8 @@ The sample filter for Unity3D:
 
 The tail-WebSocket node.js component:  
 [/tool/nodeTailSocket/node_tailsocket_unity.js](https://github.com/sassembla/SublimeSocket/blob/master/tool/nodeTailSocket/node_tailsocket.js)    
+
+
 
 
 

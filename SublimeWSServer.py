@@ -43,34 +43,42 @@ class SublimeWSServer:
 
 		try:
 			self.socket.bind((host,port))
-			
-			self.socket.listen(0)
-			
-			serverStartMessage = 'SublimeSocket WebSocketServing started @ ' + str(host) + ':' + str(port)
-			print '\n', serverStartMessage, "\n"
-			sublime.set_timeout(lambda: sublime.status_message(serverStartMessage), 0)
-
-			# start serverControlIntervals
-			# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
-
-			# load settings
-			sublime.set_timeout(lambda: self.loadSettings(), 0)
-
-
-			self.listening = True
-			while self.listening:
-				(conn, addr) = self.socket.accept()
-
-				identity = str(uuid.uuid4())
-
-				# genereate client
-				client = SublimeWSClient(self, identity)
-				self.clients[identity] = client
-				
-				threading.Thread(target = client.handle, args = (conn,addr)).start()
-		
 		except socket.error, msg:
 			print "error", msg[1]
+			return 1
+
+		self.socket.listen(1)
+		
+		serverStartMessage = 'SublimeSocket WebSocketServing started @ ' + str(host) + ':' + str(port)
+		print '\n', serverStartMessage, "\n"
+		sublime.set_timeout(lambda: sublime.status_message(serverStartMessage), 0)
+
+		# start serverControlIntervals
+		# sublime.set_timeout(lambda: self.intervals(), SERVER_INTERVAL_SEC)
+
+		# load settings
+		sublime.set_timeout(lambda: self.loadSettings(), 0)
+
+
+		self.listening = True
+		while self.listening:
+			(conn, addr) = self.socket.accept()
+
+			if self.listening is None:
+				print "noneですーp"
+				return 0
+			
+			identity = str(uuid.uuid4())
+
+			# genereate new client
+			client = SublimeWSClient(self, identity)
+			
+			self.clients[identity] = client
+
+			threading.Thread(target = client.handle, args = (conn,addr)).start()
+				
+		return 0
+
 
 	## interval
 	def intervals(self):
@@ -120,18 +128,27 @@ class SublimeWSServer:
 		self.api.parse(apiData, currentClient)
 
 		
-	## kill server. with all connection(maybe some bugs include. will not be close immediately, at least 1 reload need,,)
+	## tearDown the server
 	def tearDown(self):
-		for client in self.clients:
-			self.clients.remove(client)
+		for clientId in self.clients:
+			client = self.clients[clientId]
 			client.close()
 
-		self.listening = False
+		self.clients = None
+
+		# no mean?
 		self.socket.close()
+		
+		# stop receiving
+		self.listening = False
+		
 
 		self.kvs.clear()
+		
+		serverTearDownMessage = 'SublimeSocket WebSocketServing tearDown @ ' + str(self.host) + ':' + str(self.port)
+		print '\n', serverTearDownMessage, "\n"
+		sublime.set_timeout(lambda: sublime.status_message(serverTearDownMessage), 0)
 
-		print "SublimeSocket WebSocketServing tearDown over. host:", self.host, "	port:", self.port
 
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
