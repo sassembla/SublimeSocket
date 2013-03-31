@@ -21,7 +21,11 @@ class SublimeWSServer:
 
 	def __init__(self):
 		self.clients = {}
+		
 		self.socket = ''
+		self.host = ''
+		self.port = ''
+
 		self.listening = False
 		self.kvs = KVS()
 		self.api = SublimeSocketAPI(self)
@@ -31,6 +35,8 @@ class SublimeWSServer:
 
 
 	def start(self, host, port):
+		self.host = host
+		self.port = port
 		self.socket = socket.socket()
 
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -334,12 +340,14 @@ class SublimeWSServer:
 
 				[emitRegionMatchEvent(region) for region in regionIdentitiesList]
 				
+
+	## show current status & connectionIds
 	def showCurrentConnections(self):
-		print "ss: server:", self.socket.gettimeout()
+		print "ss: server host:", self.host, "	port:", self.port
 		
 		print "ss: connections:"
 		for client in self.clients:
-			print client.connectionId
+			print "	", client
 
 
 	## input to sublime from server.
