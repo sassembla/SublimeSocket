@@ -15,20 +15,24 @@ class Socketon(sublime_plugin.TextCommand):
   def startServer(self):
     global thread
 
-    if thread is not None and thread.is_alive():
-      alreadyRunningMessage = "SublimeSocket Already Running."
-
-      sublime.status_message(alreadyRunningMessage)
-      print "ss:", alreadyRunningMessage
-
-      return 
-        
     host = sublime.load_settings("SublimeSocket.sublime-settings").get('host')
     port = sublime.load_settings("SublimeSocket.sublime-settings").get('port')
 
-    thread = SublimeSocketThread(host, port)
-    thread.start()
 
+    if thread is not None and thread.is_alive():
+      if (thread.isServerAlive()):
+        alreadyRunningMessage = "SublimeSocket Already Running."
+        sublime.status_message(alreadyRunningMessage)
+        print "ss:", alreadyRunningMessage
+
+      else:
+        thread.set(host, port)
+        thread.run();
+
+    else:
+      thread = SublimeSocketThread(host, port)
+      thread.start()
+    
 class On_then_openpref(sublime_plugin.TextCommand):
   def run(self, edit):
     Socketon.startServer()
@@ -49,29 +53,48 @@ class Socketoff(sublime_plugin.TextCommand):
   def run(self, edit):
     global thread
     if thread is not None and thread.is_alive():
-      thread.closeAllConnections()
+      if (thread.isServerAlive()):
+        thread.tearDownServer()
 
+    else:
+      notActivatedMessage = "SublimeSocket not yet activated."
+      sublime.status_message(notActivatedMessage)
+      print "ss:", notActivatedMessage
+      
 # threading
 class SublimeSocketThread(threading.Thread):
   def __init__(self, host, port):
     threading.Thread.__init__(self)
-    self._server = SublimeWSServer()
-    self._host = host
-    self._port = port
+    self.set(host, port)
 
+  # call through thread-initialize
   def run(self):
     self._server.start(self._host, self._port)
 
+  def set(self, host, port):
+    self._host = host
+    self._port = port
+
+    self._server = SublimeWSServer()
 
   # send eventName and data to server
   def toServer(self, eventName, eventParam=None):
-    self._server.fireKVStoredItem(eventName, eventParam)
+    if self._server is None:
+      pass
+    else:
+      self._server.fireKVStoredItem(eventName, eventParam)
     
   def currentConnections(self):
-    self._server.showCurrentConnections()
+    self._server.showCurrentStatusAndConnections()
   
-  def closeAllConnections(self):
+  def tearDownServer(self):
     self._server.tearDown()
+    self._server = None
+
+  def isServerAlive(self):
+    if not self._server:
+      return False
+    return True
 
 # event listeners
 class CaptureEditing(sublime_plugin.EventListener):

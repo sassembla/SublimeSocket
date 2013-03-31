@@ -127,7 +127,11 @@ class SublimeWSServer:
 			client.close()
 
 		self.listening = False
-		self.socket.close()		
+		self.socket.close()
+
+		self.kvs.clear()
+
+		print "SublimeSocket WebSocketServing tearDown over. host:", self.host, "	port:", self.port
 
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
@@ -342,7 +346,7 @@ class SublimeWSServer:
 				
 
 	## show current status & connectionIds
-	def showCurrentConnections(self):
+	def showCurrentStatusAndConnections(self):
 		print "ss: server host:", self.host, "	port:", self.port
 		
 		print "ss: connections:"
@@ -452,19 +456,16 @@ class SublimeWSServer:
 				break
 
 			if case(SublimeSocketAPISettings.KVS_SHOWVALUE):
-				print "param is", param
 				return self.showValue(param)
 				break
 
 			if case(SublimeSocketAPISettings.KVS_REMOVEVALUE):
 				return self.remove(param)
 				break
-
 				
 			if case(SublimeSocketAPISettings.KVS_CLEAR):
 				return self.clear()
 				break
-
 
 			if case():
 				print "unknown KVS subcommand"
