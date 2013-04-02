@@ -133,16 +133,14 @@ defineFilter:
     "target": "typescript",
     "event": "ss_errorEmitted",
     "replacefromto": {
-        "message": "-message",
-        "line": "-title"
+        "message": "message",
+        "line": "title"
     },
     "selectors": [
         {
-            "runShell": {
-                "main": "terminal-notifier",
-                "-message": "\"default message\"",
-                "-title": "\"default title\"",
-                "-execute": "\"open -a 'Sublime Text 2.App'\""
+            "notify": {
+                "title": "defaultTitle",
+                "message": "defaultMessage"
             }
         }
     ]

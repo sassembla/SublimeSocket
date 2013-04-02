@@ -14,7 +14,7 @@ var INTERVAL_TAILING = 500;
 // settings for TypeScript
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilter.txt";
 
-var TSC_SIMPLE_COMPILE_SHELLPATH = "/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/chromeClient/tscshell.sh";
+var TSC_SIMPLE_COMPILE_SHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscshell.sh";
 
 var TSC_TYPESCRIPTFILE_WILDCARD = "*.ts";
 var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
@@ -35,7 +35,8 @@ chrome.browserAction.onClicked.addListener(function(tab){
     if( ssChromeClient_tailing_tab === null && tab.url.indexOf('file://') == 0){
         ssChromeClient_tailing_tab = tab;
         chrome.browserAction.setIcon({path:"images/sublimesocketchromeicon-active.png"});
-        
+
+        needTail = false;        
         ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
 
         // connect.
@@ -126,7 +127,7 @@ var _WS = {
                     runShellJSON = {
                         "main": "/bin/sh",
                         "":[
-                            "\"" + TSC_SIMPLE_COMPILE_SHELLPATH + "\"",
+                            TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentCompileTargetFileName,
                             currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
                         ]
@@ -137,7 +138,7 @@ var _WS = {
                     runShellJSON = {
                         "main": "/bin/sh",
                         "":[
-                            "\"" + TSC_SIMPLE_COMPILE_SHELLPATH + "\"",
+                            TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
                             currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
                         ]

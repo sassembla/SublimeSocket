@@ -211,6 +211,11 @@ class SublimeSocketAPI:
 				val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
 				val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
 
+				# check contains PREFIX or not
+				if val.startswith(SublimeSocketAPISettings.RUNSETTING_PREFIX_SUBLIMESOCKET_PATH):
+					filePathArray = val.split(":")
+					val = "\"" + sublime.packages_path() + "/SublimeSocket/"+ filePathArray[1] + "\""
+
 				return val
 
 			if type(params[key]) == list:
