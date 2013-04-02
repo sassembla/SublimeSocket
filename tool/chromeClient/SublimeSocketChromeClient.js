@@ -95,41 +95,12 @@ var _WS = {
             "path":CURRENT_SETTING_PATH
         };
 
-        setReactorJSON = {
-            "target": "typescript",
-            "event": "on_post_save",
-            "interval": 100,
-            "replacefromto": {
-                "path": "message"
-            },
-            "selectors": [
-                {
-                    "monocastMessage": {
-                        "target": "SublimeSocketChromeClient",
-                        "message": "replace_stuff",
-                        "sender": TSC_IDENTIFIED_SENDER_STARTMARK
-                    }
-                }
-            ]
-        };
-
-        showAtLogJSON_2 = {
-            "message": "typescript-compilation sequence ready!"
-        };
-
-        showStatusMessageJSON_2 = {
-            "message": "typescript-compilation sequence ready!"
-        };
-
-
         //call api then get callback
-        _WS.s.send('sublimesocket@inputIdentity:'+JSON.stringify(identityJSON)+
+        _WS.s.send(
+            'sublimesocket@inputIdentity:'+JSON.stringify(identityJSON)+
             "->showAtLog:"+JSON.stringify(showAtLogJSON)+
             "->showStatusMessage:"+JSON.stringify(showStatusMessageJSON)+
-            "->runSetting:"+JSON.stringify(runSettingJSON)+
-            "->setReactor:"+JSON.stringify(setReactorJSON)+
-            "->showAtLog:"+JSON.stringify(showAtLogJSON_2)+
-            "->showStatusMessage:"+JSON.stringify(showStatusMessageJSON_2)
+            "->runSetting:"+JSON.stringify(runSettingJSON)
         );
     },
 

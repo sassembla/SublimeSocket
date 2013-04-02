@@ -139,11 +139,37 @@ defineFilter:
     "selectors": [
         {
             "runShell": {
-                "main": "terminapl-notifier",
+                "main": "terminal-notifier",
                 "-message": "\"default message\"",
                 "-title": "\"default title\"",
                 "-execute": "\"open -a 'Sublime Text 2.App'\""
             }
         }
     ]
+}
+->setReactor: 
+{
+    "target": "typescript",
+    "event": "on_post_save",
+    "interval": 100,
+    "replacefromto": {
+        "path": "message"
+    },
+    "selectors": [
+        {
+            "monocastMessage": {
+                "target": "SublimeSocketChromeClient",
+                "message": "replace_stuff",
+                "sender": "typescriptsaved"
+            }
+        }
+    ]
+}
+->showAtLog:
+{
+    "message": "typescript-compilation sequence ready!"
+}
+->showStatusMessage:
+{
+    "message": "typescript-compilation sequence ready!"
 }
