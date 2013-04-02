@@ -12,7 +12,7 @@ var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilte
 
 var TSC_COMPILESHELLPATH = "\"/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/chromeClient/tscwithenv.sh\"";
 
-var TSC_COMPILETARGETFILENAME = "*.ts";
+var TSC_TYPESCRIPTFILE_WILDCARD = "*.ts";
 var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
 
 
@@ -96,16 +96,6 @@ var _WS = {
             },
             "selectors": [
                 {
-                    "showStatusMessage": {
-                        "message": "typescript compiling..."
-                    }
-                },
-                {
-                    "showAtLog": {
-                        "message": "typescript compiling..."
-                    }
-                },
-                {
                     "broadcastMessage": {
                         // "target": "typescript",
                         "message": "replace_stuff",
@@ -162,8 +152,15 @@ var _WS = {
 
                     break;
                 case TARGET_FOLDER:
-                    
-                    
+                    runShellJSON = {
+                        "main": "/bin/sh",
+                        "":[
+                            TSC_COMPILESHELLPATH,
+                            currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
+                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                        ]
+                    };
+
                     break;
                 case TARGET_RECURSIVE:
                     console.log("recursive! not yet modified "+e.data);
