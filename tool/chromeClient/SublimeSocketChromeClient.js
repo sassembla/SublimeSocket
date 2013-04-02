@@ -1,3 +1,7 @@
+// 
+// Client of SublimeSocket.
+// 
+
 var ssChromeClient_tailing_tab = null;
 var ssChromeClient_tailing_interval = 0;
 
@@ -10,7 +14,7 @@ var INTERVAL_TAILING = 500;
 // settings for TypeScript
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilter.txt";
 
-var TSC_COMPILESHELLPATH = "\"/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/chromeClient/tscwithenv.sh\"";
+var TSC_SIMPLE_COMPILE_SHELLPATH = "/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/chromeClient/tscshell.sh";
 
 var TSC_TYPESCRIPTFILE_WILDCARD = "*.ts";
 var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
@@ -21,7 +25,7 @@ var TARGET_FOCUSED = 0;
 var TARGET_FOLDER = 1;
 var TARGET_RECURSIVE = 2;
 
-var TSC_COMPILATIONTARGETMODE = TARGET_FOCUSED;
+var TSC_COMPILATIONTARGETMODE = TARGET_FOLDER;
 var TSC_IDENTIFIED_SENDER_MARK = "typescriptsaved";
 
 chrome.browserAction.onClicked.addListener(function(tab){
@@ -96,8 +100,8 @@ var _WS = {
             },
             "selectors": [
                 {
-                    "broadcastMessage": {
-                        // "target": "typescript",
+                    "monocastMessage": {
+                        "target": "SublimeSocketChromeClient",
                         "message": "replace_stuff",
                         "sender": TSC_IDENTIFIED_SENDER_MARK
                     }
@@ -127,24 +131,27 @@ var _WS = {
 
     onClose: function () {
         console.log("closed!!?");
-        // _WS.writeLog('<span class="label label-important">RESPONSE:DISCONNECTED</span>');
     },
 
     onMessage: function (e) {
         if (e.data.indexOf(TSC_IDENTIFIED_SENDER_MARK) === 0) {
             
+            var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_MARK+":","")
+            if (currentCompileTargetFileName.indexOf(currentTargetFolderPath) !== -1) {
+                // exist in target folder.
+            } else {
+                return;
+            }
+
             var runShellJSON = "";
 
             switch (currentCompilationTargetMode) {
                 case TARGET_FOCUSED:
-                    var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_MARK+":","")
                     
-                    console.log("currentCompileTargetFileName   "+currentCompileTargetFileName);
-
                     runShellJSON = {
                         "main": "/bin/sh",
                         "":[
-                            TSC_COMPILESHELLPATH,
+                            "\"" + TSC_SIMPLE_COMPILE_SHELLPATH + "\"",
                             currentCompileTargetFileName,
                             currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
                         ]
@@ -155,7 +162,7 @@ var _WS = {
                     runShellJSON = {
                         "main": "/bin/sh",
                         "":[
-                            TSC_COMPILESHELLPATH,
+                            "\"" + TSC_SIMPLE_COMPILE_SHELLPATH + "\"",
                             currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
                             currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
                         ]
@@ -163,7 +170,14 @@ var _WS = {
 
                     break;
                 case TARGET_RECURSIVE:
-                    console.log("recursive! not yet modified "+e.data);
+                    runShellJSON = {
+                        "main": "/bin/sh",
+                        "":[
+                            TSC_RECURSIVE_COMPILE_SHELLPATH,
+                            currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
+                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                        ]
+                    };
                     break;
             } 
 
@@ -226,7 +240,9 @@ function checkFile(){
                                         if( ssChromeClient_current_text != '' ){
 
                                             var lines = ssChromeClient_current_text.split("\n");
+
                                             for (var i = 0; i < lines.length; i++) {
+                                                console.log("line "+lines[i]);
                                                 filteringJSON = {
                                                     "name":"typescript",
                                                     "source":lines[i]

@@ -198,7 +198,7 @@ class SublimeWSServer:
 						viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS][regionIdentity] = 1
 						
 						del regionsDict[regionIdentity]
-						
+
 				[viewInstance.erase_regions(regionIdentity) for regionIdentity in viewDictValue[SublimeSocketAPISettings.SUBARRAY_DELETED_REGIONS].keys()]
 				
 		if viewDict:
