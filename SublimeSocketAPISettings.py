@@ -85,6 +85,7 @@ API_BROADCASTMESSAGE	= "broadcastMessage"
 API_MONOCASTMESSAGE		= "monocastMessage"
 OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
+OUTPUT_SENDER			= "sender"
 
 API_SHOWATLOG			= "showAtLog"
 LOG_MESSAGE				= "message"
