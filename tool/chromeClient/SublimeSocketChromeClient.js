@@ -10,7 +10,7 @@ var INTERVAL_TAILING = 500;
 // settings for TypeScript
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilter.txt";
 
-var TSC_COMPILESHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscwithenv.sh";
+var TSC_COMPILESHELLPATH = "\"/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/chromeClient/tscwithenv.sh\"";
 
 var TSC_COMPILETARGETFILENAME = "*.ts";
 var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
@@ -43,7 +43,7 @@ var _WS = {
     init : function (targetLogPath) {
         // replace file path as FileSystem path
         var logPath = targetLogPath.replace("file:///", "/");
-        currentTargetFolderPath = logPath.replace("/"+TSC_COMPILETARGETLOGFILENAME, "");
+        currentTargetFolderPath = logPath.replace("/"+TSC_COMPILETARGETLOGFILENAME, "/");
     },
 
     connect : function (e) {
@@ -72,7 +72,7 @@ var _WS = {
             "path":CURRENT_SETTING_PATH
         };
 
-        setReactorJSON_2 = {
+        setReactorJSON = {
             "target": "typescript",
             "event": "on_post_save",
             "interval": 100,
@@ -88,13 +88,9 @@ var _WS = {
                     }
                 },
                 {
-                    "runShell": {
-                        "main": "/bin/sh",
-                        "":[
-                            TSC_COMPILESHELLPATH,
-                            currentTargetFolderPath + TSC_COMPILETARGETFILENAME,
-                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
-                        ]
+                    "broadcastMessage": {
+                        // "target": "typescript",
+                        "message": "plztcs"
                     }
                 }
             ] 
@@ -114,8 +110,7 @@ var _WS = {
             "->showAtLog:"+JSON.stringify(showAtLogJSON)+
             "->showStatusMessage:"+JSON.stringify(showStatusMessageJSON)+
             "->runSetting:"+JSON.stringify(runSettingJSON)+
-            "->setReactor:"+JSON.stringify(setReactorJSON_1)+
-            "->setReactor:"+JSON.stringify(setReactorJSON_2)+
+            "->setReactor:"+JSON.stringify(setReactorJSON)+
             "->showAtLog:"+JSON.stringify(showAtLogJSON_2)+
             "->showStatusMessage:"+JSON.stringify(showStatusMessageJSON_2)
         );
@@ -127,7 +122,34 @@ var _WS = {
     },
 
     onMessage: function (e) {
-        // _WS.writeLog('<span class="label label-success">RESPONSE: ' + e.data + '</span>');
+        if (e.data == "plztcs") {
+            console.log("received2 = "+e.data);
+
+
+            var mode = 1;
+
+            switch (mode) {
+                case 0:
+                    break;
+                case 1:
+                    console.log("received = "+e.data);
+                    break;
+            } 
+
+            runShellJSON = {
+                "main": "/bin/sh",
+                "":[
+                    TSC_COMPILESHELLPATH,
+                    currentTargetFolderPath + TSC_COMPILETARGETFILENAME,
+                    currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME,
+                    "-o","test"
+                ],
+                "debug":true
+            }
+
+            var command = "ss@runShell:"+JSON.stringify(runShellJSON);
+            _WS.s.send(command);
+        }
     },
 
     onError: function (e) {

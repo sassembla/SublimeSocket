@@ -7,6 +7,7 @@ echo start >> $2
 
 #tsc includes "node" call
 /usr/local/bin/tsc $1 2>> $2
+
 var=`tail -1 $2`
 if [ "$var" == "start" ]
 	then

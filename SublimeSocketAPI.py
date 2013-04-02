@@ -214,6 +214,7 @@ class SublimeSocketAPI:
 				return val
 
 			if type(params[key]) == list:
+
 				replaced = [replaceValParts(v) for v in params[key]]
 				val = ' '.join(replaced)
 			else:
