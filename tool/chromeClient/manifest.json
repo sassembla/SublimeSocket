@@ -1,0 +1,18 @@
+{
+	"name": "SublimeSocketChromeClient",
+	"version": "0.0.1",
+	"description": "connect to SublimeSocket through WebSocket.",
+	"manifest_version": 2,
+	"permissions": ["tabs","idle","file://*/*","http://*/*", "https://*/*"],
+
+  "background": {
+		"scripts": ["SublimeSocketChromeClient.js"]
+	},
+
+    "browser_action": {
+        "default_icon": "images/sublimesocketchromeicon-inactive.png",
+        "default_title": "SublimeSocketChromeClient"
+    },
+
+    "offline_enabled": true
+}
