@@ -7,23 +7,23 @@ var ssChromeClient_display_lock = false;
 
 var INTERVAL_TAILING = 500;
 
-// 
-var CURRENT_SETTING_PATH = "/Users/sassembla/Library/Application\ Support/Sublime\ Text\ 2/Packages/SublimeSocket/tool/chromeClient/TypeScriptFilter.txt";
+// settings for TypeScript
+var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilter.txt";
 
-var TSC_COMPILESHELLPATH = "\"/Users/sassembla/Library/Application@s@s@Support/Sublime@s@s@Text@s@s@2/Packages/SublimeSocket/tool/nodeTailSocket/tscwithenv.sh\"";
+var TSC_COMPILESHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscwithenv.sh";
 
-var TSC_COMPILETARGETPATH = "/Users/sassembla/Desktop/test/";
 var TSC_COMPILETARGETFILENAME = "*.ts";
-var TSC_COMPILETARGETLOGFILENAME = "compilelog.log";
+var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
 
 chrome.browserAction.onClicked.addListener(function(tab){
     if( ssChromeClient_tailing_tab === null && tab.url.indexOf('file://') == 0){
         ssChromeClient_tailing_tab = tab;
         chrome.browserAction.setIcon({path:"images/sublimesocketchromeicon-active.png"});
         ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
-
+        
         // connect.
-        _WS.init();
+        _WS.init(tab.url);
+        _WS.connect();
     }else{
         chrome.browserAction.setIcon({path:"images/sublimesocketchromeicon-inactive.png"});
         clearInterval(ssChromeClient_tailing_interval);
@@ -36,10 +36,17 @@ chrome.browserAction.onClicked.addListener(function(tab){
 
 var _WS = {
     uri: 'ws://127.0.0.1:8823/',
+    currentTargetFolderPath:"",
     
     ws: null,
 
-    init : function (e) {
+    init : function (targetLogPath) {
+        // replace file path as FileSystem path
+        var logPath = targetLogPath.replace("file:///", "/");
+        currentTargetFolderPath = logPath.replace("/"+TSC_COMPILETARGETLOGFILENAME, "");
+    },
+
+    connect : function (e) {
       _WS.s = new WebSocket(_WS.uri);
       _WS.s.onopen = function (e) { _WS.onOpen(e); };
       _WS.s.onclose = function (e) { _WS.onClose(e); };
@@ -48,6 +55,7 @@ var _WS = {
     },
 
     onOpen: function () {
+        
         identityJSON = {
             "id":"SublimeSocketChromeClient"
         };
@@ -62,24 +70,6 @@ var _WS = {
 
         runSettingJSON = {
             "path":CURRENT_SETTING_PATH
-        };
-
-        setReactorJSON_1 = {
-            "target": "typescript",
-            "event": "on_modified",
-            "interval": 1000,
-            "selectors": [
-                {
-                    "runShell": {
-                        "main": "/bin/sh",
-                        "":[
-                            TSC_COMPILESHELLPATH,
-                            TSC_COMPILETARGETPATH + TSC_COMPILETARGETFILENAME,
-                            TSC_COMPILETARGETPATH + TSC_COMPILETARGETLOGFILENAME
-                        ]
-                    }
-                }
-            ]
         };
 
         setReactorJSON_2 = {
@@ -102,8 +92,8 @@ var _WS = {
                         "main": "/bin/sh",
                         "":[
                             TSC_COMPILESHELLPATH,
-                            TSC_COMPILETARGETPATH + TSC_COMPILETARGETFILENAME,
-                            TSC_COMPILETARGETPATH + TSC_COMPILETARGETLOGFILENAME
+                            currentTargetFolderPath + TSC_COMPILETARGETFILENAME,
+                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
                         ]
                     }
                 }

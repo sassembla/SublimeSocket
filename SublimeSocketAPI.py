@@ -157,6 +157,12 @@ class SublimeSocketAPI:
 
 	## run specific setting.txt file as API
 	def runSetting(self, filePath):
+		
+		# check contains PREFIX or not
+		if filePath.startswith(SublimeSocketAPISettings.RUNSETTING_PREFIX_SUBLIMESOCKET_PATH):
+			filePathArray = filePath.split(":")
+			filePath = sublime.packages_path() + "/SublimeSocket/"+ filePathArray[1]
+
 		settingFile = open(filePath, 'r')
 		setting = settingFile.read()
 		settingFile.close()
