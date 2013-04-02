@@ -15,6 +15,15 @@ var TSC_COMPILESHELLPATH = "\"/Users/sassembla/Library/Application@s@s@Support/S
 var TSC_COMPILETARGETFILENAME = "*.ts";
 var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
 
+
+
+var TARGET_FOCUSED = 0;
+var TARGET_FOLDER = 1;
+var TARGET_RECURSIVE = 2;
+
+var TSC_COMPILATIONTARGETMODE = TARGET_FOCUSED;
+var TSC_IDENTIFIED_SENDER_MARK = "typescriptsaved";
+
 chrome.browserAction.onClicked.addListener(function(tab){
     if( ssChromeClient_tailing_tab === null && tab.url.indexOf('file://') == 0){
         ssChromeClient_tailing_tab = tab;
@@ -22,7 +31,7 @@ chrome.browserAction.onClicked.addListener(function(tab){
         ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
         
         // connect.
-        _WS.init(tab.url);
+        _WS.init(tab.url, TSC_COMPILATIONTARGETMODE);
         _WS.connect();
     }else{
         chrome.browserAction.setIcon({path:"images/sublimesocketchromeicon-inactive.png"});
@@ -36,14 +45,20 @@ chrome.browserAction.onClicked.addListener(function(tab){
 
 var _WS = {
     uri: 'ws://127.0.0.1:8823/',
+
+
     currentTargetFolderPath:"",
-    
+    currentCompilationTargetMode:-1,
+
     ws: null,
 
-    init : function (targetLogPath) {
+    init : function (targetLogPath, compilationTargetMode) {
+
         // replace file path as FileSystem path
         var logPath = targetLogPath.replace("file:///", "/");
         currentTargetFolderPath = logPath.replace("/"+TSC_COMPILETARGETLOGFILENAME, "/");
+
+        currentCompilationTargetMode = compilationTargetMode;
     },
 
     connect : function (e) {
@@ -76,6 +91,9 @@ var _WS = {
             "target": "typescript",
             "event": "on_post_save",
             "interval": 100,
+            "replacefromto": {
+                "path": "message"
+            },
             "selectors": [
                 {
                     "showStatusMessage": {
@@ -90,10 +108,11 @@ var _WS = {
                 {
                     "broadcastMessage": {
                         // "target": "typescript",
-                        "message": "plztcs"
+                        "message": "replace_stuff",
+                        "sender": TSC_IDENTIFIED_SENDER_MARK
                     }
                 }
-            ] 
+            ]
         };
 
         showAtLogJSON_2 = {
@@ -122,31 +141,36 @@ var _WS = {
     },
 
     onMessage: function (e) {
-        if (e.data == "plztcs") {
-            console.log("received2 = "+e.data);
+        if (e.data.indexOf(TSC_IDENTIFIED_SENDER_MARK) === 0) {
+            
+            var runShellJSON = "";
 
+            switch (currentCompilationTargetMode) {
+                case TARGET_FOCUSED:
+                    var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_MARK+":","")
+                    
+                    console.log("currentCompileTargetFileName   "+currentCompileTargetFileName);
 
-            var mode = 1;
+                    runShellJSON = {
+                        "main": "/bin/sh",
+                        "":[
+                            TSC_COMPILESHELLPATH,
+                            currentCompileTargetFileName,
+                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                        ]
+                    };
 
-            switch (mode) {
-                case 0:
                     break;
-                case 1:
-                    console.log("received = "+e.data);
+                case TARGET_FOLDER:
+                    
+                    
+                    break;
+                case TARGET_RECURSIVE:
+                    console.log("recursive! not yet modified "+e.data);
                     break;
             } 
 
-            runShellJSON = {
-                "main": "/bin/sh",
-                "":[
-                    TSC_COMPILESHELLPATH,
-                    currentTargetFolderPath + TSC_COMPILETARGETFILENAME,
-                    currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME,
-                    "-o","test"
-                ],
-                "debug":true
-            }
-
+            
             var command = "ss@runShell:"+JSON.stringify(runShellJSON);
             _WS.s.send(command);
         }
