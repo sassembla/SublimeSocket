@@ -161,7 +161,9 @@ class SublimeWSServer:
 	def collectViews(self):
 		for views in [window.views() for window in sublime.windows()]:
 			for view in views:
-				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, view)
+				self.fireKVStoredItem(SublimeSocketAPISettings.SS_EVENT_COLLECT, 
+					{SublimeSocketAPISettings.VIEW_SELF:view}
+				)
 	
 	## store region to viewDict-view in KVS
 	def storeRegionToView(self, view, identity, region, line, message):
@@ -396,7 +398,7 @@ class SublimeWSServer:
 
 		# viewCollector "renew" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
-			viewInstance = eventParam
+			viewInstance = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 
 			if viewInstance.is_scratch():
 				# print "scratch buffer."
@@ -437,7 +439,7 @@ class SublimeWSServer:
 
 		# viewCollector "del" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_DEL:
-			viewInstance = eventParam
+			viewInstance = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 
 			viewDict = {}
 			
