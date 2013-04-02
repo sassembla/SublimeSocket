@@ -1,5 +1,5 @@
 // TypeScript Filter
-// ver 0.5.0
+// ver 0.5.1
 
 defineFilter: 
 {
@@ -74,6 +74,13 @@ defineFilter:
                         "showAtLog": {
                             "message": "typescript compile succeeded."
                         }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "typescriptcompilefinished"
+                        }
                     }
                 ]
             }
@@ -89,6 +96,13 @@ defineFilter:
                     {
                         "showAtLog": {
                             "message": "typescript compile failure."
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "typescriptcompilefinished"
                         }
                     }
                 ]
@@ -125,7 +139,7 @@ defineFilter:
     "selectors": [
         {
             "runShell": {
-                "main": "terminal-notifier",
+                "main": "terminapl-notifier",
                 "-message": "\"default message\"",
                 "-title": "\"default title\"",
                 "-execute": "\"open -a 'Sublime Text 2.App'\""

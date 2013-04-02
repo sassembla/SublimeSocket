@@ -26,14 +26,18 @@ var TARGET_FOLDER = 1;
 var TARGET_RECURSIVE = 2;
 
 var TSC_COMPILATIONTARGETMODE = TARGET_FOLDER;
-var TSC_IDENTIFIED_SENDER_MARK = "typescriptsaved";
+var TSC_IDENTIFIED_SENDER_STARTMARK = "typescriptsaved";
+var TSC_IDENTIFIED_SENDER_ENDMARK = "typescriptcompilefinished";
+
+var needTail = false;
 
 chrome.browserAction.onClicked.addListener(function(tab){
     if( ssChromeClient_tailing_tab === null && tab.url.indexOf('file://') == 0){
         ssChromeClient_tailing_tab = tab;
         chrome.browserAction.setIcon({path:"images/sublimesocketchromeicon-active.png"});
-        ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
         
+        ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
+
         // connect.
         _WS.init(tab.url, TSC_COMPILATIONTARGETMODE);
         _WS.connect();
@@ -103,7 +107,7 @@ var _WS = {
                     "monocastMessage": {
                         "target": "SublimeSocketChromeClient",
                         "message": "replace_stuff",
-                        "sender": TSC_IDENTIFIED_SENDER_MARK
+                        "sender": TSC_IDENTIFIED_SENDER_STARTMARK
                     }
                 }
             ]
@@ -134,9 +138,9 @@ var _WS = {
     },
 
     onMessage: function (e) {
-        if (e.data.indexOf(TSC_IDENTIFIED_SENDER_MARK) === 0) {
+        if (e.data.indexOf(TSC_IDENTIFIED_SENDER_STARTMARK) === 0) {
             
-            var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_MARK+":","")
+            var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_STARTMARK+":","")
             if (currentCompileTargetFileName.indexOf(currentTargetFolderPath) !== -1) {
                 // exist in target folder.
             } else {
@@ -181,10 +185,16 @@ var _WS = {
                     break;
             } 
 
+            needTail = true;
             
             var command = "ss@runShell:"+JSON.stringify(runShellJSON);
             _WS.s.send(command);
         }
+
+        if (e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
+            needTail = false;
+        }
+
     },
 
     onError: function (e) {
@@ -211,7 +221,11 @@ function checkFile(){
     if( ssChromeClient_tailing_tab == null ){
         return;
     }
-    
+
+    if (!needTail) {
+        return;
+    }
+
     chrome.tabs.reload(ssChromeClient_tailing_tab.id);
     
     chrome.tabs.executeScript(
