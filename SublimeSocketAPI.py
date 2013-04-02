@@ -255,7 +255,17 @@ class SublimeSocketAPI:
 	## emit message to clients.
 	# broadcast messages if no-"target" key.
 	def broadcastMessage(self, params):
-		buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "broadcastMessage require 'message' param"
+		
+		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
+		
+		# if sender specified, add "sender:" ahead of message.
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
+			message = params[SublimeSocketAPISettings.OUTPUT_SENDER] + ":" + message
+		
+		buf = self.encoder.text(str(message), mask=0)
+		
+		print "message", message
 		
 		clients = self.server.clients.values()
 		for client in clients:
@@ -265,12 +275,19 @@ class SublimeSocketAPI:
 	def monocastMessage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "monocastMessage require 'target' param"
 		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "monocastMessage require 'message' param"
-
+		
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
+		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
+		
+		asd = bcg
+
+		# if sender specified, add "sender:" ahead of message.
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
+			message = params[SublimeSocketAPISettings.OUTPUT_SENDER] + ":" + message
 		
 		if self.server.clients.has_key(target):
 			client = self.server.clients[target]
-			buf = self.encoder.text(str(params[SublimeSocketAPISettings.OUTPUT_MESSAGE]), mask=0)
+			buf = self.encoder.text(str(message), mask=0)
 			client.send(buf)
 
 	## send message to the other via SS.
