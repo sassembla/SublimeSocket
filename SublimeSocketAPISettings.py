@@ -42,6 +42,12 @@ REACTOR_EVENT			= "event"
 REACTOR_SELECTORS	= "selectors"
 REACTOR_INTERVAL	= "interval"
 REACTOR_REPLACEFROMTO		= "replacefromto"
+REACTOR_VIEWKEY_VIEWSELF	= "view"
+REACTOR_VIEWKEY_ID				= "viewId"
+REACTOR_VIEWKEY_BUFFERID	= "bufferId"
+REACTOR_VIEWKEY_PATH			= "path"
+REACTOR_VIEWKEY_BASENAME	= "basename"
+REACTOR_VIEWKEY_VNAME			= "vname"
 
 REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
 REACTIVE_ONEBYONE_EVENT = [SS_EVENT_ERROREMITTED]
