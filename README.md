@@ -1,5 +1,5 @@
 # SublimeSocket
-###### version 0.8.4
+###### version 0.8.5
 **API Server** for the SublieText.   
 Control SublimeTextAPI via WebSocket protocol.  
 
@@ -10,7 +10,7 @@ Control SublimeTextAPI via WebSocket protocol.
 #Demo movie
 [Work with Unity	:	Build and show parameters and errors](https://vimeo.com/62957311)
 
-[Work with TypeScript	:	Build and show errors](https://vimeo.com/62707591)
+[Work with TypeScript	:	Build and show errors with Chrome Ext](https://vimeo.com/62707591)
 
 
 #CommandPalette >  
