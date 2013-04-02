@@ -1,5 +1,5 @@
-//Unity filter
-//v 1.0.2
+// Unity filter
+// ver 1.0.2
 
 defineFilter:
 {

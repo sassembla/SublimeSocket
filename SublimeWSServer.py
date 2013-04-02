@@ -65,7 +65,6 @@ class SublimeWSServer:
 			(conn, addr) = self.socket.accept()
 
 			if self.listening is None:
-				print "noneですーp"
 				return 0
 			
 			identity = str(uuid.uuid4())
