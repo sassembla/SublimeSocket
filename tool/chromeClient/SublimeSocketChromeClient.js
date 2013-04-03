@@ -11,14 +11,19 @@ var ssChromeClient_display_lock = false;
 
 var INTERVAL_TAILING = 500;
 
+
+
+var currentFilterName = "typescript";
+var KEY_CLIENT_IDENTITY = "SublimeSocketChromeClient";
+
+
 // settings for TypeScript
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClient/TypeScriptFilter.txt";
 
 var TSC_SIMPLE_COMPILE_SHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscshell.sh";
 
 var TSC_TYPESCRIPTFILE_WILDCARD = "*.ts";
-var TSC_COMPILETARGETLOGFILENAME = "tscompile.log";
-
+var currentTSCompileLogFileName = "";
 
 
 var TARGET_FOCUSED = 0;
@@ -65,8 +70,17 @@ var _WS = {
 
         // replace file path as FileSystem path
         var logPath = targetLogPath.replace("file:///", "/");
-        currentTargetFolderPath = logPath.replace("/"+TSC_COMPILETARGETLOGFILENAME, "/");
 
+        pathArray = logPath.split("/");
+
+        // last path is "logfile.log"
+        currentTSCompileLogFileName = pathArray[pathArray.length-1];
+        
+        // get FolderPath
+        currentTargetFolderPath = logPath.replace("/"+currentTSCompileLogFileName, "/");
+        console.log("currentTargetFolderPath    "+currentTargetFolderPath);
+
+        // set mode from preferences
         currentCompilationTargetMode = compilationTargetMode;
     },
 
@@ -79,34 +93,33 @@ var _WS = {
     },
 
     onOpen: function () {
-        
-        identityJSON = {
-            "id":"SublimeSocketChromeClient"
-        };
-
-        showAtLogJSON = {
-            "message": "SublimeSocketChromeClient connected to SublimeSocket."
-        };
-
-        showStatusMessageJSON = {
-            "message": "SublimeSocketChromeClient connected to SublimeSocket."
-        };
-
-        runSettingJSON = {
-            "path":CURRENT_SETTING_PATH
-        };
 
         //call api then get callback
         _WS.s.send(
-            'sublimesocket@inputIdentity:'+JSON.stringify(identityJSON)+
-            "->showAtLog:"+JSON.stringify(showAtLogJSON)+
-            "->showStatusMessage:"+JSON.stringify(showStatusMessageJSON)+
-            "->runSetting:"+JSON.stringify(runSettingJSON)
+            'sublimesocket@inputIdentity:'+JSON.stringify(
+            {
+                "id":KEY_CLIENT_IDENTITY
+            }
+            )+
+            "->showAtLog:"+JSON.stringify(
+            {
+                "message": "SublimeSocketChromeClient connected to SublimeSocket."
+            }
+            )+
+            "->showStatusMessage:"+JSON.stringify(
+            {
+                "message": "SublimeSocketChromeClient connected to SublimeSocket."
+            }
+            )+
+            "->runSetting:"+JSON.stringify(
+            {
+                "path":CURRENT_SETTING_PATH
+            })
         );
     },
 
-    onClose: function () {
-        console.log("closed!!?");
+    onClose: function (e) {
+        console.log("closed!!? closed nande!?"+e);
     },
 
     onMessage: function (e) {
@@ -129,18 +142,19 @@ var _WS = {
                         "":[
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentCompileTargetFileName,
-                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                            currentTargetFolderPath + currentTSCompileLogFileName
                         ]
                     };
 
                     break;
                 case TARGET_FOLDER:
+                    console.log("TARGET_FOLDER here");
                     runShellJSON = {
                         "main": "/bin/sh",
                         "":[
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
-                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                            currentTargetFolderPath + currentTSCompileLogFileName
                         ]
                     };
 
@@ -151,7 +165,7 @@ var _WS = {
                         "":[
                             TSC_RECURSIVE_COMPILE_SHELLPATH,
                             currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
-                            currentTargetFolderPath + TSC_COMPILETARGETLOGFILENAME
+                            currentTargetFolderPath + currentTSCompileLogFileName
                         ]
                     };
                     break;
@@ -160,6 +174,9 @@ var _WS = {
             needTail = true;
             
             var command = "ss@runShell:"+JSON.stringify(runShellJSON);
+
+            console.log("TARGET_FOLDER here command "+command);
+
             _WS.s.send(command);
         }
 
@@ -170,7 +187,7 @@ var _WS = {
     },
 
     onError: function (e) {
-        // _WS.writeLog('<span style="color: red;">ERROR:</span> ' + e.data);
+        console.log("error:"+e.error);
     },
 
 
@@ -230,11 +247,11 @@ function checkFile(){
                                             for (var i = 0; i < lines.length; i++) {
                                                 console.log("line "+lines[i]);
                                                 filteringJSON = {
-                                                    "name":"typescript",
+                                                    "name":currentFilterName,
                                                     "source":lines[i]
                                                 };
 
-                                                // console.log("ssChromeClient_current_text:"+ssChromeClient_current_text);
+                                                console.log("ssChromeClient_current_text:"+ssChromeClient_current_text);
                                                 _WS.s.send("ss@filtering:"+JSON.stringify(filteringJSON));
                                             }
                                         }
