@@ -115,6 +115,42 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@setFoundationReactor:
+{
+    "event": "ss_f_noViewFound",
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "Hello World"
+            }
+        }
+    ]
+}
+->defineFilter:
+{
+    "name": "04/04/13 23:30:08",
+    "patterns": [
+        {
+            "something": {
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "Hello World"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+->filtering:
+{
+    "name": "04/04/13 23:30:08",
+    "source": "something"
+}
+            </option>
+
+            <option>
 ss@notify:
 {
     "title": "title-is-here",
@@ -186,12 +222,8 @@ ss@setReactor:
     "event": "ss_errorEmitted",
     "selectors": [
         {
-            "runShell": {
-                "main": "terminal-notifier",
-                "-message": "\"Hello, this is my message\"",
-                "-title": "\"Message Title\"",
-                "-execute": "\"open -a 'Sublime Text 2.App'\"",
-                "debug": true
+            "showAtLog": {
+                "message": "Hello World"
             }
         }
     ]
@@ -235,6 +267,20 @@ ss@runShell:
     "-message": "\"Hello, this is my message\"",
     "-title": "\"Message Title\"",
     "-execute": "\"open -a 'Sublime Text 2.App'\"",
+    "debug": true
+}
+            </option>
+            <option>
+ss@runShell:
+{
+    "main": "terminal-notifier",
+    "-message": [
+        "\"Hello, this is my message\"",
+        "-title",
+        "\"Message Title\"",
+        "-execute",
+        "\"open -a 'Sublime Text 2.App'\""
+    ],
     "debug": true
 }
             </option>
