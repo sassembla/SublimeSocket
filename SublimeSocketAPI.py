@@ -573,6 +573,7 @@ class SublimeSocketAPI:
 		# this check should be run in main thread
 		if not viewInstance:
 			params = {}
+			params[SublimeSocketAPISettings.NOVIEWFOUND_TARGET] = SublimeSocketAPISettings.FOUNDATIONREACTOR_TARGET_DEFAULT
 			params[SublimeSocketAPISettings.NOVIEWFOUND_VIEW] = view
 			params[SublimeSocketAPISettings.NOVIEWFOUND_LINE] = line
 			params[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE] = message
