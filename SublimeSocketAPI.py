@@ -306,7 +306,7 @@ class SublimeSocketAPI:
 	## Define the filter and check filterPatterns
 	def defineFilter(self, params):
 		# check filter name
-		assert params.has_key(SublimeSocketAPISettings.FILTER_NAME), "defineFilter require 'name' key."
+		assert params.has_key(SublimeSocketAPISettings.DEFINEFILTER_NAME), "defineFilter require 'name' key."
 
 		# load defined filters
 		filterNameAndPatternsArray = {}
@@ -314,9 +314,9 @@ class SublimeSocketAPI:
 		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_FILTERS):
 			filterNameAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)
 
-		filterName = params[SublimeSocketAPISettings.FILTER_NAME]
+		filterName = params[SublimeSocketAPISettings.DEFINEFILTER_NAME]
 
-		patterns = params[SublimeSocketAPISettings.FILTER_PATTERNS]
+		patterns = params[SublimeSocketAPISettings.DEFINEFILTER_PATTERNS]
 		assert type(patterns) == list, "defineFilter require: filterPatterns must be list."
 
 		def mustBeSingleDict(filterDict):
@@ -538,10 +538,19 @@ class SublimeSocketAPI:
 
 		# find view
 		viewInstance = self.internal_detectViewInstance(view)
-
-		# run in main thread
-		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_print(view, viewInstance, line, message, condition), 0)
+		if viewInstance:
+			# run in main thread
+			sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_print(view, viewInstance, line, message, condition), 0)
 	
+		else:
+			params = {}
+			params[SublimeSocketAPISettings.NOVIEWFOUND_VIEW] = view
+			params[SublimeSocketAPISettings.NOVIEWFOUND_LINE] = line
+			params[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE] = message
+			params[SublimeSocketAPISettings.NOVIEWFOUND_CONDITION] = conditionm
+
+			self.server.fireKVStoredItem(SublimeSocketAPISettings.ss_noViewFound, params)
+
 
 	def notify(self, params):
 		assert params.has_key(SublimeSocketAPISettings.NOTIFY_TITLE), "notify require 'title' param"
@@ -568,11 +577,7 @@ class SublimeSocketAPI:
 		
 	def checkIfViewExist_appendRegion_Else_print(self, view, viewInstance, line, message, condition):
 		# this check should be run in main thread
-		if viewInstance:
-			self.internal_appendRegion(viewInstance, line, message, condition)
-
-		else:
-			print "appendRegion:no view found from Sublime Text's buffer, view:", view, "line:",line, "message:",message, "condition",condition
+		self.internal_appendRegion(viewInstance, line, message, condition)
 
 	def internal_appendRegion(self, viewInstance, line, message, condition):
 		lines = []

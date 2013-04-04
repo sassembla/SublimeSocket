@@ -13,7 +13,16 @@ API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter 
 
 # SublimeSocket internal event definition
 SS_EVENT_COLLECT	= "ss_collect"
+
 SS_EVENT_ERROREMITTED	= "ss_errorEmitted"
+
+
+SS_EVENT_NOVIEWFOUND	= "ss_noViewFound"
+NOVIEWFOUND_VIEW			= "view"
+NOVIEWFOUND_LINE			= "line"
+NOVIEWFOUND_MESSAGE		= "message"
+NOVIEWFOUND_CONDITION = "condition"
+
 
 # internal APIs/
 API_I_SHOWSTATUSMESSAGE	= "showStatusMessage"
@@ -50,7 +59,7 @@ REACTOR_VIEWKEY_BASENAME	= "basename"
 REACTOR_VIEWKEY_VNAME			= "vname"
 
 REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
-REACTIVE_ONEBYONE_EVENT = [SS_EVENT_ERROREMITTED]
+REACTIVE_ONEBYONE_EVENT = [SS_EVENT_ERROREMITTED, SS_EVENT_NOVIEWFOUND]
 
 API_KEYVALUESTORE	= "kvs"
 KVS_SHOWALL				= "showAll"
@@ -59,7 +68,8 @@ KVS_REMOVEVALUE		= "removeValue"
 KVS_CLEAR					= "clear"
 
 API_DEFINEFILTER	= "defineFilter"
-FILTER_PATTERNS		= "patterns"
+DEFINEFILTER_PATTERNS		= "patterns"
+DEFINEFILTER_NAME = "name"
 
 
 API_FILTERING			= "filtering"
