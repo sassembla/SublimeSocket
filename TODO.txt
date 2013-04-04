@@ -98,6 +98,10 @@ TimerEvent ほか、SS上で動くもの
 	
 √	notify
 	内蔵のnotificationツールを使う。暫定だけど、有効なのが判ったので。
+
+√	FoundationReactor
+	ビューに対象ファイルが存在しない、など、エディタ側の基礎で発生するイベントと、
+	そのリアクターの定義。
 	
 
 
@@ -124,6 +128,7 @@ SublimeSocketAPI -Sequence
 		Growlで実装できるのでは
 		→完了、GrowlではなくMacのNotifierを使用できる。
 			実装自体はrunShellを使用している。
+			→notifyに変更できた。
 
 
 
