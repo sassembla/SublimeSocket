@@ -108,6 +108,11 @@ class SublimeSocketAPI:
 				self.setReactor(params, client)
 				break
 
+			if case(SublimeSocketAPISettings.API_SETFOUNDATIONREACTOR):
+				# set foundationReactor
+				self.setFoundationReactor(params, client)
+				break
+
 			if case(SublimeSocketAPISettings.API_RUNSHELL):
 				self.runShell(params)
 				break
@@ -372,103 +377,103 @@ class SublimeSocketAPI:
 
 			patternIndex = 0
 			
-			try:
-				# regexp match
-				searched = eval(src)
+			# try:
+			# regexp match
+			searched = eval(src)
 
+			
+			if searched:
+				if debug:
+					print "filtering filterSource", filterSource
+					print "filtering searched.group()",searched.group()
+					print "filtering searched.groups()",searched.groups()
 				
-				if searched:
-					if debug:
-						print "filtering filterSource", filterSource
-						print "filtering searched.group()",searched.group()
-						print "filtering searched.groups()",searched.groups()
-					
 
-					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
+				executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
+				
+				currentGroupSize = len(searched.groups())
+				
+				# run
+				for executableDict in executablesArray:
 					
-					currentGroupSize = len(searched.groups())
+					# execute
+					command = executableDict.keys()[0]
+					# print "command", command
 					
-					# run
-					for executableDict in executablesArray:
+					paramsSource = executableDict[command]
+
+					params = None
+					# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
+					if type(paramsSource) == list:
+						# before	eval:["sublime.message_dialog('groups[0]')"]
+						# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
 						
-						# execute
-						command = executableDict.keys()[0]
-						# print "command", command
+						def replaceGroupsInListKeyword(param):
+							result = param
+							
+							for index in range(currentGroupSize):
+								# replace all expression
+								if re.findall(r'groups\[(' + str(index) + ')\]', result):
+									result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+							return result
+							
+						# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
+						params = map(replaceGroupsInListKeyword, paramsSource)
 						
-						paramsSource = executableDict[command]
+					elif type(paramsSource) == dict:
+						# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
+						# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
 
-						params = None
-						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
-						if type(paramsSource) == list:
-							# before	eval:["sublime.message_dialog('groups[0]')"]
-							# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
+						def replaceGroupsInDictionaryKeyword(key):
+							result = paramsSource[key]
 							
-							def replaceGroupsInListKeyword(param):
-								result = param
+							for index in range(currentGroupSize):
 								
-								for index in range(currentGroupSize):
-									# replace all expression
-									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
-								return result
-								
-							# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
-							params = map(replaceGroupsInListKeyword, paramsSource)
-							
-						elif type(paramsSource) == dict:
-							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
-							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
+								# replace all expression
+								if re.findall(r'groups\[(' + str(index) + ')\]', result):
+									result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
 
-							def replaceGroupsInDictionaryKeyword(key):
-								result = paramsSource[key]
-								
-								for index in range(currentGroupSize):
-									
-									# replace all expression
-									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+							return {key:result}
+						# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
+						params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
 
-								return {key:result}
-							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
-							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
-
-							if not params_dicts:
-								pass
-							elif 1 == len(params_dicts):
-								params = params_dicts[0]
-							else:
-								def reduceLeft(before, next):
-									# append all key-value pair.
-									for key in next.keys():
-										before[key] = next[key]
-									return before
-								
-								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
-							
+						if not params_dicts:
+							pass
+						elif 1 == len(params_dicts):
+							params = params_dicts[0]
 						else:
-							print "filtering warning:unknown type"
+							def reduceLeft(before, next):
+								# append all key-value pair.
+								for key in next.keys():
+									before[key] = next[key]
+								return before
+							
+							params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
 						
-						if debug:
-							print "filtering command:", command, "params:", params
-
-						# execute
-						self.runAPI(command, params)
-						
-						# report
-						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
-						
-					# increment filter-index for report
-					patternIndex = patternIndex + 1
-				else:
-					if debug:
-						print "filtering not match"
-
-			except Exception as e:
-				print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
-				while True:
-					pass
+					else:
+						print "filtering warning:unknown type"
 					
-				return "filter error", str(e), "no:" + str(patternIndex)
+					if debug:
+						print "filtering command:", command, "params:", params
+
+					# execute
+					self.runAPI(command, params)
+					
+					# report
+					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
+					
+				# increment filter-index for report
+				patternIndex = patternIndex + 1
+			else:
+				if debug:
+					print "filtering not match"
+
+			# except Exception as e:
+			# 	print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
+			# 	while True:
+			# 		pass
+					
+			# 	return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal
 		ret = str("".join(results))
@@ -482,8 +487,12 @@ class SublimeSocketAPI:
 	## set reactor for reactive-event
 	def setReactor(self, params, client):
 		self.server.setOrAddReactor(params, client)
-		pass
-
+		
+	## set FOUNDATION reactor for "foundation" categoly events.
+	def setFoundationReactor(self, params, client):
+		params[SublimeSocketAPISettings.REACTOR_TARGET] = SublimeSocketAPISettings.FOUNDATIONREACTOR_TARGET_DEFAULT
+		params[SublimeSocketAPISettings.REACTOR_INTERVAL] = SublimeSocketAPISettings.FOUNDATIONREACTOR_INTERVAL_DEFAULT
+		self.server.setOrAddReactor(params, client)
 
 	## get the target view's information if params includes "filename.something" or some pathes represents filepath.
 	def internal_detectViewInstance(self, path):
@@ -534,22 +543,7 @@ class SublimeSocketAPI:
 		message = params[SublimeSocketAPISettings.APPENDREGION_MESSAGE]
 		condition = params[SublimeSocketAPISettings.APPENDREGION_CONDITION]
 		
-		
-
-		# find view
-		viewInstance = self.internal_detectViewInstance(view)
-		if viewInstance:
-			# run in main thread
-			sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_print(view, viewInstance, line, message, condition), 0)
-	
-		else:
-			params = {}
-			params[SublimeSocketAPISettings.NOVIEWFOUND_VIEW] = view
-			params[SublimeSocketAPISettings.NOVIEWFOUND_LINE] = line
-			params[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE] = message
-			params[SublimeSocketAPISettings.NOVIEWFOUND_CONDITION] = conditionm
-
-			self.server.fireKVStoredItem(SublimeSocketAPISettings.ss_noViewFound, params)
+		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_notFound(view, self.internal_detectViewInstance(view), line, message, condition), 0)
 
 
 	def notify(self, params):
@@ -575,8 +569,18 @@ class SublimeSocketAPI:
 		self.runShell(shellParams)
 
 		
-	def checkIfViewExist_appendRegion_Else_print(self, view, viewInstance, line, message, condition):
+	def checkIfViewExist_appendRegion_Else_notFound(self, view, viewInstance, line, message, condition):
 		# this check should be run in main thread
+		if not viewInstance:
+			params = {}
+			params[SublimeSocketAPISettings.NOVIEWFOUND_VIEW] = view
+			params[SublimeSocketAPISettings.NOVIEWFOUND_LINE] = line
+			params[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE] = message
+			params[SublimeSocketAPISettings.NOVIEWFOUND_CONDITION] = condition
+
+			self.server.fireKVStoredItem(SublimeSocketAPISettings.SS_FOUNDATION_NOVIEWFOUND, params)
+			return
+
 		self.internal_appendRegion(viewInstance, line, message, condition)
 
 	def internal_appendRegion(self, viewInstance, line, message, condition):

@@ -379,10 +379,11 @@ class SublimeWSServer:
 
 		# event listener adopt
 		if eventName in SublimeSocketAPISettings.REACTIVE_INTERVAL_EVENT:
-			# store data temporary.
+			# store data to temporary.
 			self.temporaryEventDict[eventName] = eventParam
 
 
+		# run when the event occured adopt
 		if eventName in SublimeSocketAPISettings.REACTIVE_ONEBYONE_EVENT:
 			# emit now if exist
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
@@ -395,6 +396,20 @@ class SublimeWSServer:
 				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
 				self.runAllSelector(reactDict, selector, eventParam)
+
+		# run when the foundation-event occured adopt
+		if eventName in SublimeSocketAPISettings.REACTIVE_FOUNDATION_EVENT:
+			# emit now if exist
+			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
+			
+			# if exist, continue
+			if reactorsDict.has_key(eventName):
+				reactDict = reactorsDict[eventName][SublimeSocketAPISettings.FOUNDATIONREACTOR_TARGET_DEFAULT]
+				
+				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+
+				self.runAllSelector(reactDict, selector, eventParam)
+
 
 		# viewCollector "renew" will react
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_RENEW:
