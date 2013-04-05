@@ -8,11 +8,14 @@ Control SublimeTextAPI via WebSocket protocol.
 
 
 #Demo movie
-![alt roundabout]()
+  
 [Work with Unity	:	Build and show parameters and errors](https://vimeo.com/62957311)
+![alt unity](https://raw.github.com/sassembla/SublimeSocket/master/doc/images/U_SS_ST.png)
 
-![alt roundabout]()
+
+
 [Work with TypeScript	:	Build and show errors with Chrome Ext](https://vimeo.com/63188211)
+![alt typescript](https://raw.github.com/sassembla/SublimeSocket/master/doc/images/TS_SS_ST.png)
 
 
 #CommandPalette >  
