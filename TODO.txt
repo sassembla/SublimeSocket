@@ -51,22 +51,18 @@ TimerEvent ほか、SS上で動くもの
 		√ちょうどよくハッカソンあったので積んでみた。
 		bufferとか、重量の有る物を外部に出すときに使用したい。
 		今のところmsgpackブランチのみOn。
-		
 
 √	TranslateFilterの概念追加
 	√defineFilter -> runFilter
-
 
 √	runSetting/TestRun
 	必要。ファイル位置を読み込ませて、書いてあるのを順に実行する。改行とtabは無視される。
 	runSetting
 
-
 √	setTargetView
 	APIとして、どのViewに対するものか、セットする必要がある。
 	一回のAPIStreamで、どのViewに対して filterを掛けた要素を入れるのか　というのがセットできれば良いのかなあ。
 	送る側で判別したくないな。filterから合成すればいいか。
-
 
 √	書き込み対象Viewファイルの識別
 	targetSettingみたいなのを行ってからrepl、で良い気がする。
@@ -75,18 +71,15 @@ TimerEvent ほか、SS上で動くもの
 	evalでの対象を分けてやれば良いか。
 	→専用の枠を持つ事で対応。必要であればinputグループみたいなのでストリームをわけるとかか。
 
-
 √	表示リセット機構
 	viewに乗っているエラーを更新する。
 	
 	√マウスオンでメッセージを表示したり候補に出したりする
 	→undoなどで消しきれない要項が生まれる可能性があるので、view自体から管理外のものも消すように調整中。
 
-
 √	showAtLog
 	SublimeSocketのログコンソールに文言を表示
 	あっ、、コレ便利、、、
-
 
 √	runShell
 	外部プロセス実行
@@ -95,7 +88,6 @@ TimerEvent ほか、SS上で動くもの
 	√	文字列中の半角スペース" "を_へと置き換え　妥協した。
 	√	@s@s@　マークを半角スペース" "へと変換　出力側で" "をこの値に変換できるなら、spaceが出せる。　妥協した。
 	
-	
 √	notify
 	内蔵のnotificationツールを使う。暫定だけど、有効なのが判ったので。
 
@@ -103,13 +95,6 @@ TimerEvent ほか、SS上で動くもの
 	ビューに対象ファイルが存在しない、など、エディタ側の基礎で発生するイベントと、
 	そのリアクターの定義。
 	
-
-
-DOC:
-SublimeSocketAPI -Sequence
-	sublimesocket @ API : {JSONPARAM} -> API2 : {JSONPARAM} -> API3 : {JSONPARAM}->,,
-	
-
 
 やりたいけどどうやったらいいか判らないもの
 	STのConsoleの内容をそのまま送る
