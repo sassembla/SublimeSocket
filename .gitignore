@@ -1,0 +1,6 @@
+
+.DS_Store
+
+*.pyc
+
+tmp/preference.html
