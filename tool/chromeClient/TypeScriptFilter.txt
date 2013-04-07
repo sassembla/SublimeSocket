@@ -1,7 +1,7 @@
 // TypeScript Filter
-// ver 0.5.2
+// ver 0.5.3
 
-checkVersionCompatibility:
+checkAPICompatibility:
 {
     "version": "0.8.7"
 }

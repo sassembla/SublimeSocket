@@ -594,22 +594,22 @@ class SublimeSocketAPI:
 		currentMinor	= int(currentVersionArray[1])
 		currentPVer		= int(currentVersionArray[2])
 
-		message = "required:"+str(targetVersion)+" actual:"+str(SublimeSocketAPISettings.API_VERSION)+" verified."
+		message = "API VERIFIED: required:"+str(targetVersion)+" actual:"+str(SublimeSocketAPISettings.API_VERSION)+" verified."
 
 		if targetMajor < currentMajor:
-			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please update Client. the server requires "+str(currentVersion)
 			buf = self.encoder.text(message, mask=0)
 			client.send(buf);
 			return
 
 		elif currentMajor < targetMajor:
-			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please update SublimeSocket. the client requires "+str(targetVersion)
 			buf = self.encoder.text(message, mask=0)
 			client.send(buf);
 			
 		
 		if targetMinor < currentMinor:
-			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please check latest API."
 			buf = self.encoder.text(message, mask=0)
 			client.send(buf);
 			return
@@ -617,7 +617,7 @@ class SublimeSocketAPI:
 
 		if strict:
 			if targetVersion != currentVersion:
-				message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+				message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please check latest API."
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 				return
