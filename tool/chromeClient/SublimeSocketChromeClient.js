@@ -235,7 +235,7 @@ function checkFile(){
             }
             chrome.windows.getAll(
                 function(windows){
-                    for( var i = 0; i < windows.length; i++ ){
+                    for(var i = 0; i < windows.length; i++){
                         chrome.tabs.getAllInWindow(
                             window.id, function(tabs){
                                 for( var j = 0; j < tabs.length; j++ ){

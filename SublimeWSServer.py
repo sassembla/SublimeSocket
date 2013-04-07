@@ -210,6 +210,10 @@ class SublimeWSServer:
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
 		selectorsArray = params[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
+		if event in SublimeSocketAPISettings.REACTIVE_INTERVAL_EVENT:
+			assert params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL), "this type of event require 'interval' param."
+
+		# check event kind
 		# delete when set the reactor of the event.
 		if self.temporaryEventDict.has_key(event):
 			del self.temporaryEventDict[event]

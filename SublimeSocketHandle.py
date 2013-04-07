@@ -88,10 +88,31 @@ class SublimeSocketThread(threading.Thread):
     self._server = SublimeWSServer()
 
   # send eventName and data to server
-  def toServer(self, eventName, eventParam=None):
+  def toServer(self, eventName, view=None):
     if self._server is None:
       pass
     else:
+
+      # avoid empty-file
+      if view.is_scratch():
+        # print "scratch buffer."
+        return
+        
+      elif not view.file_name():
+        # print "no path"
+        return
+
+      view_file_name = view.file_name()
+      
+      eventParam = {
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view_file_name,
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view_file_name),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
+      }
+
       self._server.fireKVStoredItem(eventName, eventParam)
     
   def currentConnections(self):
@@ -110,91 +131,35 @@ class SublimeSocketThread(threading.Thread):
 class CaptureEditing(sublime_plugin.EventListener):
   
   def on_modified(self, view):
-    self.update("on_modified", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_modified", view)
     
   def on_new(self, view):
-    self.update("on_new", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_new", view)
 
   def on_clone(self, view):
-    self.update("on_clone", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_clone", view)
 
   def on_load(self, view):
-    self.update("on_load", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_load", view)
 
   def on_close(self, view):
-    self.update("on_close", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_close", view)
 
   def on_pre_save(self, view):
-    self.update("on_pre_save", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_pre_save", view)
 
 
   def on_post_save(self, view):
-    self.update("on_post_save", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_post_save", view)
     
   def on_selection_modified(self, view):
-    self.update("on_selection_modified", {
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view.file_name(),
-      # SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view.file_name()),
-      SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
-    })
+    self.update("on_selection_modified", view)
     
 
   ## call when the event happen
-  def update(self, eventName, param = None):
+  def update(self, eventName, view = None):    
     global thread
 
     if thread is not None and thread.is_alive():
-      thread.toServer(eventName, param)
+      thread.toServer(eventName, view)
 

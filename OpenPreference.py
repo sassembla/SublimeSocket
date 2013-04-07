@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import SublimeWSSettings
+import SublimeSocketAPISettings
 
 import os
 import signal
@@ -38,6 +39,9 @@ class Openpreference(sublime_plugin.TextCommand):
     # replace host:port
     html = html.replace(SublimeWSSettings.SS_HOST_REPLACE, host)
     html = html.replace(SublimeWSSettings.SS_PORT_REPLACE, str(port))
+
+    # replace version
+    html = html.replace(SublimeWSSettings.SS_VERSION_REPLACE, SublimeSocketAPISettings.API_VERSION)
 
     # generate preference
     outputFile = open(preferencePath, 'w')

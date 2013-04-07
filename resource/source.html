@@ -92,14 +92,14 @@
 
     </script>
   </head>
-
+                                                                                   
   <body>
     <div class="container">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script src="../resource/js/bootstrap.min.js"></script>
       
       <div id="header">
-        <h2 class="offset1">SublimeSocket Test Console <a href="../doc/reference/0.8.6.html">->apiref 0.8.6</a> </h2>
+        <h2 class="offset1">SublimeSocket Test Console <a href="../doc/reference/SUBLIMESOCKET_VERSION.html">->apiref SUBLIMESOCKET_VERSION</a> </h2>
 
       </div>
 
@@ -115,6 +115,22 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
+            <option>
+ss@setReactor:
+{
+    "target": "sublimesocketpreference",
+    "event": "on_post_save",
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "Hello World"
+            }
+        }
+    ],
+    "interval": 1000
+}
+            </option>
+
             <option>
 ss@checkAPICompatibility:
 {
@@ -205,6 +221,48 @@ ss@appendRegion:
 }
 ->eraseAllRegion: {}
             </option>
+            <option>
+ss@setReactor:
+{
+    "target": "sublimesocketpreference",
+    "event": "on_selection_modified",
+    "selectors": [
+        {
+            "containsRegions": {
+                "view": "will be replace to specific view",
+                "target": "sublimesocketpreference",
+                "emit": "ss_eventEmitted",
+                "debug": true
+            }
+        }
+    ],
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 1000
+}
+->setReactor:
+{
+    "target": "sublimesocketpreference",
+    "event": "ss_eventEmitted",
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "Hello World"
+            }
+        }
+    ]
+}
+->appendRegion:
+{
+    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "identity": "03/12/13 18:46:17",
+    "line": 10,
+    "message": "herecomes daredevil",
+    "condition": "keyword"
+}
+            </option>
+
             <option>
 ss@setReactor:
 {

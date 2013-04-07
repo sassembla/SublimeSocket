@@ -614,6 +614,14 @@ class SublimeSocketAPI:
 			client.send(buf);
 			return
 
+
+		if strict:
+			if targetVersion != currentVersion:
+				message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+				buf = self.encoder.text(message, mask=0)
+				client.send(buf);
+				return
+
 		buf = self.encoder.text(message, mask=0)
 		client.send(buf);
 

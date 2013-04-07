@@ -1,7 +1,7 @@
-#version 0.8.4
-
 SS_HOST_REPLACE = "SUBLIMESOCKET_HOST"
 SS_PORT_REPLACE = "SUBLIMESOCKET_PORT"
+SS_VERSION_REPLACE = "SUBLIMESOCKET_VERSION"
+
 
 #Protocole version	see-> http://tools.ietf.org/html/rfc6455
 VERSION = 13
