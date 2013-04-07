@@ -6,10 +6,14 @@
 ### COMMANDS	=		COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> COMMAND_NAME + COMMAND_NAME + COMMAND_NAME : JSON_EXPRESSION -> ...
 
 API_PREFIX = "sublimesocket"
+
 API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
+
+API_VERSION = "0.8.7"
+
 
 # SublimeSocket internal event definition
 SS_EVENT_COLLECT	= "ss_collect"
@@ -36,7 +40,12 @@ API_I_ERASEALLREGION	= "eraseAllRegion"
 # region identifier prefix
 REGION_UUID_PREFIX = "ss_"
 
+
 # public APIs
+API_CHECKAPICOMPATIBILITY	= "checkAPICompatibility"
+CHECKAPICOMP_VERSION = "version"
+CHECKAPICOMP_STRICT = "strict"
+
 API_RUNSETTING		= "runSetting"
 RUNSETTING_FILEPATH	= "path"
 RUNSETTING_PREFIX_SUBLIMESOCKET_PATH = "SUBLIMESOCKET_PATH:"

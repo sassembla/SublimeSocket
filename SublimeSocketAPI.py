@@ -151,6 +151,9 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
 				break
 
+			if case (SublimeSocketAPISettings.API_CHECKAPICOMPATIBILITY):
+				self.checkAPICompatibility(params, client)
+				break
 			if case():
 				print "unknown command", command
 				break
@@ -569,6 +572,52 @@ class SublimeSocketAPI:
 		self.runShell(shellParams)
 
 		
+	def  checkAPICompatibility(self, params, client):
+		assert client, "checkAPICompatibility require 'client' object."
+		assert params.has_key(SublimeSocketAPISettings.CHECKAPICOMP_VERSION), "checkAPICompatibility require 'version' param."
+		targetVersion = params[SublimeSocketAPISettings.CHECKAPICOMP_VERSION]
+		
+		strict = False
+		if params.has_key(SublimeSocketAPISettings.CHECKAPICOMP_STRICT):
+			strict = params[SublimeSocketAPISettings.CHECKAPICOMP_STRICT]
+
+		targetVersionArray = targetVersion.split(".")
+
+		targetMajor	= int(targetVersionArray[0])
+		targetMinor	= int(targetVersionArray[1])
+		targetPVer	= int(targetVersionArray[2])
+
+		currentVersion			= SublimeSocketAPISettings.API_VERSION
+		currentVersionArray = currentVersion.split(".")
+
+		currentMajor	= int(currentVersionArray[0])
+		currentMinor	= int(currentVersionArray[1])
+		currentPVer		= int(currentVersionArray[2])
+
+		message = "required:"+str(targetVersion)+" actual:"+str(SublimeSocketAPISettings.API_VERSION)+" verified."
+
+		if targetMajor < currentMajor:
+			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			buf = self.encoder.text(message, mask=0)
+			client.send(buf);
+			return
+
+		elif currentMajor < targetMajor:
+			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			buf = self.encoder.text(message, mask=0)
+			client.send(buf);
+			
+		
+		if targetMinor < currentMinor:
+			message = "CAUTION:	The current version = "+SublimeSocketAPISettings.API_VERSION+", please check API for using SSJSON filter."
+			buf = self.encoder.text(message, mask=0)
+			client.send(buf);
+			return
+
+		buf = self.encoder.text(message, mask=0)
+		client.send(buf);
+
+
 	def checkIfViewExist_appendRegion_Else_notFound(self, view, viewInstance, line, message, condition):
 		# this check should be run in main thread
 		if not viewInstance:
