@@ -57,7 +57,7 @@ class SublimeSocketAPI:
 		for case in PythonSwitch(command):
 			if case(SublimeSocketAPISettings.API_RUNSETTING):
 				filePath = params[SublimeSocketAPISettings.RUNSETTING_FILEPATH]
-				result = self.runSetting(filePath)
+				result = self.runSetting(filePath, client)
 
 				buf = self.encoder.text(result, mask=0)
 				client.send(buf)
@@ -164,7 +164,7 @@ class SublimeSocketAPI:
 		print "runOnInterval", key
 
 	## run specific setting.txt file as API
-	def runSetting(self, filePath):
+	def runSetting(self, filePath, client):
 		
 		# check contains PREFIX or not
 		if filePath.startswith(SublimeSocketAPISettings.RUNSETTING_PREFIX_SUBLIMESOCKET_PATH):
@@ -190,7 +190,7 @@ class SublimeSocketAPI:
 		# print "result", result
 
 		# parse
-		self.parse(result, None)
+		self.parse(result, client)
 
 		return "runSettings:"+str(removeCRLF_setting)
 
@@ -300,6 +300,10 @@ class SublimeSocketAPI:
 			client = self.server.clients[target]
 			buf = self.encoder.text(str(message), mask=0)
 			client.send(buf)
+
+		else:
+			print "monocastMessage failed. target:", target, "is not exist in clients:", self.server.clients
+
 
 	## send message to the other via SS.
 	def showAtLog(self, params):

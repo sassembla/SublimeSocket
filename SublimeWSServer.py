@@ -117,8 +117,10 @@ class SublimeWSServer:
 
 	# remove from Client dict
 	def deleteClientId(self, clientId):
-		del self.clients[clientId]
-
+		if self.clients.has_key(clientId):
+			del self.clients[clientId]
+		else:
+			print "ss: server don't know about client:", clientId
 
 	## api 
 	def callAPI(self, apiData, clientId):
