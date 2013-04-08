@@ -5,3 +5,4 @@
 tmp/preference.html
 
 .idea/*
+tool/chromeClients/TypeScriptClient/compileLog.log
