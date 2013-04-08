@@ -1,0 +1,177 @@
+// Scala Filter
+// ver 0.0.0
+
+checkAPICompatibility:
+{
+    "version": "0.8.7"
+}
+->defineFilter: 
+{
+    "name": "scala",
+    "patterns": [
+        {
+            "(.*)[.]ts[ ][(]([0-9]*),.*: (.*)": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "appendRegion": {
+                            "line": "groups[2]",
+                            "message": "\"groups[3]\"",
+                            "view": "groups[1].ts",
+                            "condition": "keyword"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "(.*)[.]ts[(]([0-9]*),.*: (.*)": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "appendRegion": {
+                            "line": "groups[2]",
+                            "message": "\"groups[3]\"",
+                            "view": "groups[1].ts",
+                            "condition": "keyword"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "^start": {
+                "selectors": [
+                    {
+                        "eraseAllRegion": {}
+                    }
+                ]
+            }
+        },
+        {
+            "^scala compile succeeded.": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "scala compile succeeded."
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "scala compile succeeded."
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "scalacompilefinished"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "^scala compile failure.": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "scala compile failure."
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "scala compile failure."
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "scalacompilefinished"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+->setReactor:
+{
+    "target": "scala",
+    "event": "on_selection_modified",
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100,
+    "selectors": [
+        {
+            "containsRegions": {
+                "target": "scala",
+                "emit": "ss_errorEmitted",
+                "view": "replace"
+            }
+        }
+    ]
+}
+->setReactor:
+{
+    "target": "scala",
+    "event": "ss_errorEmitted",
+    "replacefromto": {
+        "message": "message",
+        "line": "title"
+    },
+    "selectors": [
+        {
+            "notify": {
+                "title": "defaultTitle",
+                "message": "defaultMessage"
+            }
+        }
+    ]
+}
+->setReactor: 
+{
+    "target": "scala",
+    "event": "on_post_save",
+    "interval": 100,
+    "replacefromto": {
+        "path": "message"
+    },
+    "selectors": [
+        {
+            "monocastMessage": {
+                "target": "SublimeSocketChromeClient",
+                "message": "replace_stuff",
+                "sender": "scalasaved"
+            }
+        }
+    ]
+}
+->showAtLog:
+{
+    "message": "scala-compilation sequence ready!"
+}
+->showStatusMessage:
+{
+    "message": "scala-compilation sequence ready!"
+}
