@@ -11,9 +11,11 @@ var ssChromeClient_display_lock = false;
 
 var INTERVAL_TAILING = 500;
 
+/**
+    さて、ここから抽象化できるね。
+*/
 
 var currentFilterName = "typescript";
-
 
 // settings for TypeScript
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClients/TypeScriptClient/TypeScriptFilter.txt";
@@ -135,8 +137,7 @@ class WS {
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentCompileTargetFileName,
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug":true
+                        ]
                     };
 
                     break;
@@ -148,8 +149,7 @@ class WS {
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug":true
+                        ]
                     };
 
                     break;
@@ -160,8 +160,7 @@ class WS {
                             TSC_RECURSIVE_COMPILE_SHELLPATH,
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug":true
+                        ]
                     };
                     break;
             } 
@@ -175,11 +174,13 @@ class WS {
             this.send(command);
             return;
         }
-        console.log("ov"+e.data);
+        
         if (e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
-            console.log("over!");
             needTail = false;
+            return;
         }
+
+        // 
 
     }
 
@@ -202,7 +203,9 @@ class WS {
     }
 };
 
-
+declare interface Window {
+    id: any;
+}
 
 function checkFile(){
     if( ssChromeClient_tailing_tab == null ){
@@ -222,7 +225,7 @@ function checkFile(){
             }
 
             if( ssChromeClient_current_text !== null ){
-              ssChromeClient_current_text = result[0].substr(ssChromeClient_read_position);
+                ssChromeClient_current_text = result[0].substr(ssChromeClient_read_position);
             }else{
                 ssChromeClient_current_text = '';
             }
@@ -231,12 +234,47 @@ function checkFile(){
             if( ssChromeClient_current_text == '' ){
                 return;
             }
+
             chrome.windows.getAll(
                 function(windows){
                     for(var i = 0; i < windows.length; i++){
+                        console.log("ssChromeClient_current_text:"+ssChromeClient_current_text);
                     }
                 }
             )
+
+            chrome.windows.getAll(
+                function(windows){
+                    for(var i = 0; i < windows.length; i++){
+                        var wid = window.id;
+                        chrome.tabs.getAllInWindow(
+                            wid, function(tabs){
+                                for( var j = 0; j < tabs.length; j++ ){
+                                    if( tabs[j].url.indexOf('file') == 0 || tabs[j].url.indexOf('http') == 0 ){
+                                        if( ssChromeClient_current_text != '' ){
+
+                                            var lines = ssChromeClient_current_text.split("\n");
+                                            for (var i = 0; i < lines.length; i++) {
+                                                var filteringJSON = {
+                                                    "name":currentFilterName,
+                                                    "source":lines[i]
+                                                };
+
+                                                // console.log("ssChromeClient_current_text:"+ssChromeClient_current_text);
+                                                websocketCont.ws.send("ss@filtering:"+JSON.stringify(filteringJSON));
+                                            }
+                                        }
+                                    }
+                                }
+                                ssChromeClient_current_text = '';
+                                ssChromeClient_display_lock = false;
+                            }
+                        )
+                    }
+                }
+            )
+
         }
     );
 }
+

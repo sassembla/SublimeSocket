@@ -98,8 +98,7 @@ var WS = (function () {
                             TSC_SIMPLE_COMPILE_SHELLPATH, 
                             currentCompileTargetFileName, 
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug": true
+                        ]
                     };
                     break;
                 case TARGET_FOLDER:
@@ -109,8 +108,7 @@ var WS = (function () {
                             TSC_SIMPLE_COMPILE_SHELLPATH, 
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD, 
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug": true
+                        ]
                     };
                     break;
                 case TARGET_RECURSIVE:
@@ -120,8 +118,7 @@ var WS = (function () {
                             TSC_RECURSIVE_COMPILE_SHELLPATH, 
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD, 
                             this.currentTargetFolderPath + this.currentTSCompileLogFileName
-                        ],
-                        "debug": true
+                        ]
                     };
                     break;
             }
@@ -131,10 +128,9 @@ var WS = (function () {
             this.send(command);
             return;
         }
-        console.log("ov" + e.data);
         if(e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
-            console.log("over!");
             needTail = false;
+            return;
         }
     };
     WS.prototype.onError = function (e) {
@@ -179,6 +175,30 @@ function checkFile() {
         }
         chrome.windows.getAll(function (windows) {
             for(var i = 0; i < windows.length; i++) {
+                console.log("ssChromeClient_current_text:" + ssChromeClient_current_text);
+            }
+        });
+        chrome.windows.getAll(function (windows) {
+            for(var i = 0; i < windows.length; i++) {
+                var wid = window.id;
+                chrome.tabs.getAllInWindow(wid, function (tabs) {
+                    for(var j = 0; j < tabs.length; j++) {
+                        if(tabs[j].url.indexOf('file') == 0 || tabs[j].url.indexOf('http') == 0) {
+                            if(ssChromeClient_current_text != '') {
+                                var lines = ssChromeClient_current_text.split("\n");
+                                for(var i = 0; i < lines.length; i++) {
+                                    var filteringJSON = {
+                                        "name": currentFilterName,
+                                        "source": lines[i]
+                                    };
+                                    websocketCont.ws.send("ss@filtering:" + JSON.stringify(filteringJSON));
+                                }
+                            }
+                        }
+                    }
+                    ssChromeClient_current_text = '';
+                    ssChromeClient_display_lock = false;
+                });
             }
         });
     });
