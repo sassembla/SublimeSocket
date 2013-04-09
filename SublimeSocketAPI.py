@@ -171,6 +171,9 @@ class SublimeSocketAPI:
 			filePathArray = filePath.split(":")
 			filePath = sublime.packages_path() + "/SublimeSocket/"+ filePathArray[1]
 
+
+		print "ss: runSetting:", filePath
+		
 		settingFile = open(filePath, 'r')
 		setting = settingFile.read()
 		settingFile.close()

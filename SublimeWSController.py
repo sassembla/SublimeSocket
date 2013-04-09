@@ -44,6 +44,9 @@ class SublimeWSController:
 
 					# print "headerAndParam", headerAndParam
 					self.client.server.callAPI(headerAndParam[1], self.client.clientId)
+
+				else:
+					print "data is not for sublimesocket. no 'ss@'header. data:", data
 				break
 
 			if case(SublimeWSSettings.OP_CONTINUATION):
