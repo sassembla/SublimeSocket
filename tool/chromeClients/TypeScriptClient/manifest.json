@@ -1,6 +1,6 @@
 {
     "name": "SublimeSocketChromeClient",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "description": "The client that connect to SublimeSocket through WebSocket.",
     "manifest_version": 2,
     "permissions": [

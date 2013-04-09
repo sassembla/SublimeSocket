@@ -22,7 +22,6 @@ var TSC_SIMPLE_COMPILE_SHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscshel
 var TSC_RECURSIVE_COMPILE_SHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClient/tscshell.sh";
 
 var TSC_TYPESCRIPTFILE_WILDCARD = "*.ts";
-var currentTSCompileLogFileName = "";
 
 
 var TARGET_FOCUSED = 0;
@@ -30,6 +29,7 @@ var TARGET_FOLDER = 1;
 var TARGET_RECURSIVE = 2;
 
 var TSC_COMPILATIONTARGETMODE = TARGET_FOLDER;
+var TSC_CHECKVERSIONRESULT = "API VERIFIED:"
 var TSC_IDENTIFIED_SENDER_STARTMARK = "typescriptsaved";
 var TSC_IDENTIFIED_SENDER_ENDMARK = "typescriptcompilefinished";
 
@@ -37,6 +37,7 @@ var needTail = false;
 
 
 declare var chrome;
+
 var websocketCont:WS;
 
 
@@ -49,6 +50,7 @@ chrome.browserAction.onClicked.addListener(function(tab){
         ssChromeClient_tailing_interval = setInterval(checkFile, INTERVAL_TAILING);
 
         websocketCont = new WS();
+
 
         // connect.
         websocketCont.init(tab.url, TSC_COMPILATIONTARGETMODE);
@@ -69,8 +71,8 @@ class WS {
     public uri = 'ws://127.0.0.1:8823/';
     public currentTargetFolderPath = "";
     public currentCompilationTargetMode = -1;
-
-    public ws:any;
+    public currentTSCompileLogFileName = "defaultLogFileName";
+    public ws:WebSocket;
 
 
     init (targetLogPath:string, compilationTargetMode) {
@@ -81,10 +83,10 @@ class WS {
         var pathArray = logPath.split("/");
 
         // last path is "logfile.log"
-        var currentTSCompileLogFileName = pathArray[pathArray.length-1];
+        this.currentTSCompileLogFileName = pathArray[pathArray.length-1];
         
         // get FolderPath
-        this.currentTargetFolderPath = logPath.replace("/"+currentTSCompileLogFileName, "/");
+        this.currentTargetFolderPath = logPath.replace("/"+this.currentTSCompileLogFileName, "/");
         console.log("currentTargetFolderPath    "+this.currentTargetFolderPath);
 
         // set mode from preferences
@@ -93,20 +95,14 @@ class WS {
 
     connect () {
       this.ws = new WebSocket(this.uri);
-      this.ws.onopen = function (e) { this.onOpen(e); };
-      this.ws.onclose = function (e) { this.onClose(e); };
-      this.ws.onmessage = function (e) { this.onMessage(e); };
-      this.ws.onerror = function (e) { this.onError(e); };
+      this.ws.onopen = function (e) => this.onOpen(e);
+      this.ws.onclose = function (e) => this.onClose(e);
+      this.ws.onmessage = function (e) => this.onMessage(e);
+      this.ws.onerror = function (e) => this.onError(e);
     }
 
-    onOpen () {
-
-        this.ws.send(
-            "runSetting:"+JSON.stringify(
-            {
-                "path":CURRENT_SETTING_PATH
-            })
-        );
+    onOpen (e) {
+        this.send("ss@runSetting:"+JSON.stringify({"path":CURRENT_SETTING_PATH}));
     }
 
     onClose (e) {
@@ -114,6 +110,11 @@ class WS {
     }
 
     onMessage (e) {
+        if (e.data.indexOf(TSC_CHECKVERSIONRESULT) === 0) {
+            console.log("checkVersion result:   "+e.data);
+            return;
+        }
+
         if (e.data.indexOf(TSC_IDENTIFIED_SENDER_STARTMARK) === 0) {
             console.log("save");
             var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_STARTMARK+":","")
@@ -123,41 +124,44 @@ class WS {
                 return;
             }
 
-            var runShellJSON = "";
+            var runShellJSON;
 
             switch (this.currentCompilationTargetMode) {
                 case TARGET_FOCUSED:
                     
-                    var runShellJSON = {
+                    runShellJSON = {
                         "main": "/bin/sh",
                         "":[
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             currentCompileTargetFileName,
-                            this.currentTargetFolderPath + currentTSCompileLogFileName
-                        ]
+                            this.currentTargetFolderPath + this.currentTSCompileLogFileName
+                        ],
+                        "debug":true
                     };
 
                     break;
                 case TARGET_FOLDER:
 
-                    var runShellJSON = {
+                    runShellJSON = {
                         "main": "/bin/sh",
                         "": [
                             TSC_SIMPLE_COMPILE_SHELLPATH,
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
-                            this.currentTargetFolderPath + currentTSCompileLogFileName
-                        ]
+                            this.currentTargetFolderPath + this.currentTSCompileLogFileName
+                        ],
+                        "debug":true
                     };
 
                     break;
                 case TARGET_RECURSIVE:
-                    var runShellJSON = {
+                    runShellJSON = {
                         "main": "/bin/sh",
                         "":[
                             TSC_RECURSIVE_COMPILE_SHELLPATH,
                             this.currentTargetFolderPath + TSC_TYPESCRIPTFILE_WILDCARD,
-                            this.currentTargetFolderPath + currentTSCompileLogFileName
-                        ]
+                            this.currentTargetFolderPath + this.currentTSCompileLogFileName
+                        ],
+                        "debug":true
                     };
                     break;
             } 
@@ -168,10 +172,12 @@ class WS {
 
             console.log("TARGET_FOLDER here command "+command);
 
-            this.ws.send(command);
+            this.send(command);
+            return;
         }
-
+        console.log("ov"+e.data);
         if (e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
+            console.log("over!");
             needTail = false;
         }
 
@@ -228,35 +234,9 @@ function checkFile(){
             chrome.windows.getAll(
                 function(windows){
                     for(var i = 0; i < windows.length; i++){
-                        chrome.tabs.getAllInWindow(
-                            window.id, function (tabs){
-                                for( var j = 0; j < tabs.length; j++ ){
-                                    if( tabs[j].url.indexOf('file') == 0 || tabs[j].url.indexOf('http') == 0 ){
-                                        if( ssChromeClient_current_text != '' ){
-
-                                            var lines = ssChromeClient_current_text.split("\n");
-
-                                            for (var i = 0; i < lines.length; i++) {
-                                                console.log("line "+lines[i]);
-                                                var filteringJSON = {
-                                                    "name":currentFilterName,
-                                                    "source":lines[i]
-                                                };
-
-                                                console.log("ssChromeClient_current_text:"+ssChromeClient_current_text);
-                                                this.ws.send("ss@filtering:"+JSON.stringify(filteringJSON));
-                                            }
-                                        }
-                                    }
-                                }
-                                ssChromeClient_current_text = '';
-                                ssChromeClient_display_lock = false;
-                            }
-                        )
                     }
                 }
             )
         }
     );
 }
-
