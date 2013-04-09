@@ -12,7 +12,7 @@ API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
 
-API_VERSION = "0.8.7"
+API_VERSION = "0.8.8"
 
 
 # SublimeSocket internal event definition
