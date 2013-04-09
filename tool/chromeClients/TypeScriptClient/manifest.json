@@ -15,7 +15,7 @@
     },
     "background": {
         "scripts": [
-            "SublimeSocketChromeClient.js"
+            "SublimeSocketChromeClient.js", "WS.js"
         ]
     },
     "browser_action": {
