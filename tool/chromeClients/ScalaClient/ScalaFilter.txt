@@ -1,7 +1,11 @@
 // Scala Filter
-// ver 0.0.0
+// ver 0.0.1
 
-checkAPICompatibility:
+inputIdentity:
+{
+    "id": "SublimeSocketChromeScalaClient"
+}
+->checkAPICompatibility:
 {
     "version": "0.8.7"
 }

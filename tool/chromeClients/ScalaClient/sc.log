@@ -1,0 +1,30 @@
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(59,11): The name 'TSC_COMPILATIONTARGETMODE' does not exist in the current scope
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(60,9): The name 'TARGET_FOCUSED' does not exist in the current scope
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(72,9): The name 'TARGET_FOLDER' does not exist in the current scope
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(77,36): The name 'TSC_TYPESCRIPTFILE_WILDCARD' does not exist in the current scope
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(83,9): The name 'TARGET_RECURSIVE' does not exist in the current scope
+/Users/sassembla/Desktop/ScalaClient/ScalaClientDelegate.ts(88,36): The name 'TSC_TYPESCRIPTFILE_WILDCARD' does not exist in the current scope
+typescript compile failure.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
