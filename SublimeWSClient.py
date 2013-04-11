@@ -47,7 +47,7 @@ class SublimeWSClient:
 		
 		bytes = self.conn.recv(bufsize)
 		if not bytes:
-			closingMessage = self.clientId + " left from SublimeSocket."
+			closingMessage = self.clientId + " left from SublimeSocket. because they send 'no-bytes'"
 
 			print "ss:", closingMessage
 			sublime.set_timeout(lambda: sublime.status_message(closingMessage), 0)
