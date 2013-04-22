@@ -1,5 +1,5 @@
 // Scala Filter
-// ver 0.0.1
+// ver 0.1.0
 
 inputIdentity:
 {
@@ -14,7 +14,7 @@ inputIdentity:
     "name": "scala",
     "patterns": [
         {
-            "(.*)[.]ts[ ][(]([0-9]*),.*: (.*)": {
+            "[[]ant:scalac[]] (.*):([0-9].*?): error: (.*)": {
                 "selectors": [
                     {
                         "showStatusMessage": {
@@ -30,31 +30,7 @@ inputIdentity:
                         "appendRegion": {
                             "line": "groups[2]",
                             "message": "\"groups[3]\"",
-                            "view": "groups[1].ts",
-                            "condition": "keyword"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "(.*)[.]ts[(]([0-9]*),.*: (.*)": {
-                "selectors": [
-                    {
-                        "showStatusMessage": {
-                            "message": "groups[0]"
-                        }
-                    },
-                    {
-                        "showAtLog": {
-                            "message": "groups[0]"
-                        }
-                    },
-                    {
-                        "appendRegion": {
-                            "line": "groups[2]",
-                            "message": "\"groups[3]\"",
-                            "view": "groups[1].ts",
+                            "view": "groups[1]",
                             "condition": "keyword"
                         }
                     }
@@ -71,7 +47,7 @@ inputIdentity:
             }
         },
         {
-            "^scala compile succeeded.": {
+            "^BUILD SUCCESSFUL": {
                 "selectors": [
                     {
                         "showStatusMessage": {
@@ -85,7 +61,7 @@ inputIdentity:
                     },
                     {
                         "monocastMessage": {
-                            "target": "SublimeSocketChromeClient",
+                            "target": "SublimeSocketChromeScalaClient",
                             "message": "end",
                             "sender": "scalacompilefinished"
                         }
@@ -94,7 +70,7 @@ inputIdentity:
             }
         },
         {
-            "^scala compile failure.": {
+            "^BUILD FAILED": {
                 "selectors": [
                     {
                         "showStatusMessage": {
@@ -108,9 +84,25 @@ inputIdentity:
                     },
                     {
                         "monocastMessage": {
-                            "target": "SublimeSocketChromeClient",
+                            "target": "SublimeSocketChromeScalaClient",
                             "message": "end",
                             "sender": "scalacompilefinished"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "^Total time: ([0-9].*) secs": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "groups[0]"
                         }
                     }
                 ]
@@ -164,7 +156,7 @@ inputIdentity:
     "selectors": [
         {
             "monocastMessage": {
-                "target": "SublimeSocketChromeClient",
+                "target": "SublimeSocketChromeScalaClient",
                 "message": "replace_stuff",
                 "sender": "scalasaved"
             }

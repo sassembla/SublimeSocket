@@ -1,21 +1,12 @@
-export PATH=/usr/local/bin:/usr/bin
+export PATH=/usr/local/bin:/usr/bin:/bin
 
-#$1 = .ts files array
+#$1 = "build.gradle includes" filePath
 #$2 = logFilePath
 
-echo start >> $1
+echo start >> $2
 
-#tsc includes "node" call
-/usr/local/bin/gradle build 2>> $1
+echo $1 >> $2
 
-var=`tail $1`
-echo $var
-
-# if [ "$var" == "start" ]
-# 	then
-# 	echo typescript compile succeeded. >> $1
-# else
-# 	echo typescript compile failure. >> $1
-# fi
-
-
+cd $1
+#gradle includes "bash" call
+gradle build -i >> $2

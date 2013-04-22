@@ -21,7 +21,7 @@ var TSC_CHECKVERSIONRESULT = "API VERIFIED:"
 
 // tail開始のサインなので、必要。
 var SCALAC_IDENTIFIED_SENDER_STARTMARK = "scalasaved";
-var TSC_IDENTIFIED_SENDER_ENDMARK = "typescriptcompilefinished";
+var SCALAC_IDENTIFIED_SENDER_ENDMARK = "scalacompilefinished";
 
 
 class ScalaClientDelegate extends ExtensionDelegate {
@@ -41,8 +41,7 @@ class ScalaClientDelegate extends ExtensionDelegate {
   	}
 
   	if (e.data.indexOf(SCALAC_IDENTIFIED_SENDER_STARTMARK) === 0) {
-
-		  if (!delegate.isLocked()) {
+  		if (!delegate.isLocked()) {
 		  	delegate.unlock();
 	  	} else {
 	  		return;
@@ -57,10 +56,12 @@ class ScalaClientDelegate extends ExtensionDelegate {
 				return;
 			}
 
+			console.log("SCALA_GRADLE_SHELLPATH"+SCALA_GRADLE_SHELLPATH);
 			var runShellJSON = {
 				"main": "/bin/sh",
 				"":[
 					SCALA_GRADLE_SHELLPATH,
+					this.currentTargetFolderPath,
 					this.currentTargetFolderPath + this.currentCompilationLogFileName
 				]
 			};
@@ -72,7 +73,7 @@ class ScalaClientDelegate extends ExtensionDelegate {
 			return;
 		}
 
-		if (e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
+		if (e.data.indexOf(SCALAC_IDENTIFIED_SENDER_ENDMARK) === 0) {
 			console.log("compiled");
 			delegate.lock();
 			return;

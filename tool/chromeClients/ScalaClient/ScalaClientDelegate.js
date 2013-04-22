@@ -7,8 +7,8 @@ var currentFilterName = "scala";
 var CURRENT_SETTING_PATH = "SUBLIMESOCKET_PATH:tool/chromeClients/ScalaClient/ScalaFilter.txt";
 var SCALA_GRADLE_SHELLPATH = "SUBLIMESOCKET_PATH:tool/chromeClients/ScalaClient/scalaShell.sh";
 var TSC_CHECKVERSIONRESULT = "API VERIFIED:";
-var TSC_IDENTIFIED_SENDER_STARTMARK = "typescriptsaved";
-var TSC_IDENTIFIED_SENDER_ENDMARK = "typescriptcompilefinished";
+var SCALAC_IDENTIFIED_SENDER_STARTMARK = "scalasaved";
+var SCALAC_IDENTIFIED_SENDER_ENDMARK = "scalacompilefinished";
 var ScalaClientDelegate = (function (_super) {
     __extends(ScalaClientDelegate, _super);
     function ScalaClientDelegate(tab) {
@@ -24,22 +24,24 @@ var ScalaClientDelegate = (function (_super) {
             console.log("checkVersion result:   " + e.data);
             return;
         }
-        if(e.data.indexOf(TSC_IDENTIFIED_SENDER_STARTMARK) === 0) {
+        if(e.data.indexOf(SCALAC_IDENTIFIED_SENDER_STARTMARK) === 0) {
             if(!delegate.isLocked()) {
                 delegate.unlock();
             } else {
                 return;
             }
             console.log("compile start");
-            var currentCompileTargetFileName = e.data.replace(TSC_IDENTIFIED_SENDER_STARTMARK + ":", "");
+            var currentCompileTargetFileName = e.data.replace(SCALAC_IDENTIFIED_SENDER_STARTMARK + ":", "");
             if(currentCompileTargetFileName.indexOf(this.currentTargetFolderPath) !== -1) {
             } else {
                 return;
             }
+            console.log("SCALA_GRADLE_SHELLPATH" + SCALA_GRADLE_SHELLPATH);
             var runShellJSON = {
                 "main": "/bin/sh",
                 "": [
                     SCALA_GRADLE_SHELLPATH, 
+                    this.currentTargetFolderPath, 
                     this.currentTargetFolderPath + this.currentCompilationLogFileName
                 ]
             };
@@ -47,7 +49,7 @@ var ScalaClientDelegate = (function (_super) {
             delegate.send(command);
             return;
         }
-        if(e.data.indexOf(TSC_IDENTIFIED_SENDER_ENDMARK) === 0) {
+        if(e.data.indexOf(SCALAC_IDENTIFIED_SENDER_ENDMARK) === 0) {
             console.log("compiled");
             delegate.lock();
             return;
