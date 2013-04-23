@@ -1,4 +1,4 @@
-# ScalaClient
+# TypeScriptClient
 
 The Chrome Extensions for SublimeSocket.  
   

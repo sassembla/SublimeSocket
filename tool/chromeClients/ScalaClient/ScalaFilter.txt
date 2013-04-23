@@ -1,5 +1,6 @@
 // Scala Filter
 // ver 0.1.0
+// Scala bench version
 
 inputIdentity:
 {
@@ -64,6 +65,13 @@ inputIdentity:
                             "target": "SublimeSocketChromeScalaClient",
                             "message": "end",
                             "sender": "scalacompilefinished"
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "SublimeSocketChromeScalaClient",
+                            "message": "/Users/sassembla/Desktop/HelloWorld/src/main/scala/HelloWorld.scala",
+                            "sender": "scalasaved"
                         }
                     }
                 ]

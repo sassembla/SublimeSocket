@@ -10,3 +10,7 @@ echo $1 >> $2
 cd $1
 #gradle includes "bash" call
 gradle build -i >> $2
+
+
+var=`tail -1 $2`
+echo $var >> timestamp.log

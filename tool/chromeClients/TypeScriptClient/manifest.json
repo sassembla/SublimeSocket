@@ -20,7 +20,7 @@
     },
     "browser_action": {
         "default_icon": "images/sublimesocketchromeicon-inactive.png",
-        "default_title": "SublimeSocketChromeClient"
+        "default_title": "TypeScript-SublimeSocketChromeClient"
     },
     "offline_enabled": true
 }

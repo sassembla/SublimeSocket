@@ -6,3 +6,7 @@ tmp/preference.html
 
 .idea/*
 tool/chromeClients/TypeScriptClient/compileLog.log
+
+tool/chromeClients/ScalaClient/sc.log
+
+tool/chromeClients/TypeScriptClient/images/.gradle/*
