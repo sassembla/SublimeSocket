@@ -1,0 +1,32 @@
+{
+    "name": "mruby-SublimeSocketChromeClient",
+    "version": "0.8.0",
+    "description": "The client that connect to SublimeSocket through WebSocket.",
+    "manifest_version": 2,
+    "permissions": [
+        "tabs",
+        "idle",
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+    ],
+    "icons": {
+        "48": "48icon.png"
+    },
+    "background": {
+        "scripts": [
+            "ExtensionDelegate.js", 
+
+            "MrubyClientDelegate.js", 
+            
+            "SublimeSocketChromeClient.js", 
+            "WSController.js", 
+            "TailMachine.js"
+        ]
+    },
+    "browser_action": {
+        "default_icon": "images/sublimesocketchromeicon-inactive.png",
+        "default_title": "mruby-SublimeSocketChromeClient"
+    },
+    "offline_enabled": true
+}

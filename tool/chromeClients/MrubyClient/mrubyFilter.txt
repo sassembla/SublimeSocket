@@ -1,0 +1,184 @@
+// mruby Filter
+// ver 0.1.0
+
+inputIdentity:
+{
+    "id": "mruby_SublimeSocketChromeClient"
+}
+->checkAPICompatibility:
+{
+    "version": "0.8.7"
+}
+->defineFilter: 
+{
+    "name": "mruby",
+    "patterns": [
+        
+        {//mrbc error
+            "(.*):([0-9].*):[0-9].*: (.*)": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "appendRegion": {
+                            "line": "groups[2]",
+                            "message": "\"groups[3]\"",
+                            "view": "groups[1]",
+                            "condition": "keyword"
+                        }
+                    }
+                ]
+            }
+        },
+
+        {//mruby error
+            "(.*):([0-9].*): (.*)": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "groups[0]"
+                        }
+                    },
+                    {
+                        "appendRegion": {
+                            "line": "groups[2]",
+                            "message": "\"groups[3]\"",
+                            "view": "groups[1]",
+                            "condition": "keyword"
+                        }
+                    }
+                ]
+            }
+        },
+
+        {
+            "^start": {
+                "selectors": [
+                    {
+                        "eraseAllRegion": {}
+                    }
+                ]
+            }
+        },
+        {
+            "^mrb succeeded.": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "mrb succeeded."
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "mrb succeeded."
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "mruby_SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "mrubyfinished"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "^mrb failure.": {
+                "selectors": [
+                    {
+                        "showStatusMessage": {
+                            "message": "mrb failure."
+                        }
+                    },
+                    {
+                        "showAtLog": {
+                            "message": "mrb failure."
+                        }
+                    },
+                    {
+                        "monocastMessage": {
+                            "target": "mruby_SublimeSocketChromeClient",
+                            "message": "end",
+                            "sender": "mrubyfinished"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+->setReactor:
+{
+    "target": "mruby",
+    "event": "on_selection_modified",
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100,
+    "selectors": [
+        {
+            "containsRegions": {
+                "target": "mruby",
+                "emit": "ss_errorEmitted",
+                "view": "replace"
+            }
+        }
+    ]
+}
+->setReactor:
+{
+    "target": "mruby",
+    "event": "ss_errorEmitted",
+    "replacefromto": {
+        "message": "message",
+        "line": "title"
+    },
+    "selectors": [
+        {
+            "notify": {
+                "title": "defaultTitle",
+                "message": "defaultMessage"
+            }
+        }
+    ]
+}
+->setReactor: 
+{
+    "target": "mruby",
+    "event": "on_post_save",
+    "interval": 100,
+    "replacefromto": {
+        "path": "message"
+    },
+    "selectors": [
+        {
+            "monocastMessage": {
+                "target": "mruby_SublimeSocketChromeClient",
+                "message": "replace_stuff",
+                "sender": "mrubysaved"
+            }
+        }
+    ]
+}
+->showAtLog:
+{
+    "message": "mruby-compilation sequence ready!"
+}
+->showStatusMessage:
+{
+    "message": "mruby-compilation sequence ready!"
+}
