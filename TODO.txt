@@ -1,7 +1,7 @@
 TODO
 
 ST3対応
-	betaに挑む。
+	betaに挑む→region周りがよくわかってないけどそれ以外だいたい何とかなったんじゃないだろうか。
 	
 
 TimerEvent ほか、SS上で動くもの
@@ -13,14 +13,6 @@ TimerEvent ほか、SS上で動くもの
 
 		→Reactorとして実装された。実行が重なりすぎる事で問題がでるようであれば、対処する。
 			現在03/10/13 17:47:54までは平和に動いている。
-
-	BufferPool
-		filled
-		updated
-		bufferList
-
-		対SuperSclalaCompiler(S2C)用ブランチで開発中
-		バッファでのコンパイル投入のために、なにか仕掛けが欲しい。出来ればエディタ側。
 
 √	KeyValueStoreとは名ばかりのグローバルな値貯蔵庫
 		√setKV(key,value) //unavailable from api directly
@@ -94,7 +86,8 @@ TimerEvent ほか、SS上で動くもの
 √	FoundationReactor
 	ビューに対象ファイルが存在しない、など、エディタ側の基礎で発生するイベントと、
 	そのリアクターの定義。
-	
+
+ファイルの送信
 
 やりたいけどどうやったらいいか判らないもの
 	STのConsoleの内容をそのまま送る
@@ -102,6 +95,7 @@ TimerEvent ほか、SS上で動くもの
 
 	サジェストからのアクション
 		やりたい。イテレーションを区別出来れば可能なはず。
+		→3系だと選択肢を明示的にツールチップで出せるので、使える。
 
 	Go/Back
 		アクションを検知、開くアクションを迂回して外部からSTに対して実行させる
