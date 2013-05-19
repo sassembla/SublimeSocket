@@ -141,6 +141,10 @@ class SublimeSocketAPI:
 				self.appendRegion(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_RUNWITHBUFFER):
+				self.runWithBuffer(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_NOTIFY):
 				self.notify(params)
 				break
@@ -560,6 +564,14 @@ class SublimeSocketAPI:
 		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_notFound(view, self.internal_detectViewInstance(view), line, message, condition), 0)
 
 
+	## emit ss_runWithBuffer event
+	def runWithBuffer(self, params):
+		assert params.has_key(SublimeSocketAPISettings.RUNWITHBUFFER_VIEW), "runWithBuffer require 'view' param"
+		self.server.fireKVStoredItem(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER, params)
+		pass
+
+
+	## emit notification mechanism
 	def notify(self, params):
 		assert params.has_key(SublimeSocketAPISettings.NOTIFY_TITLE), "notify require 'title' param"
 		assert params.has_key(SublimeSocketAPISettings.NOTIFY_MESSAGE), "notify require 'message' param"

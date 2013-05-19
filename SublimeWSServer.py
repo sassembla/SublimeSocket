@@ -422,11 +422,7 @@ class SublimeWSServer:
 			
 			# if exist, continue
 			if reactorsDict.has_key(eventName):
-				reactDict = reactorsDict[eventName][SublimeSocketAPISettings.FOUNDATIONREACTOR_TARGET_DEFAULT]
-				
-				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
-
-				self.runAllSelector(reactDict, selector, eventParam)
+				self.runFoundationEvent(eventName, eventParam, reactorsDict)
 
 
 		# viewCollector "renew" will react
@@ -491,6 +487,55 @@ class SublimeWSServer:
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
+
+	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
+		for case in PythonSwitch(eventName):
+			if case(SublimeSocketAPISettings.SS_FOUNDATION_NOVIEWFOUND):
+				reactDict = reactorsDict[eventName][SublimeSocketAPISettings.FOUNDATIONREACTOR_TARGET_DEFAULT]
+			
+				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+
+				self.runAllSelector(reactDict, selector, eventParam)
+				break
+
+			if case(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER):
+				
+				for currentDict in reactorsDict[eventName]:
+					# get data from view-buffer
+					bodyView = eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_VIEW]
+
+					currentRegion = sublime.Region(0, 0)
+
+					# continue until size not changed.
+					before = -1
+					count = 1
+
+					while True:
+						if currentRegion.b == before:
+							break
+
+						before = currentRegion.b
+						currentRegion = bodyView.word(sublime.Region(0, SublimeSocketAPISettings.SIZE_OF_BUFFER * count))
+
+						count = count + 1
+
+					body = bodyView.substr(bodyView.word(currentRegion))
+
+					reactDict = reactorsDict[eventName][currentDict]
+
+					# append 'body' param from buffer
+					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
+
+					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+					
+					self.runAllSelector(reactDict, selector, eventParam)
+
+				break
+
+			if case():
+				print "unknown foundation api", command
+				break
+			
 
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
@@ -631,5 +676,4 @@ class KVS:
 	def clear(self):
 		self.keyValueDict.clear()
 		return True
-
 
