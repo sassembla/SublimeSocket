@@ -30,7 +30,6 @@ class SublimeSocketAPI:
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
 
-
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
 
@@ -52,6 +51,11 @@ class SublimeSocketAPI:
 		evalResults = "empty"
   	
 		# print "runAPI command", command
+
+		# erase comment
+		if SublimeSocketAPISettings.API_COMMENT_DELIM in command:
+			splitted = command.split(SublimeSocketAPISettings.API_COMMENT_DELIM, 1)
+			command = splitted[1]
 						
   	# python-switch
 		for case in PythonSwitch(command):

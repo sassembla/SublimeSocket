@@ -212,7 +212,7 @@ class SublimeWSServer:
 		event = params[SublimeSocketAPISettings.REACTOR_EVENT]
 		selectorsArray = params[SublimeSocketAPISettings.REACTOR_SELECTORS]
 
-		if event in SublimeSocketAPISettings.REACTIVE_INTERVAL_EVENT:
+		if event in SublimeSocketAPISettings.REACTIVE_RESERVED_INTERVAL_EVENT:
 			assert params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL), "this type of event require 'interval' param."
 
 		# check event kind
@@ -276,13 +276,29 @@ class SublimeWSServer:
 				eventParam = self.temporaryEventDict[event]
 				
 				# consume event
-				del self.temporaryEventDict[event]#
+				del self.temporaryEventDict[event]
 
 				# run all selector
 				self.runAllSelector(reactorDict, selectorsArray, eventParam)
 
 			# continue
 			sublime.set_timeout(lambda: self.eventIntervals(target, event, selectorsArray, interval), interval)
+
+
+	# run user-defined event.
+	def runOrSetUserDefinedEvent(self, eventName, eventParam, reactorsDict):
+		# emit now or set to fire with interval
+		if reactorsDict.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL):
+			self.temporaryEventDict[eventName] = eventParam
+			return
+
+		# emit now
+		target = eventParam[SublimeSocketAPISettings.REACTOR_TARGET]
+		reactDict = reactorsDict[eventName][target]
+		
+		selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+
+		self.runAllSelector(reactDict, selector, eventParam)
 
 	def runAllSelector(self, reactorDict, selectorsArray, eventParam):
 		def runForeachAPI(selector):
@@ -384,24 +400,20 @@ class SublimeWSServer:
 		# print "fireKVStoredItem eventListen!", eventName,"eventParam",eventParam
 
 		# event listener adopt
-		if eventName in SublimeSocketAPISettings.REACTIVE_INTERVAL_EVENT:
+		if eventName in SublimeSocketAPISettings.REACTIVE_RESERVED_INTERVAL_EVENT:
 			# store data to temporary.
 			self.temporaryEventDict[eventName] = eventParam
 
 
-		# run when the event occured adopt
-		if eventName in SublimeSocketAPISettings.REACTIVE_ONEBYONE_EVENT:
-			# emit now if exist
+		# run when the event occured adopt. start with specific "user-defined" event identity that defined as REACTIVE_PREFIX_USERDEFINED_EVENT.
+		if eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT):
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 			
 			# if exist, continue
 			if reactorsDict.has_key(eventName):
-				target = eventParam[SublimeSocketAPISettings.REACTOR_TARGET]
-				reactDict = reactorsDict[eventName][target]
-				
-				selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+				# interval-set or not
+				self.runOrSetUserDefinedEvent(eventName, eventParam, reactorsDict)
 
-				self.runAllSelector(reactDict, selector, eventParam)
 
 		# run when the foundation-event occured adopt
 		if eventName in SublimeSocketAPISettings.REACTIVE_FOUNDATION_EVENT:

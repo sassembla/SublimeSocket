@@ -116,7 +116,41 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
-ss@setReactor:
+ss@When selection changed, runWithbuffer will raise./setReactor:
+{
+    "target": "sublimesocketpreference",
+    "event": "ss_runViewBuffer",
+    "replacefromto": {
+        "body": "message"
+    },
+    "selectors": [
+        {
+            "monocastMessage": {
+                "message": "replace",
+                "target": "sublimesocketpreference"
+            }
+        }
+    ]
+}
+->setReactor:
+{
+    "target": "sublimesocketpreference",
+    "event": "on_selection_modified",
+    "selectors": [
+        {
+            "runWithBuffer": {
+                "view": "will be replace to specific view"
+            }
+        }
+    ],
+    "replacefromto": {
+        "view": "view"
+    },
+    "interval": 100
+}
+            </option>
+            <option>
+ss@When save, message show at log./setReactor:
 {
     "target": "sublimesocketpreference",
     "event": "on_post_save",
@@ -132,7 +166,7 @@ ss@setReactor:
             </option>
 
             <option>
-ss@checkAPICompatibility:
+ss@Too low version specified, then show error on log./checkAPICompatibility:
 {
     "version": "0.0.1",
     "strict": true
@@ -140,7 +174,7 @@ ss@checkAPICompatibility:
             </option>
 
             <option>
-ss@setFoundationReactor:
+ss@Set foundation event. forget usage./setFoundationReactor:
 {
     "event": "ss_f_noViewFound",
     "selectors": [
@@ -176,14 +210,14 @@ ss@setFoundationReactor:
             </option>
 
             <option>
-ss@notify:
+ss@Notify on Mac./notify:
 {
     "title": "title-is-here",
     "message": "message-of-nyaaa"
 }
             </option>
             <option>
-ss@defineFilter:
+ss@Define filter, then "a" and "b" happen. will be ignored./defineFilter:
 {
     "name": "03/15/13 04:02:56",
     "patterns": [
@@ -211,7 +245,7 @@ ss@defineFilter:
 ss@eraseAllRegion: {}
             </option>
             <option>
-ss@appendRegion:
+ss@Add region then erase./appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
@@ -222,7 +256,7 @@ ss@appendRegion:
 ->eraseAllRegion: {}
             </option>
             <option>
-ss@setReactor:
+ss@Add region on line 10, show message when select the region./setReactor:
 {
     "target": "sublimesocketpreference",
     "event": "on_selection_modified",
@@ -231,7 +265,7 @@ ss@setReactor:
             "containsRegions": {
                 "view": "will be replace to specific view",
                 "target": "sublimesocketpreference",
-                "emit": "ss_eventEmitted",
+                "emit": "event_eventEmitted",
                 "debug": true
             }
         }
@@ -244,7 +278,7 @@ ss@setReactor:
 ->setReactor:
 {
     "target": "sublimesocketpreference",
-    "event": "ss_eventEmitted",
+    "event": "event_eventEmitted",
     "selectors": [
         {
             "showAtLog": {
@@ -264,7 +298,7 @@ ss@setReactor:
             </option>
 
             <option>
-ss@setReactor:
+ss@Add region on line 10, message will appear when select that./setReactor:
 {
     "target": "sublimesocketpreference",
     "event": "on_selection_modified",
@@ -273,7 +307,7 @@ ss@setReactor:
             "containsRegions": {
                 "view": "will be replace to specific view",
                 "target": "sublimesocketpreference",
-                "emit": "ss_errorEmitted",
+                "emit": "event_errorEmitted",
                 "debug": true
             }
         }
@@ -286,7 +320,7 @@ ss@setReactor:
 ->setReactor:
 {
     "target": "sublimesocketpreference",
-    "event": "ss_errorEmitted",
+    "event": "event_errorEmitted",
     "selectors": [
         {
             "showAtLog": {
@@ -306,7 +340,7 @@ ss@setReactor:
             </option>
 
             <option>
-ss@appendRegion:
+ss@Append region to Settings.py on line 11./appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
@@ -317,7 +351,7 @@ ss@appendRegion:
             </option>
 
             <option>
-ss@appendRegion:
+ss@Append region to Settings.py on line 12./appendRegion:
 {
     "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
@@ -328,7 +362,7 @@ ss@appendRegion:
             </option>
 
             <option>
-ss@runShell:
+ss@(deprecated)Run terminal-notifier, focus to ST2./runShell:
 {
     "main": "terminal-notifier",
     "-message": "\"Hello, this is my message\"",
@@ -338,7 +372,7 @@ ss@runShell:
 }
             </option>
             <option>
-ss@runShell:
+ss@(deprecated)Run terminal-notifier notify./runShell:
 {
     "main": "terminal-notifier",
     "-message": [
@@ -353,7 +387,7 @@ ss@runShell:
             </option>
 
             <option>
-ss@runShell:
+ss@(deprecated)Run growl notify./runShell:
 {
     "main": "/usr/local/bin/growlnotify",
     "-m": "message!",
@@ -364,7 +398,7 @@ ss@runShell:
             </option>
 
             <option>
-ss@showAtLog:
+ss@Show message at log./showAtLog:
 {
     "message": "herecomes daredevil"
 }
@@ -372,7 +406,7 @@ ss@showAtLog:
             </option>
 
             <option>
-ss@filtering:
+ss@Fail sample pattern. - and > never be concat./filtering:
 {
     "name": "invalidJSONTest",
     "source": "Loading GUID <-> Path mappings ... 0.000279 seconds."
@@ -380,7 +414,7 @@ ss@filtering:
             </option>
 
             <option>
-ss@defineFilter:
+ss@Define filter, run filter, then append region/defineFilter:
 {
     "name": "appendRegionFilter",
     "patterns": [
@@ -417,12 +451,12 @@ ss@defineFilter:
             </option>
 
             <option>
-ss@defineFilter:
+ss@Define filter "s", then show message on dialog after filtering run./defineFilter:
 {
     "name": "s",
     "patterns": [
         {
-            "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
+            "(.*)": {
                 "selectors": [
                     {
                         "eval": [
@@ -437,12 +471,12 @@ ss@defineFilter:
 ->filtering:
 {
     "name": "s",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+    "source": "somepattern"
 }
             </option>
 
             <option>
-ss@filtering:
+ss@Run filter named "s"./filtering:
 {
     "name": "s",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
@@ -450,7 +484,7 @@ ss@filtering:
             </option>
 
             <option>
-ss@monocastMessage:
+ss@Monocast message, will react message to this browser./monocastMessage:
 {
     "message": "here comes Daredevil! for only one",
     "target": "sublimesocketpreference"
@@ -458,35 +492,35 @@ ss@monocastMessage:
             </option>
 
             <option>
-ss@broadcastMessage:
+ss@Broadcast message, will react message to everywhere./broadcastMessage:
 {
     "message": "here comes Daredevil!"
 }
             </option>
 
             <option>
-ss@kvs:
+ss@Show all keys and values in KVS./kvs:
 {
     "showAll": "true"
 }
             </option>
 
             <option>
-ss@kvs:
+ss@Show value in KVS named "clientId"./kvs:
 {
     "showValue": "clientId"
 }
             </option>
 
             <option>
-ss@kvs:
+ss@Remove value from KVS named "clientId"./kvs:
 {
     "removeValue": "clientId"
 }
             </option>
 
             <option>
-ss@kvs:
+ss@Clear KVS./kvs:
 {
     "clear": "true"
 }
@@ -494,14 +528,14 @@ ss@kvs:
             
 
             <option>
-ss@runSetting:
+ss@Run setting on folder./runSetting:
 {
     "path": "//Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/FilterSettingSamples/UnityFilter.txt"
 }
             </option>
 
             <option>
-ss@defineFilter:
+ss@Define filter only./defineFilter:
 {
     "name": "s",
     "patterns": [
@@ -521,7 +555,7 @@ ss@defineFilter:
             </option>
 
             <option>
-ss@defineFilter:
+ss@Set filter for specific case, then show dialog by run case with filter/defineFilter:
 {
     "name": "s",
     "patterns": [
@@ -549,7 +583,7 @@ ss@defineFilter:
             </option>
 
             <option>
-ss@defineFilter:
+ss@Define filter, then status message coming by running filter. /defineFilter:
 {
     "name": "s",
     "patterns": [
@@ -574,7 +608,7 @@ ss@defineFilter:
             </option>
 
             <option>
-ss@setReactor:
+ss@When selection modified, event_errorEmittedRun./setReactor:
 {
     "target": "sublimesocketpreference",
     "event": "on_selection_modified",
@@ -583,7 +617,7 @@ ss@setReactor:
             "containsRegions": {
                 "view": "will be replace to specific view",
                 "target": "sublimesocketpreference",
-                "emit": "ss_errorEmitted",
+                "emit": "event_errorEmitted",
                 "debug": true
             }
         }
@@ -596,29 +630,7 @@ ss@setReactor:
             </option>
 
             <option>
-ss@setReactor:
-{
-    "target": "sublimesocketpreference",
-    "event": "on_selection_modified",
-    "selectors": [
-        {
-            "containsRegions": {
-                "view": "will be replace to specific view",
-                "target": "sublimesocketpreference",
-                "emit": "ss_errorEmitted",
-                "debug": true
-            }
-        }
-    ],
-    "replacefromto": {
-        "view": "view"
-    },
-    "interval": 100
-}
-            </option>
-
-            <option>
-ss@setReactor:
+ss@When modified, broadCastMessage./setReactor:
 {
     "target": "02/20/13 16:53:35",
     "event": "on_modified",
@@ -634,14 +646,14 @@ ss@setReactor:
             </option>
 
             <option>
-ss@eval:
+ss@Show dialog on SublimeText./eval:
 [
     "sublime.message_dialog('show dialog from WebSocket Client')"
 ]
             </option>
             
             <option>
-ss@eval:
+ss@Add region to CurrentFile's line 20./eval:
 [
     "self.getLineCount_And_SetToArray(active_view, 20, lines)",
     "regions.append(active_view.line(lines[0]))",

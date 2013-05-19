@@ -10,16 +10,14 @@ API_PREFIX = "sublimesocket"
 API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
-API_COMMAND_PARAMS_DELIM = ":"		# only first ":" will be evaluated as delimiter / each commnand.
+API_COMMAND_PARAMS_DELIM = ":"	# only first ":" will be evaluated as delimiter / each commnand.
+API_COMMENT_DELIM	= "/"					# comment expression in API. ss@COMMENT/API...
 
-API_VERSION = "0.8.8"
+API_VERSION = "0.9.0"
 
 
 # SublimeSocket internal event definition
 SS_EVENT_COLLECT	= "ss_collect"
-
-SS_EVENT_EVENTEMITTED	= "ss_eventEmitted"
-SS_EVENT_ERROREMITTED	= "ss_errorEmitted"
 
 SS_FOUNDATION_NOVIEWFOUND	= "ss_f_noViewFound"
 NOVIEWFOUND_TARGET		= "target"
@@ -74,8 +72,8 @@ FOUNDATIONREACTOR_SELECTORS		= "selectors"
 FOUNDATIONREACTOR_TARGET_DEFAULT 		= "default"
 FOUNDATIONREACTOR_INTERVAL_DEFAULT	= 0
 
-REACTIVE_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
-REACTIVE_ONEBYONE_EVENT = [SS_EVENT_EVENTEMITTED, SS_EVENT_ERROREMITTED]
+REACTIVE_RESERVED_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
+REACTIVE_PREFIX_USERDEFINED_EVENT	= "event_"
 REACTIVE_FOUNDATION_EVENT = [SS_FOUNDATION_NOVIEWFOUND]
 
 API_KEYVALUESTORE	= "kvs"
