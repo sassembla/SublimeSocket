@@ -6,7 +6,7 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww23680\viewh13460\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f0\b\fs44 \cf0 SublimeSocket API Reference 0.8.8
+\f0\b\fs44 \cf0 SublimeSocket API Reference 0.9.0
 \b0\fs24 \
 
 \b \
@@ -57,7 +57,7 @@
 	\'81\'ab\
 	\'81\'63\
 \
-	Yes! Yes! Yes! \'82\'b8\'82\'c1\'82\'c6SublimeText\'82\'cc\'83\'5e\'81\'5b\'83\'93\'81\'49\'81\'49\
+	\'82\'b8\'82\'c1\'82\'c6SublimeText\'82\'cc\'83\'5e\'81\'5b\'83\'93\'81\'49\'81\'49\
 	\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -253,7 +253,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 	event[string]\
 		\'8a\'c4\'8e\'8b\'82\'b7\'82\'e9\'91\'ce\'8f\'db\'82\'ccEvent\'96\'bc\'81\'40"on_modified", "on_selection_modified", "on_pre_save", "on_post_save" \'82\'c8\'82\'c7\'81\'41\
 		SublimeText\'82\'aa\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'e0\'82\'cc\'82\'c6\'81\'41\
-		"ss_errorEmitted", "ss_f_noViewFound" \'82\'c8\'82\'c7\'81\'41SublimeSocket\'82\'aa\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'e0\'82\'cc\'82\'aa\'83\'5a\'83\'62\'83\'67\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
+		"event_"\'82\'c5\'8e\'6e\'82\'dc\'82\'e9\'8c\'ea\'8b\'e5\'82\'c5\'81\'41\'93\'c6\'8e\'a9\'82\'cc\'83\'43\'83\'78\'83\'93\'83\'67\'82\'f0\'92\'e8\'8b\'60\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
 \
 	target[string]\
 		Reactor\'82\'cc\'8e\'af\'95\'ca\'82\'c9\'8e\'67\'97\'70\'82\'b5\'82\'dc\'82\'b7\'81\'42\
@@ -272,7 +272,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 		Reactor\'94\'ad\'90\'b6\'8e\'9e\'81\'41Event\'82\'cc\'8e\'9d\'82\'c2\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'f0\'81\'41selector\'82\'c5\'8e\'77\'92\'e8\'82\'b5\'82\'bdAPI\'82\'c9\'93\'4b\'89\'9e\'82\'b3\'82\'b9\'82\'e9\'8e\'96\'82\'aa\'8f\'6f\'97\'88\'82\'dc\'82\'b7\'81\'42\
 		\{key:value\}\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'81\'41 Event\'82\'cc\'8e\'9d\'82\'c2key\'96\'bc\'82\'cc\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'cc\'92\'6c\'82\'f0\'81\'41selector\'93\'e0\'82\'ccvalue\'96\'bc\'82\'cc\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'cc\'92\'6c\'82\'c9\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 \
-	e.g. \'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'aa\'8d\'58\'90\'56\'82\'b3\'82\'ea\'82\'bd\'82\'e7\'81\'41ST\'82\'cc\'83\'8d\'83\'4f\'82\'c9Hello World\'82\'c6\'95\'5c\'8e\'a6\'82\'b7\'82\'e9\'81\'42\
+	e.g. \'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'aa\'8d\'58\'90\'56\'82\'b3\'82\'ea\'82\'bd\'82\'e7\'81\'41ST\'82\'cc\'83\'8d\'83\'4f\'82\'c9Hello World\'82\'c6\'95\'5c\'8e\'a6\'82\'b7\'82\'e9\'81\'421\'95\'62\'82\'b2\'82\'c6\'82\'c9\'8e\'c0\'8d\'73\'82\'b3\'82\'ea\'82\'e9\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \cb3 ss@setReactor:\
 \{\
@@ -280,11 +280,8 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
     "event": "on_selection_modified",\
     "selectors": [\
         \{\
-            "containsRegions": \{\
-                "view": "will be replace to specific view",\
-                "target": "sublimesocketpreference",\
-                "emit": "ss_errorEmitted",\
-                "debug": true\
+            "showAtLog": \{\
+                "message": "Hello World"\
             \}\
         \}\
     ],\
@@ -465,7 +462,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 		\'92\'ca\'8f\'ed\'81\'41setReactor\'82\'c9\'93\'e0\'95\'ef\'82\'b5\'82\'c4\'8e\'67\'97\'70\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 		\'93\'c1\'92\'e8\'82\'ccview(ST\'82\'c5\'8a\'4a\'82\'a9\'82\'ea\'82\'c4\'82\'a2\'82\'e9\'83\'74\'83\'40\'83\'43\'83\'8b)\'82\'c9\'82\'c2\'82\'a2\'82\'c4\'81\'41Reactor\'82\'aa\'8e\'77\'92\'e8\'82\'b5\'82\'bdEvent\'82\'aa\'94\'ad\'90\'b6\'82\'b5\'82\'bd\'83\'5e\'83\'43\'83\'7e\'83\'93\'83\'4f\'82\'c5\'81\'41\
 		\'83\'47\'83\'66\'83\'42\'83\'5e\'82\'cc\'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'c9ST\'82\'ccRegion\'82\'aa\'91\'b6\'8d\'dd\'82\'b7\'82\'e9\'8f\'ea\'8d\'87\'81\'41emit\'83\'4c\'81\'5b\'83\'8f\'81\'5b\'83\'68\'82\'c5\'8e\'77\'92\'e8\'82\'b5\'82\'bdEvent\'82\'f0\'94\'ad\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
-		\'94\'ad\'8d\'73\'82\'c5\'82\'ab\'82\'e9Event\'82\'cd\'81\'41ss_errorEmitted" \'82\'c8\'82\'c7 SublimeSocket\'92\'e8\'8b\'60\'82\'ccEvent\'82\'c9\'8c\'c0\'82\'e7\'82\'ea\'82\'dc\'82\'b7\'81\'42\
+		\'94\'ad\'8d\'73\'82\'c5\'82\'ab\'82\'e9Event\'82\'cd\'81\'41"event_" \'8b\'e5\'82\'c5\'8e\'6e\'82\'dc\'82\'c1\'82\'c4\'82\'a2\'82\'ea\'82\'ceOK\'82\'c5\'81\'41\'8e\'a9\'97\'52\'82\'c9\'92\'e8\'8b\'60\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
 \
 		Event\'82\'c9\'82\'c2\'82\'a2\'82\'c4\'82\'cd\'89\'ba\'8b\'4c
 \b EventReference
@@ -479,7 +476,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 \
 	emit[string]\
 		Event\'96\'bc\'82\'cc\'95\'b6\'8e\'9a\'97\'f1\'82\'c5\'82\'b7\'81\'42\
-		ss_errorEmitted \'82\'c8\'82\'c7\'82\'aa\'8e\'77\'92\'e8\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
+		event_\'82\'c5\'8a\'4a\'8e\'6e\'82\'b5\'82\'c4\'82\'a2\'82\'ea\'82\'ceOK\'82\'c5\'82\'b7\'81\'42\'81\'40event_errorEmitted \'82\'c8\'82\'c7\'82\'aa\'8e\'77\'92\'e8\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
 \
 	debug[bool]\
 		\'83\'66\'83\'6f\'83\'62\'83\'4f\'97\'70\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'c5\'82\'b7\'81\'42\
@@ -492,9 +489,9 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 }¬}
 \f0 \
 		\'82\'bb\'82\'ccRegion\'82\'f0\'83\'4a\'81\'5b\'83\'5c\'83\'8b\'82\'aa\'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'c9\'8a\'dc\'82\'f1\'82\'be\'8d\'db\'81\'41\
-		sublimesocketpreference \'82\'c6\'82\'a2\'82\'a4target\'82\'f0\'82\'e0\'82\'bf\'81\'41ss_errorEmitted Event\'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'81\'41Event\'82\'f0\'94\'ad\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
+		sublimesocketpreference \'82\'c6\'82\'a2\'82\'a4target\'82\'f0\'82\'e0\'82\'bf\'81\'41event_errorEmitted Event\'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'81\'41Event\'82\'f0\'94\'ad\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 		view\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'cd something Reactor\'82\'ccreplacefromto\'82\'c9\'82\'e6\'82\'c1\'82\'c4\'81\'41on_selection_modified\'82\'aa\'94\'ad\'90\'b6\'82\'b5\'82\'bdview\'82\'d6\'82\'c6\'92\'75\'82\'ab\'8a\'b7\'82\'a6\'82\'e7\'82\'ea\'82\'dc\'82\'b7\'81\'42\
-		Event\'94\'ad\'8d\'73\'8c\'e3\'81\'41ss_errorEmitted \'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'aa\'94\'ad\'90\'b6\'82\'b5\'81\'41Hello World\'82\'aaST\'82\'cc\'83\'8d\'83\'4f\'82\'c9\'8f\'6f\'97\'cd\'82\'b3\'82\'ea\'81\'41 appendRegion\'82\'cc\'93\'e0\'97\'65\'82\'aa\'8e\'c0\'8d\'73\'82\'b3\'82\'ea\'82\'dc\'82\'b7\'81\'42\
+		Event\'94\'ad\'8d\'73\'8c\'e3\'81\'41event_errorEmitted \'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'aa\'94\'ad\'90\'b6\'82\'b5\'81\'41Hello World\'82\'aaST\'82\'cc\'83\'8d\'83\'4f\'82\'c9\'8f\'6f\'97\'cd\'82\'b3\'82\'ea\'81\'41 appendRegion\'82\'cc\'93\'e0\'97\'65\'82\'aa\'8e\'c0\'8d\'73\'82\'b3\'82\'ea\'82\'dc\'82\'b7\'81\'42\
 		
 \f1 {{\NeXTGraphic b.png \width8460 \height1020
 }¬}
@@ -509,7 +506,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
             "containsRegions": \{\
                 "view": "will be replace to specific view",\
                 "target": "sublimesocketpreference",\
-                "emit": "ss_errorEmitted",\
+                "emit": "event_errorEmitted",\
                 "debug": true\
             \}\
         \}\
@@ -522,7 +519,7 @@ return = CAUTION:	The current version = 1.0.0, please check API for using SSJSON
 ->setReactor:\
 \{\
     "target": "sublimesocketpreference",\
-    "event": "ss_errorEmitted",\
+    "event": "event_errorEmitted",\
     "selectors": [\
         \{\
             "showAtLog": \{\
@@ -909,33 +906,16 @@ Event Reference\
 \f0 \cf0 \cb1 \
 \
 
-\b 	user-emittable series
+\b 	user-define series
 \b0 \
-		emit\'82\'aa\'82\'a0\'82\'e9API\'8c\'6f\'97\'52\'82\'c5\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'89\'c2\'94\'5c\'82\'c5\'82\'b7\'81\'42\
+		\'81\'68event_\'81\'68\'8b\'e5\'82\'a9\'82\'e7\'8e\'6e\'82\'dc\'82\'e9\'83\'86\'81\'5b\'83\'55\'81\'5b\'93\'c6\'8e\'a9\'92\'e8\'8b\'60\'82\'cc\'83\'43\'83\'78\'83\'93\'83\'67\'82\'f0\'81\'41emit\'82\'aa\'82\'a0\'82\'e9API\'8c\'6f\'97\'52\'82\'c5\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'89\'c2\'94\'5c\'82\'c5\'82\'b7\'81\'42\
 		\'82\'b7\'82\'d7\'82\'c4\'82\'ccEvent\'82\'cd\'81\'41emit\'8c\'b3\'82\'aa\'8e\'9d\'82\'c2\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'f0\'8e\'9d\'82\'bf\'82\'dc\'82\'b7\'81\'42\
 \
-		\'8a\'65Event\'82\'cc\'8d\'b7\'82\'cd\'81\'41identity\'82\'cc\'82\'dd\'82\'c5\'82\'b7\'81\'42\
-\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-
-\fs40 \cf0 	
-\b ss_eventEmitted
-\fs24 \
-		
-\b0 containsRegions API \'82\'ccemit\'82\'c9\'8e\'77\'92\'e8\'82\'c5\'82\'ab\'82\'e9Event\'82\'c5\'82\'b7\'81\'42\
-		setReactor\'82\'c5\'94\'bd\'89\'9e\'82\'b7\'82\'e9\'97\'76\'91\'66\'82\'f0\'83\'5a\'83\'62\'83\'67\'82\'b5\'82\'c4\'82\'a8\'82\'ad\'8e\'96\'82\'c5\'81\'41\'91\'ce\'89\'9e\'82\'b7\'82\'e9Event\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'82\'cc\'82\'dd\'94\'bd\'89\'9e\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42
-\b \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-
-\b0 \cf0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-
-\fs40 \cf0 	
-\b ss_errorEmitted
-\b0\fs24 \
-		containsRegions API \'82\'ccemit\'82\'c9\'8e\'77\'92\'e8\'82\'c5\'82\'ab\'82\'e9Event\'82\'c5\'82\'b7\'81\'42\
-		setReactor\'82\'c5\'94\'bd\'89\'9e\'82\'b7\'82\'e9\'97\'76\'91\'66\'82\'f0\'83\'5a\'83\'62\'83\'67\'82\'b5\'82\'c4\'82\'a8\'82\'ad\'8e\'96\'82\'c5\'81\'41\'91\'ce\'89\'9e\'82\'b7\'82\'e9Event\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'82\'cc\'82\'dd\'94\'bd\'89\'9e\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'82\'c5\'82\'ab\'82\'dc\'82\'b7\'81\'42\
-					\
+	
+\f1 e.g.\
+		event_myEvent\
+		event_emitHelloWorld
+\f0 \
 \
 \
 \
@@ -982,8 +962,8 @@ save\'82\'c8\'82\'c7\'82\'cc\'83\'86\'81\'5b\'83\'55\'81\'5b\'93\'ae\'8d\'ec\'82
 		\'81\'a8selector\'92\'86\'82\'c5\'94\'43\'88\'d3\'82\'cc\'93\'ae\'8d\'ec\'82\'f0\'8d\'73\'82\'a4\
 \
 	e.g. 	appendRegion\'82\'c5\'8e\'c0\'8d\'db\'82\'c9Region\'82\'f0\'94\'ad\'90\'b6\'82\'b3\'82\'b9\'82\'e9\'83\'54\'83\'93\'83\'76\'83\'8b\'81\'42\
-		on_selection_modified\'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'93\'e0\'82\'c5\'81\'41\'8a\'f9\'90\'dd\'82\'ccRegion\'82\'d6\'82\'cc\'94\'bd\'89\'9e\'82\'f0\'8b\'4c\'8f\'71\'81\'42\'94\'cd\'88\'cd\'82\'aaRegion\'82\'f0\'8a\'dc\'82\'f1\'82\'c5\'82\'a2\'82\'bd\'8f\'ea\'8d\'87\'81\'41ss_errorEmitted Event\'82\'f0\'94\'ad\'8d\'73\'81\'42\
-		ss_errorEmitted Event\'82\'aa\'94\'ad\'8d\'73\'82\'b3\'82\'ea\'82\'bd\'8f\'ea\'8d\'87\'81\'41\'91\'ce\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'c9\'82\'c4\'81\'41showAtLog\'82\'aa\'94\'ad\'90\'b6\'82\'b7\'82\'e9\'81\'42\
+		on_selection_modified\'82\'c9\'94\'bd\'89\'9e\'82\'b7\'82\'e9Reactor\'93\'e0\'82\'c5\'81\'41\'8a\'f9\'90\'dd\'82\'ccRegion\'82\'d6\'82\'cc\'94\'bd\'89\'9e\'82\'f0\'8b\'4c\'8f\'71\'81\'42\'94\'cd\'88\'cd\'82\'aaRegion\'82\'f0\'8a\'dc\'82\'f1\'82\'c5\'82\'a2\'82\'bd\'8f\'ea\'8d\'87\'81\'41event_errorEmitted Event\'82\'f0\'94\'ad\'8d\'73\'81\'42\
+		event_errorEmitted Event\'82\'aa\'94\'ad\'8d\'73\'82\'b3\'82\'ea\'82\'bd\'8f\'ea\'8d\'87\'81\'41\'91\'ce\'89\'9e\'82\'b7\'82\'e9Reactor\'82\'c9\'82\'c4\'81\'41showAtLog\'82\'aa\'94\'ad\'90\'b6\'82\'b7\'82\'e9\'81\'42\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \cb3 ss@setReactor:\
 \{\
@@ -994,7 +974,7 @@ save\'82\'c8\'82\'c7\'82\'cc\'83\'86\'81\'5b\'83\'55\'81\'5b\'93\'ae\'8d\'ec\'82
             "containsRegions": \{\
                 "view": "will be replace to specific view",\
                 "target": "sublimesocketpreference",\
-                "emit": "ss_errorEmitted",\
+                "emit": "event_errorEmitted",\
                 "debug": true\
             \}\
         \}\
@@ -1007,7 +987,7 @@ save\'82\'c8\'82\'c7\'82\'cc\'83\'86\'81\'5b\'83\'55\'81\'5b\'93\'ae\'8d\'ec\'82
 ->setReactor:\
 \{\
     "target": "sublimesocketpreference",\
-    "event": "ss_errorEmitted",\
+    "event": "event_errorEmitted",\
     "selectors": [\
         \{\
             "showAtLog": \{\

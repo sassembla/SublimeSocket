@@ -81,11 +81,6 @@ class SublimeWSEncoder:
 			# print 'before encode: part 2', repr(data)
 			pass
 			
-		if opcode == 0x1:
-			try:
-			    data.encode('utf-8')
-			except UnicodeError:
-			    raise ValueError('Text datas MUST be UTF-8 encoded.')
 
 		if isinstance(data, bytearray):
 			data = str(data)

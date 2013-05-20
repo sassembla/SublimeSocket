@@ -309,7 +309,7 @@ class SublimeSocketAPI:
 		
 		if self.server.clients.has_key(target):
 			client = self.server.clients[target]
-			buf = self.encoder.text(str(message), mask=0)
+			buf = self.encoder.text(str(message.encode('utf-8')), mask=0)
 			client.send(buf)
 
 		else:

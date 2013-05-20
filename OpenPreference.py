@@ -33,7 +33,8 @@ class Openpreference(sublime_plugin.TextCommand):
 
     # prepare html contents
     htmlFile = open(originalPath, 'r')
-    html = htmlFile.read()
+    html = htmlFile.read().decode('utf-8')
+    
     htmlFile.close()
         
     # replace host:port
@@ -45,7 +46,7 @@ class Openpreference(sublime_plugin.TextCommand):
 
     # generate preference
     outputFile = open(preferencePath, 'w')
-    outputFile.write(html)
+    outputFile.write(html.encode('utf-8'))
     outputFile.close()
     
     # set Target-App to open Preference.htnl
