@@ -46,9 +46,9 @@ class SublimeWSController:
 					apiComponents = headerAndParam[1]
 					
 					self.client.server.callAPI(apiComponents, self.client.clientId)
-
+					# printした時点でふくまれている、みたいなことか、、
 				else:
-					print "data is not for sublimesocket. no 'ss@'header. data:", data
+					print "data is not for sublimesocket. no 'ss@'header. data:", data.encode('utf-8')
 				break
 
 			if case(SublimeWSSettings.OP_CONTINUATION):
