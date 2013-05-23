@@ -11,9 +11,16 @@ API_PREFIX_SUB = "ss"
 API_DEFINE_DELIM = "@"					# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 API_CONCAT_DELIM = "->"					# concat commands. every commands run in sequential.
 API_COMMAND_PARAMS_DELIM = ":"	# only first ":" will be evaluated as delimiter / each commnand.
+
 API_COMMENT_DELIM	= "/"					# comment expression in API. ss@COMMENT/API...
 
-API_VERSION = "0.9.0"
+API_PARAM_START		= "("					# ss@(key|value,key2|value2)commandA:,,,
+API_PARAM_END			= ")"					# replace commandA's "key" by "value" of present-results.
+API_PARAM_CONCAT	= "|"
+API_PARAM_DELIM		= ","
+
+
+API_VERSION = "0.10.0"
 
 
 # SublimeSocket internal event definition
@@ -123,6 +130,8 @@ API_BROADCASTMESSAGE	= "broadcastMessage"
 API_MONOCASTMESSAGE		= "monocastMessage"
 OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
+OUTPUT_HEADER			= "header"
+OUTPUT_FOOTER			= "footer"
 OUTPUT_SENDER			= "sender"
 
 API_SHOWATLOG			= "showAtLog"
@@ -142,6 +151,19 @@ API_NOTIFY				= "notify"
 NOTIFY_TITLE			= "title"
 NOTIFY_MESSAGE		= "message"
 NOTIFY_DEBUG			= "debug"
+
+API_GETALLFILEPATH	= "getAllFilePath"
+GETALLFILEPATH_PATHS = "paths"
+GETALLFILEPATH_ANCHOR = "anchor"
+GETALLFILEPATH_HEADER	= "header"
+GETALLFILEPATH_FOOTER	= "footer"
+
+API_READFILEDATA	= "readFileData"
+READFILEDATA_PATH = "path"
+READFILEDATA_DATA = "data"
+
+
+API_SETWINDOWBASEPATH = "setWindowBasePath"
 
 API_TIMEREVENT		= "timerEvent"
 

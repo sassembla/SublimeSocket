@@ -10,6 +10,7 @@ import SublimeSocketAPISettings
 import subprocess
 import shlex
 import os
+import sys
 
 import re
 
@@ -22,6 +23,7 @@ class SublimeSocketAPI:
 	def __init__(self, server):
 		self.server = server
 		self.encoder = SublimeWSEncoder()
+		self.windowBasePath = sublime.active_window().active_view().file_name()
 
 	## Parse the API command via WebSocket
 	def parse(self, data, client=None):
@@ -29,6 +31,8 @@ class SublimeSocketAPI:
 		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
+
+		results = {}
 
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
@@ -44,10 +48,10 @@ class SublimeSocketAPI:
 					print "JSON parse error", e, "source = ", command_params[1]
 					return
 
-			self.runAPI(command, params, client)
+			self.runAPI(command, params, client, results)
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
-	def runAPI(self, command, params=None, client=None):
+	def runAPI(self, command, params=None, client=None, results=None):
 		evalResults = "empty"
   	
 		# print "runAPI command", command
@@ -56,7 +60,31 @@ class SublimeSocketAPI:
 		if SublimeSocketAPISettings.API_COMMENT_DELIM in command:
 			splitted = command.split(SublimeSocketAPISettings.API_COMMENT_DELIM, 1)
 			command = splitted[1]
-						
+
+
+		# attach bridgedParams and remove.
+		if SublimeSocketAPISettings.API_PARAM_END in command:
+			splitted = command.split(SublimeSocketAPISettings.API_PARAM_END, 1)
+			command = splitted[1]
+			
+			# separate by delim
+			keyValues = splitted[0][1:]# remove SublimeSocketAPISettings.API_PARAM_START
+			keyValuesArray = keyValues.split(SublimeSocketAPISettings.API_PARAM_DELIM)
+
+			for keyAndValue in keyValuesArray:
+				# key|valueKey
+				keyAndValueArray = keyAndValue.split(SublimeSocketAPISettings.API_PARAM_CONCAT)
+				
+				key = keyAndValueArray[0]
+				value = keyAndValueArray[1]
+
+				# replace params with bridgedParams-rule
+				print "results", results, key, value
+				assert results.has_key(key), "no-key in results. should use the API that have results."
+
+				params[value] = results[key]
+
+
   	# python-switch
 		for case in PythonSwitch(command):
 			if case(SublimeSocketAPISettings.API_RUNSETTING):
@@ -149,6 +177,17 @@ class SublimeSocketAPI:
 				self.notify(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_GETALLFILEPATH):
+				self.getAllFilePath(params, results)
+				break
+
+			if case(SublimeSocketAPISettings.API_READFILEDATA):
+				self.readFileData(params, results)
+				break
+
+			if case(SublimeSocketAPISettings.API_SETWINDOWBASEPATH):
+				sublime.set_timeout(lambda: self.setWindowBasePath(), 0)
+				break
 
 			# internal APIS
 			if case(SublimeSocketAPISettings.API_I_SHOWSTATUSMESSAGE):
@@ -283,6 +322,13 @@ class SublimeSocketAPI:
 		
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
 		
+		# header and footer
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_HEADER):
+			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + message
+
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_FOOTER):
+			message = message + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
+		
 		# if sender specified, add "sender:" ahead of message.
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
 			message = params[SublimeSocketAPISettings.OUTPUT_SENDER] + ":" + message
@@ -302,6 +348,14 @@ class SublimeSocketAPI:
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
 		
+		# header and footer
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_HEADER):
+			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + message
+
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_FOOTER):
+			message = message + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
+		
+
 		# if sender specified, add "sender:" ahead of message.
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
 			message = params[SublimeSocketAPISettings.OUTPUT_SENDER] + ":" + message
@@ -568,13 +622,12 @@ class SublimeSocketAPI:
 	def runWithBuffer(self, params):
 		assert params.has_key(SublimeSocketAPISettings.RUNWITHBUFFER_VIEW), "runWithBuffer require 'view' param"
 		self.server.fireKVStoredItem(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER, params)
-		pass
 
 
 	## emit notification mechanism
 	def notify(self, params):
-		assert params.has_key(SublimeSocketAPISettings.NOTIFY_TITLE), "notify require 'title' param"
-		assert params.has_key(SublimeSocketAPISettings.NOTIFY_MESSAGE), "notify require 'message' param"
+		assert params.has_key(SublimeSocketAPISettings.NOTIFY_TITLE), "notify require 'title' param."
+		assert params.has_key(SublimeSocketAPISettings.NOTIFY_MESSAGE), "notify require 'message' param."
 
 		title = params[SublimeSocketAPISettings.NOTIFY_TITLE]
 		message = params[SublimeSocketAPISettings.NOTIFY_MESSAGE]
@@ -594,7 +647,81 @@ class SublimeSocketAPI:
 		
 		self.runShell(shellParams)
 
+
+	## get current project's file paths then set results
+	def getAllFilePath(self, params, results):
+		assert params.has_key(SublimeSocketAPISettings.GETALLFILEPATH_ANCHOR), "getAllFilePath require 'anchor' param."
+
+		header = ""
+		if params.has_key(SublimeSocketAPISettings.GETALLFILEPATH_HEADER):
+			header = params[SublimeSocketAPISettings.GETALLFILEPATH_HEADER]
+
+		footer = ""
+		if params.has_key(SublimeSocketAPISettings.GETALLFILEPATH_FOOTER):
+			footer = params[SublimeSocketAPISettings.GETALLFILEPATH_FOOTER]
+
+
+		anchor = params[SublimeSocketAPISettings.GETALLFILEPATH_ANCHOR]
+		filePath = self.windowBasePath
+		folderPath = os.path.dirname(filePath)
 		
+		depth = len(filePath.split("/"))-1
+		
+		basePath_default = "default"
+		basePath = basePath_default
+
+		folderPath2 = folderPath
+
+		
+		for i in range(depth-1):
+			for r,d,f in os.walk(folderPath):
+
+				for files in f:
+					if files == anchor:
+						basePath = os.path.join(r,files)
+						break
+						
+				if basePath != basePath_default:
+					break
+
+			if basePath != basePath_default:
+					break
+
+			# not hit, up
+			folderPath = os.path.dirname(folderPath)
+		
+
+		baseDir = os.path.dirname(basePath)
+
+		pathArray = []
+		for r,d,f in os.walk(baseDir):
+			for files in f:
+				pathArray.append(os.path.join(r,files))
+
+		joinedPathsStr = ','.join(pathArray)
+
+		results[SublimeSocketAPISettings.GETALLFILEPATH_PATHS] = header+joinedPathsStr+footer
+		
+
+	def readFileData(self, params, results):
+		assert params.has_key(SublimeSocketAPISettings.READFILEDATA_PATH), "readFileData requrire 'path' param."
+		
+		path = params[SublimeSocketAPISettings.READFILEDATA_PATH]
+
+		currentFile = open(path, 'r')
+		data = currentFile.read()
+		currentFile.close()
+
+		if not data:
+			results[SublimeSocketAPISettings.READFILEDATA_DATA] = "no-data, maybe path does not exist."
+		else:
+			results[SublimeSocketAPISettings.READFILEDATA_DATA] = data
+		
+
+	def setWindowBasePath(self):
+		self.windowBasePath = sublime.active_window().active_view().file_name()
+		
+
 	def  checkAPICompatibility(self, params, client):
 		assert client, "checkAPICompatibility require 'client' object."
 		assert params.has_key(SublimeSocketAPISettings.CHECKAPICOMP_VERSION), "checkAPICompatibility require 'version' param."

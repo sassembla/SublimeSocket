@@ -116,6 +116,46 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@ヘッダー、フッター付きmonocastMessage、broadcastMessage/monocastMessage:
+{
+    "header": "THE HEADER for 1",
+    "message": "replace",
+    "footer": "THE FOOTER for 1",
+    "target": "sublimesocketpreference"  
+}
+->broadcastMessage:
+{
+    "header": "THE HEADER for all",
+    "message": "replace",
+    "footer": "THE FOOTER for all"
+}
+            </option>
+            <option>
+ss@特定のファイルのデータを読んで、monocastに載せる/readFileData:
+{
+    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/PythonSwitch.py"
+}
+->(data|message)monocastMessage:
+{
+    "message": "replace",
+    "target": "sublimesocketpreference"  
+}
+            </option>
+            <option>
+ss@現在のWindowのファイルリストを送る。が、ST2だとスレッドの関係で直前になってしまう。/setWindowBasePath:{}
+->getAllFilePath:
+{
+    "header": "lists:",
+    "anchor": "build.gradle",
+    "footer": "footer"
+}
+->(paths|message)monocastMessage:
+{
+    "message": "replace",
+    "target": "sublimesocketpreference"   
+}
+            </option>
+            <option>
 ss@Send Japanese/monocastMessage:
 {
     "message": "日本語でおk",
