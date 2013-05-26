@@ -79,7 +79,6 @@ class SublimeSocketAPI:
 				value = keyAndValueArray[1]
 
 				# replace params with bridgedParams-rule
-				print "results", results, key, value
 				assert results.has_key(key), "no-key in results. should use the API that have results."
 
 				params[value] = results[key]
@@ -91,8 +90,9 @@ class SublimeSocketAPI:
 				filePath = params[SublimeSocketAPISettings.RUNSETTING_FILEPATH]
 				result = self.runSetting(filePath, client)
 
-				buf = self.encoder.text(result, mask=0)
-				client.send(buf)
+				if client:
+					buf = self.encoder.text(result, mask=0)
+					client.send(buf)
 				break
 
 			if case(SublimeSocketAPISettings.API_INPUTIDENTITY):
@@ -713,7 +713,7 @@ class SublimeSocketAPI:
 		currentFile.close()
 
 		if not data:
-			results[SublimeSocketAPISettings.READFILEDATA_DATA] = "no-data, maybe path does not exist."
+			results[SublimeSocketAPISettings.READFILEDATA_DATA] = ""
 		else:
 			results[SublimeSocketAPISettings.READFILEDATA_DATA] = data
 		
