@@ -37,6 +37,9 @@ class SublimeSocketAPI:
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
 
+			# print "before commandIdentityAndParams:", commandIdentityAndParams
+			commandIdentityAndParams = commandIdentityAndParams.encode('utf-8')
+			
 			command_params = commandIdentityAndParams.split(SublimeSocketAPISettings.API_COMMAND_PARAMS_DELIM, 1)
 			command = command_params[0]
 

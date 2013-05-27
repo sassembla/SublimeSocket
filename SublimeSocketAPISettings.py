@@ -38,6 +38,7 @@ SS_FOUNDATION_RUNWITHBUFFER = "ss_f_runWithBuffer"
 F_RUNWITHBUFFER_TARGET	= "target"
 F_RUNWITHBUFFER_VIEW		= "view"
 F_RUNWITHBUFFER_BODY		= "body"
+F_RUNWITHBUFFER_PATH		= "path"
 SIZE_OF_BUFFER					= 100000
 
 
@@ -130,6 +131,7 @@ API_BROADCASTMESSAGE	= "broadcastMessage"
 API_MONOCASTMESSAGE		= "monocastMessage"
 OUTPUT_TARGET			= "target"
 OUTPUT_MESSAGE		= "message"
+OUTPUT_DELIMITER	= "delimiter"
 OUTPUT_HEADER			= "header"
 OUTPUT_FOOTER			= "footer"
 OUTPUT_SENDER			= "sender"

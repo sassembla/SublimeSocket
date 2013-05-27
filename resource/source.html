@@ -116,6 +116,23 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@デリミタをセットしたmonocastMessage,broadcastMessage/monocastMessage:
+{
+    "delimiter": "はにゃー",
+    "header": "THE HEADER for 1",
+    "message": "replace",
+    "footer": "THE FOOTER for 1",
+    "target": "sublimesocketpreference"  
+}
+->broadcastMessage:
+{
+    "delimiter": "ふがー",
+    "header": "THE HEADER for all",
+    "message": "replace",
+    "footer": "THE FOOTER for all"
+}
+            </option>
+            <option>
 ss@ヘッダー、フッター付きmonocastMessage、broadcastMessage/monocastMessage:
 {
     "header": "THE HEADER for 1",

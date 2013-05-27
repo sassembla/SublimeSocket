@@ -520,11 +520,13 @@ class SublimeWSServer:
 						count = count + 1
 
 					body = bodyView.substr(bodyView.word(currentRegion))
+					path = bodyView.file_name()
 
 					reactDict = reactorsDict[eventName][currentDict]
 
-					# append 'body' param from buffer
+					# append 'body' 'path' param from buffer
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
+					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
 
 					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					
