@@ -31,12 +31,10 @@ class SublimeSocketAPI:
 		
 		# SAMPLE: inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}->showAlert...
 		commands = data.split(SublimeSocketAPISettings.API_CONCAT_DELIM)
-
 		results = {}
 
     # command and param  SAMPLE:		inputIdentity:{"id":"537d5da6-ce7d-42f0-387b-d9c606465dbb"}
 		for commandIdentityAndParams in commands :
-
 			# print "before commandIdentityAndParams:", commandIdentityAndParams
 			commandIdentityAndParams = commandIdentityAndParams.encode('utf-8')
 			
@@ -324,19 +322,24 @@ class SublimeSocketAPI:
 		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "broadcastMessage require 'message' param"
 		
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
-		
-		# header and footer
+		message = message.decode('utf-8')
+
+		# header and footer with delimiter
+		delim = ""
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_DELIMITER):
+			delim = params[SublimeSocketAPISettings.OUTPUT_DELIMITER]
+
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_HEADER):
-			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + message
+			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + delim + message
 
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_FOOTER):
-			message = message + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
+			message = message + delim + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
 		
 		# if sender specified, add "sender:" ahead of message.
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
 			message = params[SublimeSocketAPISettings.OUTPUT_SENDER] + ":" + message
 		
-		buf = self.encoder.text(str(message), mask=0)
+		buf = self.encoder.text(str(message.encode('utf-8')), mask=0)
 		
 		clients = self.server.clients.values()
 		for client in clients:
@@ -351,13 +354,19 @@ class SublimeSocketAPI:
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
 		
-		# header and footer
+		message = message.decode('utf-8')
+
+		# header and footer with delimiter
+		delim = ""
+		if params.has_key(SublimeSocketAPISettings.OUTPUT_DELIMITER):
+			delim = params[SublimeSocketAPISettings.OUTPUT_DELIMITER]
+
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_HEADER):
-			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + message
+			message = params[SublimeSocketAPISettings.OUTPUT_HEADER] + delim + message
 
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_FOOTER):
-			message = message + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
-		
+			message = message + delim + params[SublimeSocketAPISettings.OUTPUT_FOOTER]
+			
 
 		# if sender specified, add "sender:" ahead of message.
 		if params.has_key(SublimeSocketAPISettings.OUTPUT_SENDER):
@@ -377,7 +386,7 @@ class SublimeSocketAPI:
 	def showAtLog(self, params):
 		assert params.has_key(SublimeSocketAPISettings.LOG_MESSAGE), "showAtLog require 'message' param"
 		message = params[SublimeSocketAPISettings.LOG_MESSAGE]
-		print SublimeSocketAPISettings.LOG_prefix, message
+		print SublimeSocketAPISettings.LOG_prefix, message.encode('utf-8')
 
 	## is contains regions or not.
 	def containsRegions(self, params):
@@ -506,7 +515,8 @@ class SublimeSocketAPI:
 								
 								# replace all expression
 								if re.findall(r'groups\[(' + str(index) + ')\]', result):
-									result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+									froms = searched.groups()[index].decode('utf-8')
+									result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
 
 							return {key:result}
 						# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
