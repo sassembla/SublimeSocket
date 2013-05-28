@@ -116,9 +116,29 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@独自定義のイベントを定義、発行する/setReactor:
+{
+    "target": "05/27/13 21:15:42",
+    "event": "event_05/27/13 21:15:58",
+    "selectors": [
+        {
+            "monocastMessage": {
+                "message": "eventEmit over.",
+                "target": "sublimesocketpreference"
+            }
+        }
+    ]
+}
+->eventEmit:
+{
+    "target": "05/27/13 21:15:42",
+    "event": "event_05/27/13 21:15:58"
+}
+            </option>
+            <option>
 ss@デリミタをセットしたmonocastMessage,broadcastMessage/monocastMessage:
 {
-    "delimiter": "はにゃー",
+    "delimiter": "uno",
     "header": "THE HEADER for 1",
     "message": "replace",
     "footer": "THE FOOTER for 1",
@@ -126,7 +146,7 @@ ss@デリミタをセットしたmonocastMessage,broadcastMessage/monocastMessag
 }
 ->broadcastMessage:
 {
-    "delimiter": "ふがー",
+    "delimiter": "duo",
     "header": "THE HEADER for all",
     "message": "replace",
     "footer": "THE FOOTER for all"

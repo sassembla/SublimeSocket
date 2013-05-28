@@ -185,6 +185,10 @@ class SublimeSocketAPI:
 				self.readFileData(params, results)
 				break
 
+			if case(SublimeSocketAPISettings.API_EVENTEMIT):
+				self.eventEmit(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_SETWINDOWBASEPATH):
 				sublime.set_timeout(lambda: self.setWindowBasePath(), 0)
 				break
@@ -353,7 +357,7 @@ class SublimeSocketAPI:
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
 		
-		message = message.decode('utf-8')
+		# message = message.decode('utf-8')
 
 		# header and footer with delimiter
 		delim = ""
@@ -716,19 +720,29 @@ class SublimeSocketAPI:
 		
 
 	def readFileData(self, params, results):
-		assert params.has_key(SublimeSocketAPISettings.READFILEDATA_PATH), "readFileData requrire 'path' param."
+		assert params.has_key(SublimeSocketAPISettings.READFILEDATA_PATH), "readFileData require 'path' param."
 		
 		path = params[SublimeSocketAPISettings.READFILEDATA_PATH]
 
 		currentFile = open(path, 'r')
-		data = currentFile.read()
+		data = currentFile.read().decode('utf-8')
 		currentFile.close()
 
 		if not data:
 			results[SublimeSocketAPISettings.READFILEDATA_DATA] = ""
 		else:
 			results[SublimeSocketAPISettings.READFILEDATA_DATA] = data
-		
+
+
+	def eventEmit(self, params):
+		assert params.has_key(SublimeSocketAPISettings.EVENTEMIT_TARGET), "eventEmit require 'target' param."
+		assert params.has_key(SublimeSocketAPISettings.EVENTEMIT_EVENT), "eventEmit require 'event' param."
+
+		eventName = params[SublimeSocketAPISettings.EVENTEMIT_EVENT]
+		assert eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT), "eventEmit only emit 'user-defined' event such as starts with 'event_' keyword."
+
+		self.server.fireKVStoredItem(eventName, params)
+
 
 	def setWindowBasePath(self):
 		self.windowBasePath = sublime.active_window().active_view().file_name()

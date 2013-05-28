@@ -20,7 +20,7 @@ API_PARAM_CONCAT	= "|"
 API_PARAM_DELIM		= ","
 
 
-API_VERSION = "0.10.0"
+API_VERSION = "0.11.0"
 
 
 # SublimeSocket internal event definition
@@ -164,6 +164,9 @@ API_READFILEDATA	= "readFileData"
 READFILEDATA_PATH = "path"
 READFILEDATA_DATA = "data"
 
+API_EVENTEMIT			= "eventEmit"
+EVENTEMIT_TARGET	= "target"
+EVENTEMIT_EVENT		= "event"
 
 API_SETWINDOWBASEPATH = "setWindowBasePath"
 
