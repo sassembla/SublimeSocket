@@ -257,12 +257,43 @@ ss@When save, message show at log./setReactor:
             </option>
 
             <option>
-ss@Too low version specified, then show error on log./checkAPICompatibility:
+ss@バージョンの精査、apiVersion majorが一致、minorが低いのでクライアントのUpdateを勧められる+突破/versionVerify:
 {
-    "version": "0.0.1",
-    "strict": true
-}                
+    "socketVersion": 2,
+    "apiVersion": "1.-1.0"
+}
             </option>
+
+            <option>
+ss@バージョンの精査、apiVersion majorが一致、minorが一致、verifyの突破/versionVerify:
+{
+    "socketVersion": 2,
+    "apiVersion": "1.0.0"
+}
+            </option>
+            <option>
+ss@バージョンの精査、apiVersion majorが一致、minorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+{
+    "socketVersion": 2,
+    "apiVersion": "1.1.0"
+}
+            </option>
+
+            <option>
+ss@バージョンの精査、apiVersion majorが低いので、クライアント側へとupdateを求めるシグナル+切断/versionVerify:
+{
+    "socketVersion": 2,
+    "apiVersion": "0.0.0"
+}
+            </option>
+            <option>
+ss@バージョンの精査、apiVersion majorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+{
+    "socketVersion": 2,
+    "apiVersion": "2.0.0"
+}
+            </option>
+            
 
             <option>
 ss@Set foundation event. forget usage./setFoundationReactor:

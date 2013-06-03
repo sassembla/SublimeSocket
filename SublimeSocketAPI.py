@@ -202,8 +202,8 @@ class SublimeSocketAPI:
 				sublime.set_timeout(lambda: self.eraseAllRegion(), 0)
 				break
 
-			if case (SublimeSocketAPISettings.API_CHECKAPICOMPATIBILITY):
-				self.checkAPICompatibility(params, client)
+			if case (SublimeSocketAPISettings.API_VERSIONVERIFY):
+				self.versionVerify(params, client)
 				break
 			if case():
 				print "unknown command", command
@@ -747,59 +747,108 @@ class SublimeSocketAPI:
 	def setWindowBasePath(self):
 		self.windowBasePath = sublime.active_window().active_view().file_name()
 		
-
-	def  checkAPICompatibility(self, params, client):
-		assert client, "checkAPICompatibility require 'client' object."
-		assert params.has_key(SublimeSocketAPISettings.CHECKAPICOMP_VERSION), "checkAPICompatibility require 'version' param."
-		targetVersion = params[SublimeSocketAPISettings.CHECKAPICOMP_VERSION]
+	## verify SublimeSocket API-version and SublimeSocket version
+	def versionVerify(self, params, client):
+		assert client, "versionVerify require 'client' object."
+		assert params.has_key(SublimeSocketAPISettings.VERSIONVERIFY_SOCKETVERSION), "versionVerify require 'socketVersion' param."
+		assert params.has_key(SublimeSocketAPISettings.VERSIONVERIFY_APIVERSION), "versionVerify require 'apiVersion' param."
 		
-		strict = False
-		if params.has_key(SublimeSocketAPISettings.CHECKAPICOMP_STRICT):
-			strict = params[SublimeSocketAPISettings.CHECKAPICOMP_STRICT]
 
+		# targetted socket version
+		targetSocketVersion = int(params[SublimeSocketAPISettings.VERSIONVERIFY_SOCKETVERSION])
+
+		# targetted API version
+		targetVersion = params[SublimeSocketAPISettings.VERSIONVERIFY_APIVERSION]
+		
+
+		# current socket version
+		currentSocketVersion = SublimeSocketAPISettings.SOCKET_VERSION
+
+		# current API version
+		currentVersion			= SublimeSocketAPISettings.API_VERSION
+
+
+		# check socket version
+		if targetSocketVersion is not currentSocketVersion:
+			self.sendVerifiedResultMessage(0, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
+			return
+
+		# SublimeSocket version matched.
+
+		# check socket versipn
 		targetVersionArray = targetVersion.split(".")
 
 		targetMajor	= int(targetVersionArray[0])
 		targetMinor	= int(targetVersionArray[1])
-		targetPVer	= int(targetVersionArray[2])
+		# targetPVer	= int(targetVersionArray[2])
 
-		currentVersion			= SublimeSocketAPISettings.API_VERSION
+		
 		currentVersionArray = currentVersion.split(".")
 
 		currentMajor	= int(currentVersionArray[0])
 		currentMinor	= int(currentVersionArray[1])
-		currentPVer		= int(currentVersionArray[2])
+		# currentPVer		= int(currentVersionArray[2])
 
-		message = "API VERIFIED: required:"+str(targetVersion)+" actual:"+str(SublimeSocketAPISettings.API_VERSION)+" verified."
-
+		# major chedk
 		if targetMajor < currentMajor:
-			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please update Client. the server requires "+str(currentVersion)
-			buf = self.encoder.text(message, mask=0)
-			client.send(buf);
-			return
+			self.sendVerifiedResultMessage(-2, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
 
-		elif currentMajor < targetMajor:
-			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please update SublimeSocket. the client requires "+str(targetVersion)
-			buf = self.encoder.text(message, mask=0)
-			client.send(buf);
-			
-		
-		if targetMinor < currentMinor:
-			message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please check latest API."
-			buf = self.encoder.text(message, mask=0)
-			client.send(buf);
-			return
+		elif targetMajor == currentMajor:
+			if targetMinor < currentMinor:
+				self.sendVerifiedResultMessage(2, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
+			elif targetMinor == currentMinor:
+				self.sendVerifiedResultMessage(1, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
+			else:
+				self.sendVerifiedResultMessage(-1, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
+				
+		else:
+			self.sendVerifiedResultMessage(-1, targetSocketVersion, SublimeSocketAPISettings.SOCKET_VERSION, targetVersion, currentVersion, client)
 
-
-		if strict:
-			if targetVersion != currentVersion:
-				message = "API CAUTION:	The current SublimeSocket@SublmeText version = "+SublimeSocketAPISettings.API_VERSION+", please check latest API."
+	## send result to client then exit or continue WebSocket connection.
+	def sendVerifiedResultMessage(self, resultCode, targetSocketVersion, currentSocketVersion, targetAPIVersion, currentAPIVersion, client):
+		# python-switch
+		for case in PythonSwitch(resultCode):
+			if case(0):#接続不可、SocketVersionの不一致、別のSSを使うように通信
+				message = "REFUSED:	The current running SublimeSocket version = "+currentSocketVersion+", please choose the other version of SublimeSocket. this client requires SublimeSocket "+str(targetSocketVersion)+", see https://github.com/sassembla/SublimeSocket"
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
-				return
 
-		buf = self.encoder.text(message, mask=0)
-		client.send(buf);
+				client.close()
+				self.server.deleteClientId(client.clientId)
+			
+				break
+
+			if case(1):#接続、文句無し
+				message = "VERIFIED:	The current running SublimeSocket api version = "+currentAPIVersion+", SublimeSocket "+str(currentSocketVersion)
+				buf = self.encoder.text(message, mask=0)
+				client.send(buf)
+				break
+
+			if case(2):#接続、一応クライアントがちょっと古い
+				message = "VERIFIED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", please update this client if possible."
+				buf = self.encoder.text(message, mask=0)
+				client.send(buf);
+				break
+
+			if case(-1):#接続不可、SSのupdateが必要なのでgithubのアドレスを渡す
+				message = "REFUSED:	The current running SublimeSocket version = "+str(currentSocketVersion)+", please update SublimeSocket. this client requires SublimeSocket "+str(targetSocketVersion)+", see https://github.com/sassembla/SublimeSocket"
+				buf = self.encoder.text(message, mask=0)
+				client.send(buf);
+
+				client.close()
+				self.server.deleteClientId(client.clientId)
+				break
+
+			if case(-2):#接続不可、クライアントのupdateが必要なので、そのサインを出す
+				message = "REFUSED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", please update this client."
+				buf = self.encoder.text(message, mask=0)
+				client.send(buf);
+
+				client.close()
+				self.server.deleteClientId(client.clientId)
+				break
+		
+		print "ss:" + message
 
 
 	def checkIfViewExist_appendRegion_Else_notFound(self, view, viewInstance, line, message, condition):
