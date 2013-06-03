@@ -809,7 +809,7 @@ class SublimeSocketAPI:
 		# python-switch
 		for case in PythonSwitch(resultCode):
 			if case(0):#接続不可、SocketVersionの不一致、別のSSを使うように通信
-				message = "REFUSED:	The current running SublimeSocket version = "+currentSocketVersion+", please choose the other version of SublimeSocket. this client requires SublimeSocket "+str(targetSocketVersion)+", see https://github.com/sassembla/SublimeSocket"
+				message = "REFUSED/DIFFERENT_SUBLIMESOCKET:	The current running SublimeSocket version = "+str(currentSocketVersion)+", please choose the other version of SublimeSocket. this client requires SublimeSocket "+str(targetSocketVersion)+", see https://github.com/sassembla/SublimeSocket"
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 
@@ -825,13 +825,13 @@ class SublimeSocketAPI:
 				break
 
 			if case(2):#接続、一応クライアントがちょっと古い
-				message = "VERIFIED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", please update this client if possible."
+				message = "VERIFIED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", please update this client if possible."
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 				break
 
 			if case(-1):#接続不可、SSのupdateが必要なのでgithubのアドレスを渡す
-				message = "REFUSED:	The current running SublimeSocket version = "+str(currentSocketVersion)+", please update SublimeSocket. this client requires SublimeSocket "+str(targetSocketVersion)+", see https://github.com/sassembla/SublimeSocket"
+				message = "REFUSED/SUBLIMESOCKET_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this is out of date. please update SublimeSocket. this client requires SublimeSocket "+str(targetAPIVersion)+", see https://github.com/sassembla/SublimeSocket"
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 
@@ -840,7 +840,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(-2):#接続不可、クライアントのupdateが必要なので、そのサインを出す
-				message = "REFUSED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", please update this client."
+				message = "REFUSED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", required api version is too old. please update this client."
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 
@@ -848,7 +848,7 @@ class SublimeSocketAPI:
 				self.server.deleteClientId(client.clientId)
 				break
 		
-		print "ss:" + message
+		print "ss: " + message
 
 
 	def checkIfViewExist_appendRegion_Else_notFound(self, view, viewInstance, line, message, condition):
