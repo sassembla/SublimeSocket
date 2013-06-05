@@ -12,3 +12,5 @@ tool/chromeClients/ScalaClient/sc.log
 tool/chromeClients/TypeScriptClient/images/.gradle/*
 
 tool/chromeClients/mrubyClient/log.log
+
+*.meta
