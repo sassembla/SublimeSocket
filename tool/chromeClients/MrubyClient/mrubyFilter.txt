@@ -1,5 +1,5 @@
 // mruby Filter
-// ver 0.1.0
+// ver 0.2.0
 
 inputIdentity:
 {
@@ -19,19 +19,19 @@ inputIdentity:
                 "selectors": [
                     {
                         "showStatusMessage": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "showAtLog": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "appendRegion": {
-                            "line": "groups[2]",
-                            "message": "\"groups[3]\"",
-                            "view": "groups[1]",
+                            "line": "groups[1]",
+                            "message": "\"groups[2]\"",
+                            "view": "groups[0]",
                             "condition": "keyword"
                         }
                     }
@@ -44,19 +44,19 @@ inputIdentity:
                 "selectors": [
                     {
                         "showStatusMessage": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "showAtLog": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "appendRegion": {
-                            "line": "groups[2]",
-                            "message": "\"groups[3]\"",
-                            "view": "groups[1]",
+                            "line": "groups[1]",
+                            "message": "\"groups[2]\"",
+                            "view": "groups[0]",
                             "condition": "keyword"
                         }
                     }

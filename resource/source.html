@@ -116,6 +116,35 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@複数行のfilterに対応/defineFilter:
+{
+    "name": "06/07/13 19:10:53",
+    "patterns": [
+        {
+            "^something\nelse(.*)": {
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "groups[0] in filterSource[]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+->showAtLog:
+{
+    "message": "defined,"
+}
+->filtering:
+{
+    "name": "06/07/13 19:10:53",
+    "source": "something\nelse\nother",
+    "debug":true
+}
+            </option>
+            <option>
 ss@独自定義のイベントを定義、発行する/setReactor:
 {
     "target": "05/27/13 21:15:42",
@@ -544,7 +573,7 @@ ss@Fail sample pattern. - and > never be concat./filtering:
             </option>
 
             <option>
-ss@Define filter, run filter, then append region/defineFilter:
+ss@フィルタ定義、フィルタを2連続で流すが、eraseを含んでいるため最後の物だけが出る/defineFilter:
 {
     "name": "appendRegionFilter",
     "patterns": [
@@ -556,8 +585,8 @@ ss@Define filter, run filter, then append region/defineFilter:
                     },
                     {
                         "appendRegion": {
-                            "line": "groups[1]",
-                            "message": "message is groups[0]",
+                            "line": "groups[0]",
+                            "message": "message is filterSource[]",
                             "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
                             "condition": "keyword"
                         }
@@ -569,14 +598,15 @@ ss@Define filter, run filter, then append region/defineFilter:
 }
 ->filtering: 
 {
-    "name": "appendRegionFilter2",
+    "name": "appendRegionFilter",
     "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
     "debug": true
 }
 ->filtering: 
 {
-    "name": "appendRegionFilter3",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+    "name": "appendRegionFilter",
+    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
+    "debug": true
 }
             </option>
 
@@ -590,7 +620,7 @@ ss@Define filter "s", then show message on dialog after filtering run./defineFil
                 "selectors": [
                     {
                         "eval": [
-                            "sublime.message_dialog('groups[1]')"
+                            "sublime.message_dialog('groups[0], filterSource[]')"
                         ]
                     }
                 ]
@@ -674,7 +704,7 @@ ss@Define filter only./defineFilter:
                 "selectors": [
                     {
                         "eval": [
-                            "sublime.message_dialog('onlySetFilter groups[1]')"
+                            "sublime.message_dialog('onlySetFilter groups[0]')"
                         ]
                     }
                 ]
@@ -694,10 +724,10 @@ ss@Set filter for specific case, then show dialog by run case with filter/define
                 "selectors": [
                     {
                         "eval": [
-                            "sublime.message_dialog('singleParam groups[0]')",
-                            "sublime.message_dialog('singleParamgroups[1]')",
-                            "sublime.message_dialog('2param groups[1], groups[0]')",
-                            "sublime.message_dialog('multiparam groups[1], groups[0], groups[1], groups[0]')"
+                            "sublime.message_dialog('singleParam filterSource[]')",
+                            "sublime.message_dialog('singleParamgroups[0]')",
+                            "sublime.message_dialog('2param groups[0], filterSource[]')",
+                            "sublime.message_dialog('multiparam groups[0], filterSource[], groups[0], filterSource[]')"
                         ]
                     }
                 ]
@@ -722,7 +752,7 @@ ss@Define filter, then status message coming by running filter. /defineFilter:
                 "selectors": [
                     {
                         "showStatusMessage": {
-                            "message": "herecomes! groups[0]"
+                            "message": "herecomes! filterSource[]"
                         }
                     }
                 ]

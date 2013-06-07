@@ -452,29 +452,27 @@ class SublimeSocketAPI:
 			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
 			# print "pattern is ", pattern
 			(key, executablesDict) = pattern.items()[0]
-			src = """re.search(r"(""" + key + """)", """ + "\"" + filterSource + "\"" + """)"""
 			
 			debug = False
 			if type(params) == dict:
 				if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
 					debug = params[SublimeSocketAPISettings.FILTER_DEBUG]
 
-			if debug:
-				print "filtering regexp:", src
+			# if debug:
+			# 	print "filtering regexp:", key
+			# 	print "filterSource", filterSource
 
 			patternIndex = 0
-			
-			# try:
-			# regexp match
-			searched = eval(src)
-
+			searched = re.search(re.compile(r'%s' % key, re.M | re.S), filterSource)
 			
 			if searched:
 				if debug:
-					print "filtering filterSource", filterSource
+					print "matched."
+					print "filtering regexp:", key
+					print "filterSource", filterSource
 					print "filtering searched.group()",searched.group()
 					print "filtering searched.groups()",searched.groups()
-				
+					
 
 				executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
 				
@@ -502,8 +500,11 @@ class SublimeSocketAPI:
 								# replace all expression
 								if re.findall(r'groups\[(' + str(index) + ')\]', result):
 									result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+
+							result = re.sub(r'filterSource\[\]', filterSource, result)
 							return result
 							
+
 						# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
 						params = map(replaceGroupsInListKeyword, paramsSource)
 						
@@ -521,6 +522,7 @@ class SublimeSocketAPI:
 									froms = searched.groups()[index].decode('utf-8')
 									result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
 
+							result = re.sub(r'filterSource\[\]', filterSource, result)
 							return {key:result}
 						# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 						params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
@@ -825,7 +827,7 @@ class SublimeSocketAPI:
 				break
 
 			if case(2):#接続、一応クライアントがちょっと古い
-				message = "VERIFIED/CLIENT_UPDATE:	The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", please update this client if possible."
+				message = "VERIFIED/CLIENT_UPDATE: The current running SublimeSocket api version = "+currentAPIVersion+", this client requires api version = "+str(targetAPIVersion)+", please update this client if possible."
 				buf = self.encoder.text(message, mask=0)
 				client.send(buf);
 				break
@@ -852,6 +854,7 @@ class SublimeSocketAPI:
 
 
 	def checkIfViewExist_appendRegion_Else_notFound(self, view, viewInstance, line, message, condition):
+		# print "checkIfViewExist_appendRegion_Else_notFound", view, viewInstance, line, "message:", message, "	/c", condition
 		# this check should be run in main thread
 		if not viewInstance:
 			params = {}

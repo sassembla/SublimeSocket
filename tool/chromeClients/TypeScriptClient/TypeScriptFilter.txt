@@ -1,5 +1,5 @@
 // TypeScript Filter
-// ver 0.5.4
+// ver 0.6.0
 
 inputIdentity:
 {
@@ -18,19 +18,19 @@ inputIdentity:
                 "selectors": [
                     {
                         "showStatusMessage": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "showAtLog": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "appendRegion": {
-                            "line": "groups[2]",
-                            "message": "\"groups[3]\"",
-                            "view": "groups[1].ts",
+                            "line": "groups[1]",
+                            "message": "\"groups[2]\"",
+                            "view": "groups[0].ts",
                             "condition": "keyword"
                         }
                     }
@@ -42,19 +42,19 @@ inputIdentity:
                 "selectors": [
                     {
                         "showStatusMessage": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "showAtLog": {
-                            "message": "groups[0]"
+                            "message": "filterSource[]"
                         }
                     },
                     {
                         "appendRegion": {
-                            "line": "groups[2]",
-                            "message": "\"groups[3]\"",
-                            "view": "groups[1].ts",
+                            "line": "groups[1]",
+                            "message": "\"groups[2]\"",
+                            "view": "groups[0].ts",
                             "condition": "keyword"
                         }
                     }
