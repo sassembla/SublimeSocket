@@ -463,7 +463,7 @@ class SublimeSocketAPI:
 			# 	print "filterSource", filterSource
 
 			patternIndex = 0
-			searched = re.search(re.compile(r'%s' % key, re.M | re.S), filterSource)
+			searched = re.search(re.compile(r'%s' % key, re.M), filterSource)
 			
 			if searched:
 				if debug:
