@@ -43,7 +43,11 @@ class SublimeSocketAPI:
 			params = ''
 			if 1 < len(command_params):
 				try:
-					params = json.loads(command_params[1])
+					data = command_params[1].replace("\r\n", "\n")
+					data = data.replace("\r", "\n")
+					data = data.replace("\n", "\\n")
+
+					params = json.loads(data)
 				except Exception as e:
 					print "JSON parse error", e, "source = ", command_params[1]
 					return
@@ -271,6 +275,7 @@ class SublimeSocketAPI:
 				val = val.replace(" ", SublimeSocketAPISettings.RUNSHELL_REPLACE_SPACE);
 				val = val.replace("(", SublimeSocketAPISettings.RUNSHELL_REPLACE_RIGHTBRACE);
 				val = val.replace(")", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
+				val = val.replace("'", SublimeSocketAPISettings.RUNSHELL_REPLACE_LEFTBRACE);
 				val = val.replace("@s@s@", SublimeSocketAPISettings.RUNSHELL_REPLACE_At_s_At_s_At);
 
 				# check contains PREFIX or not
@@ -458,9 +463,8 @@ class SublimeSocketAPI:
 				if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
 					debug = params[SublimeSocketAPISettings.FILTER_DEBUG]
 
-			# if debug:
-			# 	print "filtering regexp:", key
-			# 	print "filterSource", filterSource
+			if debug:
+				print "filterSource", filterSource
 
 			patternIndex = 0
 			searched = re.search(re.compile(r'%s' % key, re.M), filterSource)
