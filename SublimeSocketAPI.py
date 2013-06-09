@@ -463,114 +463,117 @@ class SublimeSocketAPI:
 				print "filterSource", filterSource
 
 			patternIndex = 0
-			searched = re.search(re.compile(r'%s' % key, re.M), filterSource)
-			
-			if searched:
-				if debug:
-					print "matched."
-					print "filtering regexp:", key
-					print "filterSource", filterSource
-					print "filtering searched.group()",searched.group()
-					print "filtering searched.groups()",searched.groups()
-					
 
-				executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
-
-				if executablesDict.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
-					if executablesDict[SublimeSocketAPISettings.FILTER_DEBUG]:
-						print "matched defineFilter selectors:", executablesArray
-						
-						if executablesDict.has_key(SublimeSocketAPISettings.FILTER_COMMENT):
-							print "matched defineFilter comment:", executablesDict[SublimeSocketAPISettings.FILTER_COMMENT]
-
-				currentGroupSize = len(searched.groups())
+			for searched in re.finditer(re.compile(r'%s' % key, re.M), filterSource):
 				
-				# run
-				for executableDict in executablesArray:
-					
-					# execute
-					command = executableDict.keys()[0]
-					# print "command", command
-					
-					paramsSource = executableDict[command]
-
-					params = None
-					# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
-					if type(paramsSource) == list:
-						# before	eval:["sublime.message_dialog('groups[0]')"]
-						# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
-						
-						def replaceGroupsInListKeyword(param):
-							result = param
-							
-							for index in range(currentGroupSize):
-								# replace all expression
-								if re.findall(r'groups\[(' + str(index) + ')\]', result):
-									result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
-
-							result = re.sub(r'filterSource\[\]', filterSource, result)
-							return result
-							
-
-						# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
-						params = map(replaceGroupsInListKeyword, paramsSource)
-						
-					elif type(paramsSource) == dict:
-						# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
-						# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
-
-						def replaceGroupsInDictionaryKeyword(key):
-							result = paramsSource[key]
-							
-							for index in range(currentGroupSize):
-								
-								# replace all expression
-								if re.findall(r'groups\[(' + str(index) + ')\]', result):
-									froms = searched.groups()[index].decode('utf-8')
-									result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
-
-							result = re.sub(r'filterSource\[\]', filterSource, result)
-							return {key:result}
-						# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
-						params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
-
-						if not params_dicts:
-							pass
-						elif 1 == len(params_dicts):
-							params = params_dicts[0]
-						else:
-							def reduceLeft(before, next):
-								# append all key-value pair.
-								for key in next.keys():
-									before[key] = next[key]
-								return before
-							
-							params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
-						
-					else:
-						print "filtering warning:unknown type"
-					
+				if searched:
 					if debug:
-						print "filtering command:", command, "params:", params
+						print "matched."
+						print "filtering regexp:", key
+						print "filterSource", filterSource
+						print "filtering searched.group()",searched.group()
+						print "filtering searched.groups()",searched.groups()
+						
 
-					# execute
-					self.runAPI(command, params)
-					
-					# report
-					results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
-					
-				# increment filter-index for report
-				patternIndex = patternIndex + 1
-			else:
-				if debug:
-					print "filtering not match"
+					executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
 
-			# except Exception as e:
-			# 	print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
-			# 	while True:
-			# 		pass
+					if executablesDict.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
+						if executablesDict[SublimeSocketAPISettings.FILTER_DEBUG]:
+							print "matched defineFilter selectors:", executablesArray
+							print "matched group()", searched.group()
+							print "matched groups()", searched.groups()
+						
+							if executablesDict.has_key(SublimeSocketAPISettings.FILTER_COMMENT):
+								print "matched defineFilter comment:", executablesDict[SublimeSocketAPISettings.FILTER_COMMENT]
+
+					currentGroupSize = len(searched.groups())
 					
-			# 	return "filter error", str(e), "no:" + str(patternIndex)
+					# run
+					for executableDict in executablesArray:
+						
+						# execute
+						command = executableDict.keys()[0]
+						# print "command", command
+						
+						paramsSource = executableDict[command]
+
+						params = None
+						# replace the keyword "groups[x]" to regexp-result value of the 'groups[x]', if params are string-array
+						if type(paramsSource) == list:
+							# before	eval:["sublime.message_dialog('groups[0]')"]
+							# after		eval:["sublime.message_dialog('THE_VALUE_OF_searched.groups()[0]')"]
+							
+							def replaceGroupsInListKeyword(param):
+								result = param
+								
+								for index in range(currentGroupSize):
+									# replace all expression
+									if re.findall(r'groups\[(' + str(index) + ')\]', result):
+										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+
+								result = re.sub(r'filterSource\[\]', filterSource, result)
+								return result
+								
+
+							# replace "groups[x]" expression in the value of list to 'searched.groups()[x]' value
+							params = map(replaceGroupsInListKeyword, paramsSource)
+							
+						elif type(paramsSource) == dict:
+							# before {u'line': u'groups[1]', u'message': u'message is groups[0]'}
+							# after	 {u'line': u'THE_VALUE_OF_searched.groups()[1]', u'message': u'message is THE_VALUE_OF_searched.groups()[0]'}
+
+							def replaceGroupsInDictionaryKeyword(key):
+								result = paramsSource[key]
+								
+								for index in range(currentGroupSize):
+									
+									# replace all expression
+									if re.findall(r'groups\[(' + str(index) + ')\]', result):
+										froms = searched.groups()[index].decode('utf-8')
+										result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
+
+								result = re.sub(r'filterSource\[\]', filterSource, result)
+								return {key:result}
+							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
+							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
+
+							if not params_dicts:
+								pass
+							elif 1 == len(params_dicts):
+								params = params_dicts[0]
+							else:
+								def reduceLeft(before, next):
+									# append all key-value pair.
+									for key in next.keys():
+										before[key] = next[key]
+									return before
+								
+								params = reduce(reduceLeft, params_dicts[1:], params_dicts[0])
+							
+						else:
+							print "filtering warning:unknown type"
+						
+						if debug:
+							print "filtering command:", command, "params:", params
+
+						# execute
+						self.runAPI(command, params)
+						
+						# report
+						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
+						
+					# increment filter-index for report
+					patternIndex = patternIndex + 1
+				else:
+					if debug:
+						print "filtering not match"
+
+				# except Exception as e:
+				# 	print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
+				# 	while True:
+				# 		pass
+						
+				# 	return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal
 		ret = str("".join(results))

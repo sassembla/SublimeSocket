@@ -116,6 +116,31 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@同じフィルタにヒットする複数のログが吐き出された場合に複数回ヒットする/defineFilter:
+{
+    "name": "06/09/13 12:23:07",
+    "patterns": [
+        {
+            "^some": {
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "should be thing:groups[0] in filterSource[] twice!"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+->filtering:
+{
+    "name": "06/09/13 12:23:07",
+    "source": "something\nsomething",
+    "debug":true
+}
+            </option>
+            <option>
 ss@特定の文字列を含んだ要素をnotifyすると吹っ飛ぶ、不揃いな'だ。消そう。/notify:
 {
     "title": "title-is-here",
