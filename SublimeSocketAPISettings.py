@@ -20,7 +20,7 @@ API_PARAM_CONCAT	= "|"
 API_PARAM_DELIM		= ","
 
 
-API_VERSION = "1.1.0"
+API_VERSION = "1.1.1"
 SOCKET_VERSION = 2	# for Sublime Text 2
 
 # SublimeSocket internal event definition
@@ -107,6 +107,7 @@ API_FILTERING			= "filtering"
 FILTER_NAME				= "name"
 FILTER_SOURCE			= "source"
 FILTER_SELECTORS	= "selectors"
+FILTER_COMMENT		= "comment"
 FILTER_DEBUG			= "debug"
 
 API_CONTAINSREGIONS	= "containsRegions"

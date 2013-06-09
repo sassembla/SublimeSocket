@@ -451,11 +451,7 @@ class SublimeSocketAPI:
 		for pattern in filterPatternsArray:
 			# regx key filterSource
 			
-			# -----CompilerOutput:-stdout--exitcode: 1--compilationhadfailure: True--outfile: Temp/Assembly-CSharp.dll
-			# Compilation failed: 1 error(s), 0 warnings
-			# Assets/NewBehaviourScript.cs(6,12): error CS8025: Parsing error
-			# (Filename: Assets/NewBehaviourScript.cs Line: 6)
-			# print "pattern is ", pattern
+
 			(key, executablesDict) = pattern.items()[0]
 			
 			debug = False
@@ -479,7 +475,14 @@ class SublimeSocketAPI:
 					
 
 				executablesArray = executablesDict[SublimeSocketAPISettings.FILTER_SELECTORS]
-				
+
+				if executablesDict.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
+					if executablesDict[SublimeSocketAPISettings.FILTER_DEBUG]:
+						print "matched defineFilter selectors:", executablesArray
+						
+						if executablesDict.has_key(SublimeSocketAPISettings.FILTER_COMMENT):
+							print "matched defineFilter comment:", executablesDict[SublimeSocketAPISettings.FILTER_COMMENT]
+
 				currentGroupSize = len(searched.groups())
 				
 				# run
