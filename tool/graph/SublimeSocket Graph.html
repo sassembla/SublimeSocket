@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SublimeSocket Graph</title>
+    <meta charset="UTF-8" />
+    <link href="./css/graph.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="./js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="./js/jquery.flot.js"></script>
+    <script type="text/javascript">
+      var setter = {
+        set : function (input) {
+          //set params
+          document.getElementById('send').value = input;
+        }
+        
+      }
+
+      var count = 0;
+      var diagram = [];
+      
+      var _WS = {
+
+        //websoket port (will be replaced by SublimeSocket plugin)
+        uri: 'ws://127.0.0.1:8823/',
+        
+        ws: null,
+
+        init : function (e) {
+          _WS.s = new WebSocket(_WS.uri);
+          _WS.s.onopen = function (e) { _WS.onOpen(e); };
+          _WS.s.onclose = function (e) { _WS.onClose(e); };
+          _WS.s.onmessage = function (e) { _WS.onMessage(e); };
+          _WS.s.onerror = function (e) { _WS.onError(e); };
+        },
+
+        onOpen: function () {
+          //call api then get callback
+          _WS.s.send('sublimesocket@inputIdentity:{\"id\":\"sublimesocketgraph\"}');
+          _WS.s.send('sublimesocket@showAtLog:{\"message\":\"sublimesocketgraph connected\"}');
+
+        },
+
+        onClose: function () {
+          _WS.writeLog('<span class="label label-important">RESPONSE:DISCONNECTED</span>');
+        },
+
+        onMessage: function (e) {
+          //データを直接表示
+          diagram.push([count, e.data]);
+          $.plot("#placeholder", [ diagram ]);
+          count++;
+        },
+
+        onError: function (e) {
+          _WS.writeLog('<span style="color: red;">ERROR:</span> ' + e.data);
+        },
+
+        send: function (message) {
+          if (!message.length) {
+            alert('Empty message not allowed !');
+          } else {
+            _WS.writeLog('<span class="label label-info">SEND: ' + message + '</span>');
+            _WS.s.send(message);
+          }
+        },
+        close: function () {//no one call
+          _WS.writeLog('<span class="label">CLOSED</span>');
+          _WS.s.close();
+        }
+      };
+
+      window.addEventListener('load', _WS.init, false);
+    </script>
+
+
+  </head>
+                                                                                   
+  <body>
+    <div id="content">
+
+    <div class="graph-container">
+      <div id="placeholder" class="graph-placeholder"></div>
+    </div>
+    </div>
+  </body>
+</html>
