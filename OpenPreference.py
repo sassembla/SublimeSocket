@@ -58,8 +58,7 @@ class Openpreference(sublime_plugin.TextCommand):
     # run on the other thread
     thread = BuildThread(command)
     thread.start()
-
-
+    
 class BuildThread(threading.Thread):
   def __init__(self, command):
     self.command = command  

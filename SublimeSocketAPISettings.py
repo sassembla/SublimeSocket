@@ -20,7 +20,7 @@ API_PARAM_CONCAT	= "|"
 API_PARAM_DELIM		= ","
 
 
-API_VERSION = "1.1.2"
+API_VERSION = "1.1.3"
 SOCKET_VERSION = 2	# for Sublime Text 2
 
 # SublimeSocket internal event definition
@@ -170,6 +170,9 @@ READFILEDATA_DATA = "data"
 API_EVENTEMIT			= "eventEmit"
 EVENTEMIT_TARGET	= "target"
 EVENTEMIT_EVENT		= "event"
+
+API_OPENPAGE			= "openPage"
+OPENPAGE_IDENTITY = "identity"
 
 API_SETWINDOWBASEPATH = "setWindowBasePath"
 

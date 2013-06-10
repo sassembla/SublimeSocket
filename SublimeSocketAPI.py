@@ -193,6 +193,10 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_OPENPAGE):
+				sublime.set_timeout(lambda: self.openPage(params), 0)
+				break
+
 			if case(SublimeSocketAPISettings.API_SETWINDOWBASEPATH):
 				sublime.set_timeout(lambda: self.setWindowBasePath(), 0)
 				break
@@ -755,6 +759,47 @@ class SublimeSocketAPI:
 
 		self.server.fireKVStoredItem(eventName, params)
 
+
+	def openPage(self, params):
+		assert params.has_key(SublimeSocketAPISettings.OPENPAGE_IDENTITY), "openPage require 'identity' param."
+		identity = params[SublimeSocketAPISettings.OPENPAGE_IDENTITY]
+
+		host = sublime.load_settings("SublimeSocket.sublime-settings").get('host')
+		port = sublime.load_settings("SublimeSocket.sublime-settings").get('port')
+		writtenIdentity = identity
+
+		# create path of Preference.html
+		currentPackagePath = sublime.packages_path() + "/SublimeSocket/"
+		originalHtmlPath = "resource/html/openpageSource.html"
+		originalPath = currentPackagePath + originalHtmlPath
+
+		preferenceFilePath = "tmp/" + identity + ".html"
+		preferencePath = currentPackagePath + preferenceFilePath
+
+		# prepare html contents
+		htmlFile = open(originalPath, 'r')
+		html = htmlFile.read().decode('utf-8')
+		
+		htmlFile.close()
+		    
+		# replace host:port, identity
+		html = html.replace(SublimeWSSettings.SS_HOST_REPLACE, host)
+		html = html.replace(SublimeWSSettings.SS_PORT_REPLACE, str(port))
+		html = html.replace(SublimeWSSettings.SS_IDENTITY_REPLACE, writtenIdentity)
+
+		# generate preference
+		outputFile = open(preferencePath, 'w')
+		outputFile.write(html.encode('utf-8'))
+		outputFile.close()
+		
+		# set Target-App to open Preference.htnl
+		targetAppPath = sublime.load_settings("SublimeSocket.sublime-settings").get('preference browser')
+
+		shellParamDict = {"main":"/usr/bin/open", "-a":targetAppPath, "\"" + preferencePath + "\"":""
+		}
+
+		self.runShell(shellParamDict)
+		pass
 
 	def setWindowBasePath(self):
 		self.windowBasePath = sublime.active_window().active_view().file_name()
