@@ -1,13 +1,13 @@
 {\rtf1\ansi\ansicpg932\cocoartf1187\cocoasubrtf370
 {\fonttbl\f0\fnil\fcharset128 HiraKakuProN-W3;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 HelveticaNeue;
 }
-{\colortbl;\red255\green255\blue255;\red0\green20\blue69;\red230\green230\blue230;\red230\green230\blue230;
-\red139\green37\blue19;\red56\green120\blue55;\red38\green38\blue38;\red20\green66\blue90;\red9\green66\blue91;
+{\colortbl;\red255\green255\blue255;\red0\green20\blue69;\red230\green230\blue230;\red139\green37\blue19;
+\red56\green120\blue55;\red38\green38\blue38;\red230\green230\blue230;\red20\green66\blue90;\red9\green66\blue91;
 \red8\green66\blue92;\red8\green66\blue93;\red8\green66\blue94;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww23680\viewh13460\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f0\b\fs44 \cf0 SublimeSocket API Reference 1.0.1
+\f0\b\fs44 \cf0 SublimeSocket API Reference 1.1.3
 \b0\fs24 \
 
 \b \
@@ -139,11 +139,15 @@ API_PREFIX_SUB = "ss"\
 
 \b Comment
 \b0 \
-\cb4 API_COMMENT_DELIM	= "/"\
-\cb1 	@\'82\'c6API\'96\'bc\'82\'cc\'8a\'d4\'82\'c9\'8b\'4c\'8f\'71\'82\'b7\'82\'e9\'8e\'96\'82\'aa\'8f\'6f\'97\'88\'82\'dc\'82\'b7\'81\'42/\'82\'c5\'95\'c2\'82\'b6\'82\'dc\'82\'b7\'81\'42\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 API_COMMENT_DELIM	= "/"\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb1 	@\'82\'c6API\'96\'bc\'82\'cc\'8a\'d4\'82\'c9\'8b\'4c\'8f\'71\'82\'b7\'82\'e9\'8e\'96\'82\'aa\'8f\'6f\'97\'88\'82\'dc\'82\'b7\'81\'42/\'82\'c5\'95\'c2\'82\'b6\'82\'dc\'82\'b7\'81\'42\
 \
-\cb4 ss@\'83\'52\'83\'81\'83\'93\'83\'67/API->...\
-\cb1 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@\'83\'52\'83\'81\'83\'93\'83\'67/API->...\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb1 \
 \
 
 \b \'92\'6c\'93\'6e\'82\'b5
@@ -155,8 +159,10 @@ API_PREFIX_SUB = "ss"\
 	
 \b 1.0\'82\'c5\'82\'cd\'93\'c1\'92\'e8API\'82\'c9\'82\'b5\'82\'a9\'91\'ce\'89\'9e\'82\'b5\'82\'c4\'82\'a2\'82\'dc\'82\'b9\'82\'f1\'82\'aa\'81\'411.1\'82\'c5\'82\'cd\'91\'53API\'82\'c5\'91\'ce\'89\'9e\'82\'b7\'82\'e9\'97\'5c\'92\'e8\'82\'c5\'82\'b7\'81\'42
 \b0 \
-\cb4 ss@commandA:\{"key1":"value"\}->(key1|key2)commandB:\{"key2":"will be replaced."\}\
-\cb1 	commandA \'82\'cc key1 \'82\'c9\'93\'fc\'82\'c1\'82\'bd\'92\'6c\'82\'f0\'81\'41commandB \'82\'cc key2 \'82\'d6\'82\'c6\'93\'fc\'97\'cd\'82\'b5\'82\'c4\'8e\'c0\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@commandA:\{"key1":"value"\}->(key1|key2)commandB:\{"key2":"will be replaced."\}\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb1 	commandA \'82\'cc key1 \'82\'c9\'93\'fc\'82\'c1\'82\'bd\'92\'6c\'82\'f0\'81\'41commandB \'82\'cc key2 \'82\'d6\'82\'c6\'93\'fc\'97\'cd\'82\'b5\'82\'c4\'8e\'c0\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -169,16 +175,17 @@ API_PREFIX_SUB = "ss"\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \cb1 \
 	\'90\'46\'81\'58\'82\'c8API\'82\'f0\'81\'41SublimeSocket Test Console \'82\'c5\'8e\'8e\'82\'b7\'8e\'96\'82\'aa\'8f\'6f\'97\'88\'82\'dc\'82\'b7\'81\'42\
-	CommandPalette -> "SublimeSocket: on > open preference" \'82\'c5\'81\'41SublimeText\'82\'a9\'82\'e7Safari\'82\'aa\'8b\'4e\'93\'ae\'82\'b5\'82\'dc\'82\'b7\'81\'42\
+	CommandPalette -> "SublimeSocket: on > open preference" \'82\'c5\'81\'41SublimeText\'82\'a9\'82\'e7Safari\'82\'c8\'82\'c7\'83\'75\'83\'89\'83\'45\'83\'55\'82\'aa\'8b\'4e\'93\'ae\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f1 \cf0 {{\NeXTGraphic スクリーンショット 2013-04-04 22.14.03.png \width21760 \height12780
-}�}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-
-\f0 \cf0 \
+\f1 \cf0 {{\NeXTGraphic スクリーンショット 2013-06-10 18.55.42.png \width21080 \height12960
+}�}
+\f0 \
+	
+\f1 i
+\f0 nput \'82\'c9\'91\'ce\'82\'b5\'82\'c4\cb3 ss@showAtLog:\{"message":"Hello World"\}\cb1 \'82\'f0\'93\'fc\'97\'cd\'82\'b5\'82\'bd\'8f\'f3\'91\'d4\'82\'c5Input\'83\'7b\'83\'5e\'83\'93\'82\'f0\'89\'9f\'82\'b7\'82\'c6\'81\'41SublimeText\'93\'e0\'82\'cc\'83\'52\'83\'93\'83\'5c\'81\'5b\'83\'8b\'82\'c9 ss:Hello World \'82\'c6\'95\'5c\'8e\'a6\'82\'b3\'82\'ea\'82\'c4\'82\'a2\'82\'e9\'82\'cd\'82\'b8\'82\'c5\'82\'b7\'81\'42\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 	\cb3 ss@showAtLog:\{"message":"Hello World"\}\cb1 \'82\'f0\'93\'fc\'97\'cd\'82\'b5\'82\'bd\'82\'b1\'82\'cc\'8f\'f3\'91\'d4\'82\'c5Input\'82\'f0\'89\'9f\'82\'b7\'82\'c6\'81\'41SublimeText\'93\'e0\'82\'cc\'83\'52\'83\'93\'83\'5c\'81\'5b\'83\'8b\'82\'c9 ss:Hello World \'82\'c6\'95\'5c\'8e\'a6\'82\'b3\'82\'ea\'82\'c4\'82\'a2\'82\'e9\'82\'cd\'82\'b8\'82\'c5\'82\'b7\'81\'42\
-\
+\cf0 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 \cf0 	
 \f1 {{\NeXTGraphic c.png \width9780 \height1780
@@ -190,7 +197,7 @@ API_PREFIX_SUB = "ss"\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b\fs48 \cf1 \cb5 \
+\b\fs48 \cf1 \cb4 \
 API Reference\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -819,7 +826,8 @@ API Reference\
 	\
 	e.g. \'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'aa\'95\'cf\'8d\'58\'82\'b3\'82\'ea\'82\'bd\'8d\'db\'81\'41\'8c\'bb\'8d\'dd\'82\'cc\'83\'72\'83\'85\'81\'5b\'82\'cc\'83\'6f\'83\'62\'83\'74\'83\'40\'82\'f0 ss_f_runWithBuffer \'83\'43\'83\'78\'83\'93\'83\'67\'82\'ccReactor\'82\'d6\'82\'c6\'91\'97\'95\'74\'82\'b5\'82\'dc\'82\'b7\'81\'42 \
 		ss_f_runWithBuffer \'83\'43\'83\'78\'83\'93\'83\'67\'82\'ccReactor\'82\'aa\'83\'5a\'83\'62\'83\'67\'82\'b3\'82\'ea\'82\'c4\'82\'a2\'82\'c8\'82\'af\'82\'ea\'82\'ce\'89\'bd\'82\'e0\'94\'ad\'90\'b6\'82\'b5\'82\'dc\'82\'b9\'82\'f1\'81\'42\
-\cb4 ss@setReactor:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@setReactor:\
 \{\
     "target": "sublimesocketpreference",\
     "event": "on_selection_modified",\
@@ -835,7 +843,8 @@ API Reference\
     \},\
     "interval": 100\
 \}\
-\cb1 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb1 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -905,13 +914,13 @@ API Reference\
 	\
 	e.g. readme.txt\'82\'c6\'82\'a2\'82\'a4\'83\'74\'83\'40\'83\'43\'83\'8b\'82\'f0\'8c\'9f\'8d\'f5\'82\'b5\'81\'41\'82\'bb\'82\'cc\'83\'74\'83\'40\'83\'43\'83\'8b\'82\'aa\'82\'a0\'82\'e9\'83\'74\'83\'48\'83\'8b\'83\'5f\'88\'c8\'89\'ba\'82\'cc\'82\'b7\'82\'d7\'82\'c4\'82\'cc\'83\'74\'83\'40\'83\'43\'83\'8b\'82\'cc\'90\'e2\'91\'ce\'83\'70\'83\'58\'82\'f0,\'82\'c5\'98\'41\'8c\'8b\'82\'b5\'82\'bd\'95\'b6\'8e\'9a\'97\'f1\'82\'f0paths\'82\'c9\'8a\'69\'94\'5b\'81\'41\
 		monocastMessage\'82\'c5\'83\'4e\'83\'89\'83\'43\'83\'41\'83\'93\'83\'67\'82\'d6\'82\'c6\'91\'97\'95\'74\'82\'b5\'82\'dc\'82\'b7\'81\'42\
-\cb4 ss@getAllFilePath:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@getAllFilePath:\
 \{\
     "header": "header:",\
     "anchor": "readme.txt",\
     "footer": "footer",\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \cb3     "paths": "will be entered"\cb4 \
+    "paths": "will be entered"\
 \}\
 ->(paths|message)monocastMessage:\
 \{\
@@ -920,15 +929,16 @@ API Reference\
 \}\
 \pard\pardeftab720\sa200
 
-\f2\b \cf1 \cb6 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: header:/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tmp/preference.html,/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tmp/readme.txtfooter
-\b0\fs28 \cf7 \cb1 \shad0 \
+\f2\b \cf1 \cb5 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: header:/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tmp/preference.html,/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/tmp/readme.txtfooter
+\b0\fs28 \cf6 \cb1 \shad0 \
 
 \f0\fs24 \cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \
-	
+
+\b 	
 \fs40 readFileData
-\fs24 \
+\b0\fs24 \
 		\'93\'c1\'92\'e8path\'82\'cc\'83\'74\'83\'40\'83\'43\'83\'8b\'82\'cc\'83\'66\'81\'5b\'83\'5e\'82\'f0\'93\'c7\'82\'dd\'8d\'9e\'82\'dd\'82\'dc\'82\'b7\'81\'42\
 \
 	path[string]\
@@ -941,11 +951,11 @@ API Reference\
 \f1 Python
 \f0 Switch.py \'82\'c6\'82\'a2\'82\'a4\'83\'66\'81\'5b\'83\'5e\'82\'f0\'93\'c7\'82\'dd\'8f\'6f\'82\'b5\'81\'41\
 		monocastMessage\'82\'c5\'83\'4e\'83\'89\'83\'43\'83\'41\'83\'93\'83\'67\'82\'d6\'82\'c6\'91\'97\'95\'74\'82\'b5\'82\'dc\'82\'b7\'81\'42\
-\cb4 ss@readFileData:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@readFileData:\
 \{\
     "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/PythonSwitch.py",\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \cb3     "data": "will be entered"\cb4 \
+    "data": "will be entered"\
 \}\
 ->(data|message)monocastMessage:\
 \{\
@@ -954,14 +964,15 @@ API Reference\
 \}\
 \pard\pardeftab720\sa200
 
-\f2\b \cf1 \cb6 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: class PythonSwitch(object): def __init__(self, value): self.value = value self.fall = False def __iter__(self): """Return the match method once, then stop""" yield self.match raise StopIteration def match(self, *args): """Indicate whether or not to enter a case suite""" if self.fall or not args: return True elif self.value in args: # changed for v1.5, see below self.fall = True return True else: return False
-\b0\fs28 \cf7 \cb1 \shad0 \
+\f2\b \cf1 \cb5 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: class PythonSwitch(object): def __init__(self, value): self.value = value self.fall = False def __iter__(self): """Return the match method once, then stop""" yield self.match raise StopIteration def match(self, *args): """Indicate whether or not to enter a case suite""" if self.fall or not args: return True elif self.value in args: # changed for v1.5, see below self.fall = True return True else: return False
+\b0\fs28 \cf6 \cb1 \shad0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\fs24 \cf0 \
-	
+
+\b 	
 \fs40 eventEmit
-\fs24 \
+\b0\fs24 \
 		\'93\'c6\'8e\'a9\'92\'e8\'8b\'60\'82\'cc\'83\'43\'83\'78\'83\'93\'83\'67\'82\'f0\'92\'e8\'8b\'60\'81\'41\'94\'ad\'8d\'73\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 		\'82\'b1\'82\'ccAPI\'82\'c5\'92\'85\'89\'ce\'82\'c5\'82\'ab\'82\'e9\'83\'43\'83\'78\'83\'93\'83\'67\'82\'cd\'81\'41\'83\'86\'81\'5b\'83\'55\'81\'5b\'92\'e8\'8b\'60\'83\'43\'83\'78\'83\'93\'83\'67\'82\'c9\'8c\'c0\'82\'e7\'82\'ea\'82\'dc\'82\'b7\'81\'42\
 \
@@ -972,7 +983,8 @@ API Reference\
 		\'94\'ad\'8d\'73\'82\'b7\'82\'e9Event\'96\'bc\'82\'c5\'82\'b7\'81\'42 \
 \
 	e,g, MyTarget \'82\'cc event_MyEvent\'82\'c6\'82\'a2\'82\'a4\'83\'43\'83\'78\'83\'93\'83\'67\'82\'c9\'91\'ce\'82\'b7\'82\'e9reactor\'82\'f0\'83\'5a\'83\'62\'83\'67\'82\'b5\'81\'41eventEmit\'82\'c5\'82\'bb\'82\'cc\'83\'43\'83\'78\'83\'93\'83\'67\'82\'f0\'92\'85\'89\'ce\'82\'b5\'82\'dc\'82\'b7\'81\'42\
-\cb4 ss@setReactor:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \cb3 ss@setReactor:\
 \{\
     "target": "
 \f1 MyTar
@@ -996,14 +1008,35 @@ API Reference\
 \}\
 \pard\pardeftab720\sa200
 
-\f2\b \cf1 \cb6 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: eventEmit over.
+\f2\b \cf1 \cb5 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: eventEmit over.
 \f0\b0 \cf0 \cb1 \shad0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \
-\
 	
+\b\fs40 openPage
+\b0\fs24 \
+		SublimeText\'82\'c6\'90\'da\'91\'b1\'82\'b3\'82\'ea\'82\'bd\'8f\'f3\'91\'d4\'82\'ccHTML\'82\'f0\'83\'75\'83\'89\'83\'45\'83\'55\'82\'c5\'8a\'4a\'82\'ab\'82\'dc\'82\'b7\'81\'42\
+		HTML\'82\'cd\'83\'76\'83\'89\'83\'4f\'83\'43\'83\'93\'93\'e0\'82\'cc tmp \'83\'74\'83\'48\'83\'8b\'83\'5f\'82\'c9\'81\'41identity.html\'82\'c6\'82\'b5\'82\'c4\'8f\'6f\'97\'cd\'82\'b3\'82\'ea\'82\'dc\'82\'b7\'81\'42\
+\
+		\'93\'57\'8a\'4a\'82\'b3\'82\'ea\'82\'bd\'83\'79\'81\'5b\'83\'57\'82\'cd\'81\'41SublimeSocket\'8c\'6f\'97\'52\'82\'ccmessage\'82\'f0\'83\'8d\'83\'4f\'82\'c6\'82\'b5\'82\'c4HTML\'82\'c9\'95\'5c\'8e\'a6\'82\'b5\'82\'dc\'82\'b7\'81\'42\
+\
+		Preference\'83\'79\'81\'5b\'83\'57\'82\'cc\
+\
+	identity[string]\
+		\'93\'57\'8a\'4a\'82\'b3\'82\'ea\'82\'e9\'83\'79\'81\'5b\'83\'57\'82\'ccWebSocket\'82\'c6\'82\'b5\'82\'c4\'82\'ccidentity\'8e\'77\'92\'e8\'82\'c5\'82\'b7\'81\'42\
+		\
+	e.g. 06_10_13_14_32_\cb1 08 \'82\'c6\'82\'a2\'82\'a4identi\cb1 ty\'82\'f0\'8e\'9d\'82\'c1\'82\'bd\'83\'79\'81\'5b\'83\'57\'82\'f0\'83\'75\'83\'89\'83\'45\'83\'55\'82\'c5\'8a\'4a\'82\'ab\'82\'dc\'82\'b7\'81\'42\
+		\'93\'57\'8a\'4a\'82\'b3\'82\'ea\'82\'bd\'83\'79\'81\'5b\'83\'57\'82\'d6\'82\'cd\'81\'41monocastMessage, broadcastMessage\'82\'c5\'83\'81\'83\'62\'83\'5a\'81\'5b\'83\'57\'82\'f0\'93\'cd\'82\'af\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'82\'c5\'82\'ab\'81\'41HTML\'8f\'e3\'82\'c9\'95\'5c\'8e\'a6\'82\'b3\'82\'ea\'82\'dc\'82\'b7\'81\'42\
+\cb7 ss@openPage:\
+\{\
+	"identity": "06_10_13_14_32_08"\
+\}\
+\cb1 \
+\
+
+\b 	
 \fs40 setWindowBasePath
-\fs24 \
+\b0\fs24 \
 		SublimeText\'82\'c5\'8c\'bb\'8d\'dd\'8a\'4a\'82\'a2\'82\'c4\'82\'a2\'82\'e9\'83\'74\'83\'40\'83\'43\'83\'8b\'82\'cc\'88\'ca\'92\'75\'82\'f0\'81\'41SS\'82\'cc\'83\'74\'83\'48\'83\'8b\'83\'5f\'8c\'9f\'8d\'f5\'82\'cc\'8a\'ee\'8f\'80\'88\'ca\'92\'75\'82\'c6\'82\'b5\'82\'c4\'83\'5a\'83\'62\'83\'67\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 		ST2\'82\'c6ST3\'82\'c5\'8b\'93\'93\'ae\'82\'aa\'88\'d9\'82\'c8\'82\'e9(ST2\'82\'be\'82\'c6\'94\'f1\'93\'af\'8a\'fa\'81\'41ST3\'82\'be\'82\'c6\'93\'af\'8a\'fa)\
 \
@@ -1085,8 +1118,9 @@ Event Reference\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \cb1 	SublimeSocket\'82\'a9\'82\'e7\'94\'ad\'90\'b6\'82\'b7\'82\'e9Event\'82\'cd\'89\'ba\'8b\'4c\'82\'c9\'82\'c8\'82\'e8\'82\'dc\'82\'b7\'81\'42\
 		\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b\fs60 	foundation series
+\b\fs60 \cf0 	foundation series
 \b0\fs24 \
 		emitEvent\'82\'c8\'82\'c7\'82\'c5Client\'82\'a9\'82\'e7\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'cd\'95\'73\'89\'c2\'94\'5c\'82\'c5\'82\'b7\'81\'42\
 		setReactor\'82\'c9\'91\'ce\'82\'b5\'82\'c4\'90\'dd\'92\'e8\'82\'b5\'82\'c4\'82\'ad\'82\'be\'82\'b3\'82\'a2\'81\'42\
@@ -1136,7 +1170,7 @@ Event Reference\
 	e.g.  \'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'aa\'95\'cf\'8d\'58\'82\'b3\'82\'ea\'82\'e9\'82\'c6\'81\'41\'82\'bb\'82\'cc\'83\'72\'83\'85\'81\'5b\'82\'cc\'83\'6f\'83\'62\'83\'74\'83\'40\'82\'cc\'8f\'ee\'95\'f1\'82\'f0body\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'c9\'8a\'69\'94\'5b\'82\'b5\'81\'41monocastMessage\'82\'c5\'83\'4e\'83\'89\'83\'43\'83\'41\'83\'93\'83\'67\'82\'d6\'82\'c6\'91\'97\'95\'74\'82\'b5\'82\'dc\'82\'b7\'81\'42\
 		\'83\'54\'83\'93\'83\'76\'83\'8b\'82\'c6\'82\'b5\'82\'c4\'81\'41\'83\'74\'83\'40\'83\'43\'83\'8b Default.sublime-commands \'82\'f0\'8a\'4a\'82\'a2\'82\'bd\'8f\'f3\'91\'d4\'82\'c5\'91\'49\'91\'f0\'94\'cd\'88\'cd\'82\'f0\'95\'cf\'8d\'58\'82\'b5\'82\'bd\'8d\'db\'82\'ccRESPONSE\'82\'f0\'8d\'da\'82\'b9\'82\'c4\'82\'a8\'82\'ab\'82\'dc\'82\'b5\'82\'bd\'81\'42\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \cb4 ss@setReactor:\
+\cf0 \cb3 ss@setReactor:\
 \{\
     "target": "sublimesocketpreference",\
     "event": "ss_f_runWithBuffer",\
@@ -1170,16 +1204,17 @@ Event Reference\
 \}\
 \pard\pardeftab720\sa200
 
-\f2\b \cf1 \cb6 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: [ \{ "caption": "SublimeSocket: on", "command": "socketon" \}, \{ "caption": "SublimeSocket: on > open preference", "command": "on_then_openpref" \}, \{ "caption": "SublimeSocket: open preference", "command": "openpreference" \}, \{ "caption": "SublimeSocket: status", "command": "statuscheck" \}, \{ "caption": "SublimeSocket: off", "command": "socketoff" \} ]
-\b0\fs28 \cf7 \cb1 \shad0 \
+\f2\b \cf1 \cb5 \shad\shadx0\shady20\shadr0\shado0 \shadc0 RESPONSE: [ \{ "caption": "SublimeSocket: on", "command": "socketon" \}, \{ "caption": "SublimeSocket: on > open preference", "command": "on_then_openpref" \}, \{ "caption": "SublimeSocket: open preference", "command": "openpreference" \}, \{ "caption": "SublimeSocket: status", "command": "statuscheck" \}, \{ "caption": "SublimeSocket: off", "command": "socketoff" \} ]
+\b0\fs28 \cf6 \cb1 \shad0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\fs24 \cf0 \
 \
 \
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b\fs60 	user-defined series
+\b\fs60 \cf0 	user-defined series
 \b0\fs24 \
 		\'81\'68event_\'81\'68\'8b\'e5\'82\'a9\'82\'e7\'8e\'6e\'82\'dc\'82\'e9\'83\'86\'81\'5b\'83\'55\'81\'5b\'93\'c6\'8e\'a9\'92\'e8\'8b\'60\'82\'cc\'83\'43\'83\'78\'83\'93\'83\'67\'82\'f0\'81\'41emit \'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'aa\'82\'a0\'82\'e9API\'8c\'6f\'97\'52\'82\'a9\'81\'41emitEvent \'82\'c5\'94\'ad\'8d\'73\'82\'b7\'82\'e9\'82\'b1\'82\'c6\'82\'aa\'89\'c2\'94\'5c\'82\'c5\'82\'b7\'81\'42\
 		\'82\'b7\'82\'d7\'82\'c4\'82\'ccEvent\'82\'cd\'81\'41emit\'8c\'b3\'82\'aa\'8e\'9d\'82\'c2\'83\'70\'83\'89\'83\'81\'81\'5b\'83\'5e\'82\'f0\'8e\'9d\'82\'bf\'82\'dc\'82\'b7\'81\'42\
