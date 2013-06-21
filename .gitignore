@@ -14,3 +14,5 @@ tool/chromeClients/TypeScriptClient/images/.gradle/*
 tool/chromeClients/mrubyClient/log.log
 
 *.meta
+
+tmp/new.html
