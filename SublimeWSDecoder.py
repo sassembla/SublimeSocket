@@ -37,6 +37,7 @@ class SublimeWSDecoder:
 		b = client.read(1)
 		if not len(b):
 			raise ValueError(1011, 'Reading first byte failed.')
+			return (None, None)
 		b1 = ord(b)
 		fin = b1 >> 7 & 1
 		rsv1 = b1 >> 6 & 1
