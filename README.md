@@ -1,5 +1,5 @@
 # SublimeSocket
-##### version 1.1.3
+##### version 1.2.2
 **API Server** for the SublimeText.   
 Control SublimeTextAPI via WebSocket protocol.  
 ![alt roundabout](https://dl.dropbox.com/u/36583594/2013%3A04%3A05%201-17-34/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202013-04-05%2013.27.48.png)  
@@ -56,5 +56,8 @@ SublimeSocket can show "error" regions through the filtered-data from WebSocket.
 
 
 #ToDo
-* ST3 adopt
-* Windows support(near future)
+* Completion support
+
+#Done
+* (Done)ST3 adopt -> go to [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
+* (Done)Windows support -> go to [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
