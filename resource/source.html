@@ -111,14 +111,7 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
-ss@monocastMessage:
-{
-    "target": "06_10_13_14_32_08",
-    "message": "hereComes"
-}
-            </option>
-            <option>
-ss@特定のIdentityでページを開いて、適当に記入。連続でMessageを送るのは無理っぽい。/openPage:
+ss@特定のIdentityでページを開く/openPage:
 {
     "identity": "06_10_13_14_32_08"
 }
@@ -168,6 +161,10 @@ ss@同じフィルタにヒットする複数のログが吐き出された場�
     "name": "06/09/13 12:23:07",
     "source": "something\nsomething",
     "debug":true
+}
+->assertTrue:
+{
+    
 }
             </option>
             <option>
@@ -297,7 +294,7 @@ ss@ヘッダー、フッター付きmonocastMessage、broadcastMessage/monocastM
             <option>
 ss@特定のファイルのデータを読んで、monocastに載せる/readFileData:
 {
-    "path": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/PythonSwitch.py"
+    "path": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/PythonSwitch.py"
 }
 ->(data|message)monocastMessage:
 {
@@ -307,7 +304,7 @@ ss@特定のファイルのデータを読んで、monocastに載せる/readFile
 }
             </option>
             <option>
-ss@現在のWindowのファイルリストを送る。が、ST2だとスレッドの関係で直前になってしまう。/setWindowBasePath:{}
+ss@現在のWindowのファイルリストを送る。が、ST2だとスレッドの関係で直前のものになってしまう。/setWindowBasePath:{}
 ->getAllFilePath:
 {
     "header": "header:",
@@ -331,10 +328,9 @@ ss@Send Japanese/monocastMessage:
             <option>
 ss@(deprecated)Send multibyte message./runSetting:
 {
-     "path": "//Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/FilterSettingSamples/MultiLanguageFilter.txt"
+     "path": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/FilterSettingSamples/MultiLanguageFilter.txt"
 }
             </option>
-
             <option>
 ss@When selection changed, runWithBuffer will raise./setReactor:
 {
@@ -386,7 +382,47 @@ ss@When save, message show at log./setReactor:
             </option>
 
             <option>
-ss@バージョンの精査、apiVersion majorが一致、minorが低いのでクライアントのUpdateを勧められる+突破/versionVerify:
+ss@3 バージョンの精査、apiVersion majorが一致、minorが低いのでクライアントのUpdateを勧められる+突破/versionVerify:
+{
+    "socketVersion": 3,
+    "apiVersion": "1.-1.0"
+}
+            </option>
+
+            <option>
+ss@3 バージョンの精査、apiVersion majorが一致、minorが一致、verifyの突破/versionVerify:
+{
+    "socketVersion": 3,
+    "apiVersion": "1.0.0"
+}
+            </option>
+            <option>
+ss@3 バージョンの精査、apiVersion majorが一致、minorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+{
+    "socketVersion": 3,
+    "apiVersion": "1.1.0"
+}
+            </option>
+
+            <option>
+ss@3 バージョンの精査、apiVersion majorが低いので、クライアント側へとupdateを求めるシグナル+切断/versionVerify:
+{
+    "socketVersion": 3,
+    "apiVersion": "0.0.0"
+}
+            </option>
+            <option>
+ss@3 バージョンの精査、apiVersion majorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+{
+    "socketVersion": 3,
+    "apiVersion": "2.0.0"
+}
+            </option>
+            
+
+
+            <option>
+ss@2 バージョンの精査、apiVersion majorが一致、minorが低いのでクライアントのUpdateを勧められる+突破/versionVerify:
 {
     "socketVersion": 2,
     "apiVersion": "1.-1.0"
@@ -394,14 +430,14 @@ ss@バージョンの精査、apiVersion majorが一致、minorが低いので�
             </option>
 
             <option>
-ss@バージョンの精査、apiVersion majorが一致、minorが一致、verifyの突破/versionVerify:
+ss@2 バージョンの精査、apiVersion majorが一致、minorが一致、verifyの突破/versionVerify:
 {
     "socketVersion": 2,
     "apiVersion": "1.0.0"
 }
             </option>
             <option>
-ss@バージョンの精査、apiVersion majorが一致、minorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+ss@2 バージョンの精査、apiVersion majorが一致、minorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
 {
     "socketVersion": 2,
     "apiVersion": "1.1.0"
@@ -409,21 +445,21 @@ ss@バージョンの精査、apiVersion majorが一致、minorが高いので�
             </option>
 
             <option>
-ss@バージョンの精査、apiVersion majorが低いので、クライアント側へとupdateを求めるシグナル+切断/versionVerify:
+ss@2 バージョンの精査、apiVersion majorが低いので、クライアント側へとupdateを求めるシグナル+切断/versionVerify:
 {
     "socketVersion": 2,
     "apiVersion": "0.0.0"
 }
             </option>
             <option>
-ss@バージョンの精査、apiVersion majorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
+ss@2 バージョンの精査、apiVersion majorが高いので、SSをupdateするアドレスを渡して切断/versionVerify:
 {
     "socketVersion": 2,
     "apiVersion": "2.0.0"
 }
             </option>
             <option>
-ss@バージョンの精査、socketVersionが合わないので、SSをupdateするアドレスを渡して切断/versionVerify:
+ss@2 バージョンの精査、socketVersionが合わないので、SSをupdateするアドレスを渡して切断/versionVerify:
 {
     "socketVersion": 1,
     "apiVersion": "1.0.0"
@@ -431,7 +467,7 @@ ss@バージョンの精査、socketVersionが合わないので、SSをupdate�
             </option>
 
             <option>
-ss@Set foundation event. forget usage./setFoundationReactor:
+ss@2 Set foundation event. forget usage./setFoundationReactor:
 {
     "event": "ss_f_noViewFound",
     "selectors": [
@@ -504,7 +540,7 @@ ss@eraseAllRegion: {}
             <option>
 ss@Add region then erase./appendRegion:
 {
-    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "view": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 10,
     "message": "herecomes daredevil",
@@ -513,7 +549,7 @@ ss@Add region then erase./appendRegion:
 ->eraseAllRegion: {}
             </option>
             <option>
-ss@Add region on line 10, show message when select the region./setReactor:
+ss@Add region on line 10, show log message when select the region./setReactor:
 {
     "target": "sublimesocketpreference",
     "event": "on_selection_modified",
@@ -523,7 +559,7 @@ ss@Add region on line 10, show message when select the region./setReactor:
                 "view": "will be replace to specific view",
                 "target": "sublimesocketpreference",
                 "emit": "event_eventEmitted",
-                "debug": true
+                "debug": false
             }
         }
     ],
@@ -546,49 +582,7 @@ ss@Add region on line 10, show message when select the region./setReactor:
 }
 ->appendRegion:
 {
-    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
-    "identity": "03/12/13 18:46:17",
-    "line": 10,
-    "message": "herecomes daredevil",
-    "condition": "keyword"
-}
-            </option>
-
-            <option>
-ss@Add region on line 10, message will appear when select that./setReactor:
-{
-    "target": "sublimesocketpreference",
-    "event": "on_selection_modified",
-    "selectors": [
-        {
-            "containsRegions": {
-                "view": "will be replace to specific view",
-                "target": "sublimesocketpreference",
-                "emit": "event_errorEmitted",
-                "debug": true
-            }
-        }
-    ],
-    "replacefromto": {
-        "view": "view"
-    },
-    "interval": 1000
-}
-->setReactor:
-{
-    "target": "sublimesocketpreference",
-    "event": "event_errorEmitted",
-    "selectors": [
-        {
-            "showAtLog": {
-                "message": "Hello World"
-            }
-        }
-    ]
-}
-->appendRegion:
-{
-    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "view": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 10,
     "message": "herecomes daredevil",
@@ -599,7 +593,7 @@ ss@Add region on line 10, message will appear when select that./setReactor:
             <option>
 ss@Append region to Settings.py on line 11./appendRegion:
 {
-    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "view": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 11,
     "message": "herecomes daredevil",
@@ -610,7 +604,7 @@ ss@Append region to Settings.py on line 11./appendRegion:
             <option>
 ss@Append region to Settings.py on line 12./appendRegion:
 {
-    "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+    "view": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
     "identity": "03/12/13 18:46:17",
     "line": 12,
     "message": "herecomes daredevil",
@@ -671,7 +665,7 @@ ss@Fail sample pattern. - and > never be concat./filtering:
             </option>
 
             <option>
-ss@フィルタ定義、フィルタを2連続で流すが、eraseを含んでいるため最後の物だけが出る/defineFilter:
+ss@フィルタ定義、フィルタを2連続で流すが、eraseを含んでいるため最後の物だけ表示が出る/defineFilter:
 {
     "name": "appendRegionFilter",
     "patterns": [
@@ -685,7 +679,7 @@ ss@フィルタ定義、フィルタを2連続で流すが、eraseを含んで�
                         "appendRegion": {
                             "line": "groups[0]",
                             "message": "message is filterSource[]",
-                            "view": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
+                            "view": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py",
                             "condition": "keyword"
                         }
                     }
@@ -697,13 +691,13 @@ ss@フィルタ定義、フィルタを2連続で流すが、eraseを含んで�
 ->filtering: 
 {
     "name": "appendRegionFilter",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
+    "source": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(29,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
     "debug": true
 }
 ->filtering: 
 {
     "name": "appendRegionFilter",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
+    "source": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(19,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration",
     "debug": true
 }
             </option>
@@ -737,7 +731,7 @@ ss@Define filter "s", then show message on dialog after filtering run./defineFil
 ss@Run filter named "s"./filtering:
 {
     "name": "s",
-    "source": "/Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/SublimeSocketAPISettings.py(24,12): error CS1519: Unexpected symbol `void' in class, struct, or interface member declaration"
+    "source": "test"
 }
             </option>
 
@@ -788,7 +782,7 @@ ss@Clear KVS./kvs:
             <option>
 ss@Run setting on folder./runSetting:
 {
-    "path": "//Users/sassembla/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/FilterSettingSamples/UnityFilter.txt"
+    "path": "/Users/highvision/Library/Application Support/Sublime Text 2/Packages/SublimeSocket/FilterSettingSamples/UnityFilter.txt"
 }
             </option>
 
