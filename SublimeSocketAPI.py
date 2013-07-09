@@ -452,7 +452,6 @@ class SublimeSocketAPI:
 			return
 
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
-		# print "filterName", filterName, "	/filterSource",filterSource
 
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
@@ -768,11 +767,20 @@ class SublimeSocketAPI:
 
 
 	def defineCompletionTriggers(self, params, client):
-		
-		params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_EVENT] = SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION
-		params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS] = {"here":"comes"}
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS in params, "defineCompletionTriggers require 'keywords' param"
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS in params, "defineCompletionTriggers require 'selectors' param"
 
-		self.setFoundationReactor(params, client)
+		# load defined filters
+		completionsKewordsAndPatternsArray = []
+
+		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_COMPLETIONS):
+			completionsKewordsAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
+
+		# add completion params as dictionary to array
+		completionsKewordsAndPatternsArray.append(params)
+
+		# store
+		self.server.setKV(SublimeSocketAPISettings.DICT_COMPLETIONS, completionsKewordsAndPatternsArray)
 
 
 	def openPage(self, params):

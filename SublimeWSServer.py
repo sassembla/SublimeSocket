@@ -218,12 +218,12 @@ class SublimeWSServer:
 
 		# check event kind
 		# delete when set the reactor of the event.
-		if self.temporaryEventDict.has_key(event):
+		if event in self.temporaryEventDict:
 			del self.temporaryEventDict[event]
 		
 		# set default interval
 		interval = 0
-		if params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL):
+		if SublimeSocketAPISettings.REACTOR_INTERVAL in params:
 			interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
 
 		reactorsDict = {}
@@ -234,11 +234,11 @@ class SublimeWSServer:
 		reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS] = selectorsArray
 		reactDict[SublimeSocketAPISettings.REACTOR_INTERVAL] = interval
 
-		if params.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
+		if SublimeSocketAPISettings.REACTOR_REPLACEFROMTO in params:
 			reactDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO] = params[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO]
 
 		# already set or not-> spawn dictionary for event.
-		if reactorsDict.has_key(event):
+		if event in reactorsDict:
 			pass
 		else:
 			reactorsDict[event] = {}
@@ -453,9 +453,7 @@ class SublimeWSServer:
 
 				viewInfo = {}
 				if filePath in viewDict:
-					viewInfo = viewDict[filePath]
-				else:
-					self.viewSize = viewInstance.size()
+					viewInfo = viewDict[filePath]	
 
 				viewInfo[SublimeSocketAPISettings.VIEW_ID] = viewInstance.id()
 				viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = viewInstance.buffer_id()
@@ -488,6 +486,13 @@ class SublimeWSServer:
 			if filePath in viewDict:
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
+
+		# completion triggers will react
+		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_COMPLETION:
+			# get filter key-values array
+			completionkeywordsArray = self.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
+			if 0 < len(completionkeywordsArray):
+				self.runCompletionOrNot(completionkeywordsArray, eventParam)
 
 
 	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
@@ -535,35 +540,41 @@ class SublimeWSServer:
 					self.runAllSelector(reactDict, selector, eventParam)
 
 				break
-
-			if case(SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION):
-				print("reactorsDict", reactorsDict)
-				
-				view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
-				
-				currentSize = view.size()
-				compare = self.viewSize
-				self.viewSize = currentSize
-
-				if compare < currentSize:
-					pass
-				else:# not gain.
-					break
-
-				sel = view.sel()[0]
-				carretLeftText = view.substr(sublime.Region(sel.a-1, sel.b))
-				
-				if carretLeftText == ".":
-					print("bingo!", carretLeftText)
-					# トリガーが引けた。
-					
-				break
 				
 			if case():
 				print "unknown foundation api", command
 				break
-			
 
+	def runCompletionOrNot (self, completionDefines, eventParam):
+		view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
+				
+		currentSize = view.size()
+		compare = self.viewSize
+		self.viewSize = currentSize
+
+		if compare < currentSize:
+			pass
+		else:# not gain.
+			return
+
+		# pick up first selection only
+		if 1 < len(view.sel()):
+			return
+
+		sel = view.sel()[0]
+
+		# latest input
+		enteredText = view.substr(sublime.Region(sel.a-1, sel.b))
+		
+		for completion in completionDefines:
+			if enteredText in  completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS]:
+				print("bingo!", enteredText)
+				# トリガーが引けた。これを編集可能にすること。
+				# 補完のトリガーを引く。で、受けを作る。
+				# ここまででこの補完を実行する事が確定したので、completionInfoを使ってviewから情報を抜き出して、selectorに放り込む
+				# ひゃー、大仕事。
+				
+				
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
 		if 1 < len(subCommandAndParam):

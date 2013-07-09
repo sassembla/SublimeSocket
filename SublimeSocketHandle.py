@@ -132,7 +132,6 @@ class CaptureEditing(sublime_plugin.EventListener):
   
   def on_modified(self, view):
     self.update("on_modified", view)
-    self.update(SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION, view)
     
   def on_new(self, view):
     self.update("on_new", view)
@@ -148,7 +147,6 @@ class CaptureEditing(sublime_plugin.EventListener):
 
   def on_pre_save(self, view):
     self.update("on_pre_save", view)
-
 
   def on_post_save(self, view):
     self.update("on_post_save", view)
