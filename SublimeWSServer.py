@@ -421,7 +421,7 @@ class SublimeWSServer:
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 			
 			# if exist, continue
-			if reactorsDict.has_key(eventName):
+			if eventName in reactorsDict:
 				self.runFoundationEvent(eventName, eventParam, reactorsDict)
 
 

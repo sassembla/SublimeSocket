@@ -111,6 +111,28 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@defineCompletionTriggers:
+{
+    "queries":{
+
+    },
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "Hello World"
+            }
+        }
+    ]
+}
+            </option>
+            <option>
+ss@monocastMessage:
+{
+    "target": "06_10_13_14_32_08",
+    "message": "hereComes"
+}
+            </option>
+            <option>
 ss@特定のIdentityでページを開く/openPage:
 {
     "identity": "06_10_13_14_32_08"
@@ -161,10 +183,6 @@ ss@同じフィルタにヒットする複数のログが吐き出された場�
     "name": "06/09/13 12:23:07",
     "source": "something\nsomething",
     "debug":true
-}
-->assertTrue:
-{
-    
 }
             </option>
             <option>

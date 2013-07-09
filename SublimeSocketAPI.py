@@ -196,6 +196,10 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_DEFINECOMPLETIONTRIGGERS):
+				self.defineCompletionTriggers(params, client)
+				break
+
 			if case(SublimeSocketAPISettings.API_OPENPAGE):
 				sublime.set_timeout(lambda: self.openPage(params), 0)
 				break
@@ -761,6 +765,14 @@ class SublimeSocketAPI:
 		assert eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT), "eventEmit only emit 'user-defined' event such as starts with 'event_' keyword."
 
 		self.server.fireKVStoredItem(eventName, params)
+
+
+	def defineCompletionTriggers(self, params, client):
+		
+		params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_EVENT] = SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION
+		params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS] = {"here":"comes"}
+
+		self.setFoundationReactor(params, client)
 
 
 	def openPage(self, params):
