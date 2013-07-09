@@ -32,6 +32,7 @@ class SublimeWSServer:
 		self.temporaryEventDict = {}
 
 		self.deletedRegionIdPool = []
+		self.viewSize = -1
 
 
 	def start(self, host, port):
@@ -410,7 +411,7 @@ class SublimeWSServer:
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 			
 			# if exist, continue
-			if reactorsDict.has_key(eventName):
+			if eventName in reactorsDict:
 				# interval-set or not
 				self.runOrSetUserDefinedEvent(eventName, eventParam, reactorsDict)
 
@@ -438,7 +439,6 @@ class SublimeWSServer:
 				pass
 
 			else:
-				# print "open then add!!", eventParam
 				viewDict = {}
 				
 				# update or append if exist.
@@ -452,8 +452,10 @@ class SublimeWSServer:
 				filePath = viewInstance.file_name()
 
 				viewInfo = {}
-				if viewDict.has_key(filePath):
+				if filePath in viewDict:
 					viewInfo = viewDict[filePath]
+				else:
+					self.viewSize = viewInstance.size()
 
 				viewInfo[SublimeSocketAPISettings.VIEW_ID] = viewInstance.id()
 				viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = viewInstance.buffer_id()
@@ -483,7 +485,7 @@ class SublimeWSServer:
 			filePath = viewInstance.file_name()
 
 			# delete
-			if viewDict.has_key(filePath):
+			if filePath in viewDict:
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
@@ -536,24 +538,25 @@ class SublimeWSServer:
 
 			if case(SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION):
 				print("reactorsDict", reactorsDict)
-				# 補完の種が既にセットしてあれば、今書いた行の内容と比較して確認することができる。
-				# self.setOrAddReactor()..
 				
 				view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
-				sel = view.sel()[0] #必要なのは、regionから何行目かを出す機構か。
-				(lineCount, x) = view.rowcol(sel.a)#ラインを持って来て、一番右の文字、っていうので計っても良いかもね。結局一緒か。いつhitしたかは解らない。
-
-				backRegion = sublime.Region(sel.a-1, sel.b)
-				# 実際には搔き込まれている内容が欲しい。
-				carretLeftText = view.substr(backRegion)
 				
-				# goでもbackでも出ちゃうなあ、herecomes
-				# 常に、まあ出ても良いか的な立ち位置になりそうだな。。.削除で暴発しない手段を探したいところ。
+				currentSize = view.size()
+				compare = self.viewSize
+				self.viewSize = currentSize
+
+				if compare < currentSize:
+					pass
+				else:# not gain.
+					break
+
+				sel = view.sel()[0]
+				carretLeftText = view.substr(sublime.Region(sel.a-1, sel.b))
+				
 				if carretLeftText == ".":
 					print("bingo!", carretLeftText)
-
-
-
+					# トリガーが引けた。
+					
 				break
 				
 			if case():
