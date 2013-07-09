@@ -458,9 +458,9 @@ class SublimeSocketAPI:
 
 		# print "filterPatternsArray", filterPatternsArray
 		results = []
+
+		# この時点で材料が揃っているので、分離してしまいたい。
 		for pattern in filterPatternsArray:
-			# regx key filterSource
-			
 
 			(key, executablesDict) = pattern.items()[0]
 			
@@ -471,8 +471,6 @@ class SublimeSocketAPI:
 
 			if debug:
 				print "filterSource", filterSource
-
-			patternIndex = 0
 
 			for searched in re.finditer(re.compile(r'%s' % key, re.M), filterSource):
 				
@@ -569,21 +567,10 @@ class SublimeSocketAPI:
 						# execute
 						self.runAPI(command, params)
 						
-						# report
-						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
-						
-					# increment filter-index for report
-					patternIndex = patternIndex + 1
 				else:
 					if debug:
 						print "filtering not match"
 
-				# except Exception as e:
-				# 	print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
-				# 	while True:
-				# 		pass
-						
-				# 	return "filter error", str(e), "no:" + str(patternIndex)
 		
 		# return succeded signal
 		ret = str("".join(results))
