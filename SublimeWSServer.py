@@ -129,7 +129,6 @@ class SublimeWSServer:
 		
 		self.api.parse(apiData, currentClient)
 
-		
 	## tearDown the server
 	def tearDown(self):
 		for clientId in self.clients:
@@ -150,7 +149,6 @@ class SublimeWSServer:
 		serverTearDownMessage = 'SublimeSocket WebSocketServing tearDown @ ' + str(self.host) + ':' + str(self.port)
 		print '\n', serverTearDownMessage, "\n"
 		sublime.set_timeout(lambda: sublime.status_message(serverTearDownMessage), 0)
-
 
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
@@ -298,7 +296,7 @@ class SublimeWSServer:
 		reactDict = reactorsDict[eventName][target]
 		
 		selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
-
+		print("reactDict, selector, eventParam", reactDict, selector, eventParam)
 		self.runAllSelector(reactDict, selector, eventParam)
 
 	def runAllSelector(self, reactorDict, selectorsArray, eventParam):

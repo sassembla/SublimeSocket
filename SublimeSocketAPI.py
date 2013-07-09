@@ -753,6 +753,7 @@ class SublimeSocketAPI:
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS in params, "defineCompletionTriggers require 'selectors' param"
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_COMPLETION_HINTS in params, "defineCompletionTriggers require 'completion_hints' param"
 		
+
 		# load defined filters
 		completionsKewordsAndPatternsArray = []
 
@@ -765,14 +766,23 @@ class SublimeSocketAPI:
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_COMPLETIONS, completionsKewordsAndPatternsArray)
 
-	
+
+	## completion start. 
 	def runCompletion(self, params, source):
 		filters = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_COMPLETION_HINTS]
-				
-		def show(a, b):
-			print("b", b)
+		
+		completionHints = []
+		def addToCompletionHints(a, hintDict):
+			key = hintDict.keys()[0]
+			completionHints.append(key+"="+hintDict[key])
 
-		self.filterReplace(show, source, filters)
+		self.filterReplace(addToCompletionHints, source, filters)
+
+		completionHintsStr = ",".join(completionHints)
+		if 0 < len(completionHints):
+			selectors = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS]
+			completionParams = {"extracts":completionHintsStr}
+			self.server.runAllSelector(params, selectors, completionParams)
 
 	def openPage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OPENPAGE_IDENTITY), "openPage require 'identity' param."
