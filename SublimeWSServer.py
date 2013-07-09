@@ -534,6 +534,28 @@ class SublimeWSServer:
 
 				break
 
+			if case(SublimeSocketAPISettings.SS_FOUNDATION_COMPLETION):
+				print("reactorsDict", reactorsDict)
+				# 補完の種が既にセットしてあれば、今書いた行の内容と比較して確認することができる。
+				# self.setOrAddReactor()..
+				
+				view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
+				sel = view.sel()[0] #必要なのは、regionから何行目かを出す機構か。
+				(lineCount, x) = view.rowcol(sel.a)#ラインを持って来て、一番右の文字、っていうので計っても良いかもね。結局一緒か。いつhitしたかは解らない。
+
+				backRegion = sublime.Region(sel.a-1, sel.b)
+				# 実際には搔き込まれている内容が欲しい。
+				carretLeftText = view.substr(backRegion)
+				
+				# goでもbackでも出ちゃうなあ、herecomes
+				# 常に、まあ出ても良いか的な立ち位置になりそうだな。。.削除で暴発しない手段を探したいところ。
+				if carretLeftText == ".":
+					print("bingo!", carretLeftText)
+
+
+
+				break
+				
 			if case():
 				print "unknown foundation api", command
 				break
