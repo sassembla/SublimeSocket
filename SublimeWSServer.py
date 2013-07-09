@@ -491,8 +491,9 @@ class SublimeWSServer:
 		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_COMPLETION:
 			# get filter key-values array
 			completionkeywordsArray = self.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
-			if 0 < len(completionkeywordsArray):
-				self.runCompletionOrNot(completionkeywordsArray, eventParam)
+			if completionkeywordsArray:
+				if 0 < len(completionkeywordsArray):
+					self.runCompletionOrNot(completionkeywordsArray, eventParam)
 
 
 	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
@@ -568,13 +569,9 @@ class SublimeWSServer:
 		
 		for completion in completionDefines:
 			if enteredText in  completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS]:
-				print("bingo!", enteredText)
-				# トリガーが引けた。これを編集可能にすること。
-				# 補完のトリガーを引く。で、受けを作る。
-				# ここまででこの補完を実行する事が確定したので、completionInfoを使ってviewから情報を抜き出して、selectorに放り込む
-				# ひゃー、大仕事。
-				# すでにコンパイルが済んでいる部分も有る筈なので、新しく保存したモノから、特定のフィルタに合致する部分の文字列のみを集めるAPIを作るか。
-				# 既存のやつから切り出せそう。複数個出す事ができたっけな、、出来るな。
+				source = view.substr(sublime.Region(0, currentSize))
+				self.api.runCompletion(completion, source)
+
 
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):

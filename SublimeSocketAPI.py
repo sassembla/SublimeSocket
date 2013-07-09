@@ -456,29 +456,31 @@ class SublimeSocketAPI:
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
 
-		# print "filterPatternsArray", filterPatternsArray
-		results = []
 
-		# この時点で材料が揃っているので、分離してしまいたい。
-		for pattern in filterPatternsArray:
-
-			(key, executablesDict) = pattern.items()[0]
-			
-			debug = False
-			if type(params) == dict:
+		debug = False
+		if type(params) == dict:
 				if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
 					debug = params[SublimeSocketAPISettings.FILTER_DEBUG]
 
-			if debug:
-				print "filterSource", filterSource
+			
+		self.filterReplace(self.runAPI, filterSource, filterPatternsArray, debug)
 
-			for searched in re.finditer(re.compile(r'%s' % key, re.M), filterSource):
+	## find filters-match sentence in source, then replace specific words, then run func(command, replacedP`arams)  
+	def filterReplace(self, func, source, filters, debug=False):
+		for pattern in filters:
+
+			(key, executablesDict) = pattern.items()[0]
+			
+			if debug:
+				print "source", source
+
+			for searched in re.finditer(re.compile(r'%s' % key, re.M), source):
 				
 				if searched:
 					if debug:
 						print "matched."
 						print "filtering regexp:", key
-						print "filterSource", filterSource
+						print "filterSource", source
 						print "filtering searched.group()",searched.group()
 						print "filtering searched.groups()",searched.groups()
 						
@@ -494,8 +496,10 @@ class SublimeSocketAPI:
 							if executablesDict.has_key(SublimeSocketAPISettings.FILTER_COMMENT):
 								print "matched defineFilter comment:", executablesDict[SublimeSocketAPISettings.FILTER_COMMENT]
 
-					currentGroupSize = len(searched.groups())
 					
+					searchedResult = searched.groups()
+
+					currentGroupSize = len(searchedResult)
 					# run
 					for executableDict in executablesArray:
 						
@@ -517,9 +521,9 @@ class SublimeSocketAPI:
 								for index in range(currentGroupSize):
 									# replace all expression
 									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+										result = re.sub(r'groups\[' + str(index) + '\]', searchedResult[index], result)
 
-								result = re.sub(r'filterSource\[\]', filterSource, result)
+								result = re.sub(r'filterSource\[\]', source, result)
 								return result
 								
 
@@ -537,10 +541,10 @@ class SublimeSocketAPI:
 									
 									# replace all expression
 									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										froms = searched.groups()[index].decode('utf-8')
+										froms = searchedResult[index].decode('utf-8')
 										result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
 
-								result = re.sub(r'filterSource\[\]', filterSource, result)
+								result = re.sub(r'filterSource\[\]', source, result)
 								return {key:result}
 							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
@@ -565,21 +569,12 @@ class SublimeSocketAPI:
 							print "filtering command:", command, "params:", params
 
 						# execute
-						self.runAPI(command, params)
+						func(command, params)
 						
 				else:
 					if debug:
 						print "filtering not match"
 
-		
-		# return succeded signal
-		ret = str("".join(results))
-		if ret: 
-			buf = self.encoder.text(ret, mask=0)
-			client.send(buf)
-		else:
-			# print "no message"
-			pass
 
 	## set reactor for reactive-event
 	def setReactor(self, params, client):
@@ -756,7 +751,8 @@ class SublimeSocketAPI:
 	def defineCompletionTriggers(self, params, client):
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS in params, "defineCompletionTriggers require 'keywords' param"
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS in params, "defineCompletionTriggers require 'selectors' param"
-
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_COMPLETION_HINTS in params, "defineCompletionTriggers require 'completion_hints' param"
+		
 		# load defined filters
 		completionsKewordsAndPatternsArray = []
 
@@ -769,6 +765,14 @@ class SublimeSocketAPI:
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_COMPLETIONS, completionsKewordsAndPatternsArray)
 
+	
+	def runCompletion(self, params, source):
+		filters = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_COMPLETION_HINTS]
+				
+		def show(a, b):
+			print("b", b)
+
+		self.filterReplace(show, source, filters)
 
 	def openPage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OPENPAGE_IDENTITY), "openPage require 'identity' param."

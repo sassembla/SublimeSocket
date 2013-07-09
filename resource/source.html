@@ -114,6 +114,34 @@
 ss@defineCompletionTriggers:
 {
     "keywords":["."],
+    "completion_hints": [
+        {
+            "^using (.*);": {
+                "selectors": [
+                    {
+                        "extract": {
+                            "message": "groups[0]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            ".*class (.*) : (.*) {": {
+                "selectors": [
+                    {
+                        "extract": {
+                            "message": "groups[0]"
+                        }
+                    },{
+                        "extract": {
+                            "message": "groups[1]"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
     "replacefromto":{
         "extracts":"message"
     },
