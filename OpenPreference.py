@@ -13,6 +13,8 @@ import threading
 import glob
 import string
 
+MY_PLUGIN_PATHNAME = os.path.split(os.path.dirname(os.path.realpath(__file__)))[1]
+
 class Openpreference(sublime_plugin.TextCommand):
   def run (self, edit) :
     self.openSublimeSocketPreference()
@@ -24,7 +26,7 @@ class Openpreference(sublime_plugin.TextCommand):
     
 
     # create path of Preference.html
-    currentPackagePath = sublime.packages_path() + "/SublimeSocket/"
+    currentPackagePath = sublime.packages_path() + "/"+MY_PLUGIN_PATHNAME+"/"
     originalHtmlPath = "resource/source.html"
     originalPath = currentPackagePath + originalHtmlPath
 

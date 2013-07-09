@@ -18,6 +18,9 @@ from PythonSwitch import PythonSwitch
 import uuid
 
 
+MY_PLUGIN_PATHNAME = os.path.split(os.path.dirname(os.path.realpath(__file__)))[1]
+
+
 ## API Parse the action
 class SublimeSocketAPI:
 	def __init__(self, server):
@@ -228,7 +231,7 @@ class SublimeSocketAPI:
 		# check contains PREFIX or not
 		if filePath.startswith(SublimeSocketAPISettings.RUNSETTING_PREFIX_SUBLIMESOCKET_PATH):
 			filePathArray = filePath.split(":")
-			filePath = sublime.packages_path() + "/SublimeSocket/"+ filePathArray[1]
+			filePath = sublime.packages_path() + "/"+MY_PLUGIN_PATHNAME+"/"+ filePathArray[1]
 
 
 		print "ss: runSetting:", filePath
@@ -285,7 +288,7 @@ class SublimeSocketAPI:
 				# check contains PREFIX or not
 				if val.startswith(SublimeSocketAPISettings.RUNSETTING_PREFIX_SUBLIMESOCKET_PATH):
 					filePathArray = val.split(":")
-					val = "\"" + sublime.packages_path() + "/SublimeSocket/"+ filePathArray[1] + "\""
+					val = "\"" + sublime.packages_path() + "/"+MY_PLUGIN_PATHNAME+"/"+ filePathArray[1] + "\""
 
 				return val
 
@@ -668,7 +671,7 @@ class SublimeSocketAPI:
 		if params.has_key(SublimeSocketAPISettings.NOTIFY_DEBUG):
 			debug = params[SublimeSocketAPISettings.NOTIFY_DEBUG]
 		
-		exe = "\"" + sublime.packages_path() + "/SublimeSocket/tool/notification/MacNotifier.sh\""
+		exe = "\"" + sublime.packages_path() + "/"+MY_PLUGIN_PATHNAME+"/tool/notification/MacNotifier.sh\""
 		exeArray = ["-t", title, "-m", message, "-replaceunderscore", "", ]
 
 		shellParams = {
@@ -769,7 +772,7 @@ class SublimeSocketAPI:
 		writtenIdentity = identity
 
 		# create path of Preference.html
-		currentPackagePath = sublime.packages_path() + "/SublimeSocket/"
+		currentPackagePath = sublime.packages_path() + "/"+MY_PLUGIN_PATHNAME+"/"
 		originalHtmlPath = "resource/html/openpageSource.html"
 		originalPath = currentPackagePath + originalHtmlPath
 
