@@ -114,58 +114,10 @@
 ss@defineCompletionTrigger:
 {
     "trigger": ".",
-    "keywords": ["."],
-    "completion_hints": [
-        {
-            "^using (.*);": {
-                "selectors": [
-                    {
-                        "extract": {
-                            "using": "groups[0]"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            ".*class (.*) : (.*) {": {
-                "selectors": [
-                    {
-                        "extract": {
-                            "class": "groups[0]"
-                        }
-                    },{
-                        "extract": {
-                            "extends": "groups[1]"
-                        }
-                    }
-                ]
-            }
-        }
-    ],
-    "completion_capture": [
-        {
-            "key = (.*);": {
-                "selectors": [
-                    {
-                        "extract": {
-                            "define": "groups[0]"
-                        }
-                    }
-                ]
-            },
-            "key = new (.*)[(].*;": {
-                "selectors": [
-                    {
-                        "extract": {
-                            "define": "groups[0]"
-                        }
-                    }
-                ]
-            },
-        }
-    ]
-    "replace":["message"],
+    "replacefromto": {
+        "extracts": "message",
+        "linenum": "header"
+    },
     "selectors": [
         {
             "showAtLog": {
@@ -175,7 +127,8 @@ ss@defineCompletionTrigger:
         {
             "monocastMessage": {
                 "target": "sublimesocketpreference",
-                "message": ""
+                "message": "",
+                "header": ""
             }
         }
     ]

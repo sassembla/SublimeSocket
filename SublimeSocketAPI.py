@@ -749,10 +749,9 @@ class SublimeSocketAPI:
 
 
 	def defineCompletionTrigger(self, params, client):
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_KEYWORDS in params, "defineCompletionTrigger require 'keywords' param"
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_TRIGGER in params, "defineCompletionTrigger require 'trigger' param"
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_SELECTORS in params, "defineCompletionTrigger require 'selectors' param"
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_COMPLETION_HINTS in params, "defineCompletionTrigger require 'completion_hints' param"
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_REPLACE in params, "defineCompletionTrigger reuire 'replace' param"
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_REPLACEFROMTO in params, "defineCompletionTrigger reuire 'replacefromto' param"
 
 		# load defined filters
 		completionsKewordsAndPatternsArray = []
@@ -760,54 +759,21 @@ class SublimeSocketAPI:
 		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_COMPLETIONS):
 			completionsKewordsAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
 
-		replaceDict = {}
-		for value in params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_REPLACE]:
-			replaceDict[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_EXTRACTS] = value
-
-		print("replaceDict", replaceDict)
-		
-		# generate replace dict
-		params["replacefromto"] = replaceDict
-
-		# add completion params as dictionary to array
 		completionsKewordsAndPatternsArray.append(params)
-
+		
 		# store
 		self.server.setKV(SublimeSocketAPISettings.DICT_COMPLETIONS, completionsKewordsAndPatternsArray)
 
 
 	## completion start. 
-	def runCompletion(self, params, source, line):
-		filters = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_COMPLETION_HINTS]
-		
-		# get current line object's data from code via filter
-		# まずデリミタで単語に分解して、それらに対するフィルタを製造する
-		# それぞれの単語に対して、0,-1,-2と区分けして、
-		# -2.-1.0.　と区分けする。
-		# 知りたいのはすべて。フィルタで調べる。
-		# -2が解れば、-1が判明、-1が解れば、０が判明、０が解れば候補が出せる。
-		# ま、-か、型があるところまで探せるか、になる。
-		# まずは行を取得する。
-		completionTargetparts = line.split(".")
+	def runCompletion(self, params, source, lineNum):
+		selectors = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_SELECTORS]
 
-		# このパーツに対して、特定のパターンでの出現をチェックする
-		
+		completionParams = {}
+		completionParams[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_EXTRACTS] = source
+		completionParams[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_LINENUM] = lineNum
 
-
-
-		# get completion hint from code via filter
-		completionHints = []
-		def addToCompletionHints(a, hintDict):
-			key = hintDict.keys()[0]
-			completionHints.append(key+"="+hintDict[key])
-
-		self.filterReplace(addToCompletionHints, source, filters)
-
-		completionHintsStr = ",".join(completionHints)
-		if 0 < len(completionHints):
-			selectors = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_SELECTORS]
-			completionParams = {SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_EXTRACTS:completionHintsStr}
-			self.server.runAllSelector(params, selectors, completionParams)
+		self.server.runAllSelector(params, selectors, completionParams)
 
 	def openPage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OPENPAGE_IDENTITY), "openPage require 'identity' param."

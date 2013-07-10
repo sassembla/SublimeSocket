@@ -562,10 +562,8 @@ class SublimeWSServer:
 
 		sel = view.sel()[0]
 		
-		# get line without tab
-		lineOrigin = view.substr(view.line(sel))
-		line = re.sub(r'\t', '', lineOrigin)
-				
+		# get line num
+		(linenum, x) = view.rowcol(sel.a)
 
 		# latest input
 		enteredText = view.substr(sublime.Region(sel.a-1, sel.b))
@@ -573,7 +571,7 @@ class SublimeWSServer:
 		for completion in completionDefines:
 			if enteredText in completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_TRIGGER]:
 				source = view.substr(sublime.Region(0, currentSize))
-				self.api.runCompletion(completion, source, line)
+				self.api.runCompletion(completion, source, linenum+1)
 
 
 	## KVSControl
