@@ -120,7 +120,7 @@ ss@defineCompletionTriggers:
                 "selectors": [
                     {
                         "extract": {
-                            "key": "groups[0]"
+                            "using": "groups[0]"
                         }
                     }
                 ]
@@ -131,24 +131,28 @@ ss@defineCompletionTriggers:
                 "selectors": [
                     {
                         "extract": {
-                            "key": "groups[0]"
+                            "class": "groups[0]"
                         }
                     },{
                         "extract": {
-                            "key": "groups[1]"
+                            "extends": "groups[1]"
                         }
                     }
                 ]
             }
         }
     ],
-    "replacefromto":{
-        "extracts":"message"
-    },
+    "replace":["message"],
     "selectors": [
         {
             "showAtLog": {
                 "message": "Hello World"
+            }
+        },
+        {
+            "monocastMessage": {
+                "target": "sublimesocketpreference",
+                "message": ""
             }
         }
     ]

@@ -752,13 +752,22 @@ class SublimeSocketAPI:
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS in params, "defineCompletionTriggers require 'keywords' param"
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_SELECTORS in params, "defineCompletionTriggers require 'selectors' param"
 		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_COMPLETION_HINTS in params, "defineCompletionTriggers require 'completion_hints' param"
-		
+		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_REPLACE in params, "defineCompletionTriggers reuire 'replace' param"
 
 		# load defined filters
 		completionsKewordsAndPatternsArray = []
 
 		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_COMPLETIONS):
 			completionsKewordsAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
+
+		replaceDict = {}
+		for value in params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_REPLACE]:
+			replaceDict["extracts"] = value
+
+		print("replaceDict", replaceDict)
+		
+		# generate replace dict
+		params["replacefromto"] = replaceDict
 
 		# add completion params as dictionary to array
 		completionsKewordsAndPatternsArray.append(params)

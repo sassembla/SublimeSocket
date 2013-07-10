@@ -551,7 +551,7 @@ class SublimeWSServer:
 		compare = self.viewSize
 		self.viewSize = currentSize
 
-		if compare < currentSize:
+		if compare < currentSize:#gain, will runCompletion
 			pass
 		else:# not gain.
 			return
@@ -568,6 +568,8 @@ class SublimeWSServer:
 		for completion in completionDefines:
 			if enteredText in  completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS]:
 				source = view.substr(sublime.Region(0, currentSize))
+
+				# クラスに関する情報はもうサーバ側に有ると思うので、あとは、この行の情報。今書きかけの情報
 				self.api.runCompletion(completion, source)
 
 
