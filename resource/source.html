@@ -111,9 +111,10 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
-ss@defineCompletionTriggers:
+ss@defineCompletionTrigger:
 {
-    "keywords":["."],
+    "trigger": ".",
+    "keywords": ["."],
     "completion_hints": [
         {
             "^using (.*);": {
@@ -142,6 +143,28 @@ ss@defineCompletionTriggers:
             }
         }
     ],
+    "completion_capture": [
+        {
+            "key = (.*);": {
+                "selectors": [
+                    {
+                        "extract": {
+                            "define": "groups[0]"
+                        }
+                    }
+                ]
+            },
+            "key = new (.*)[(].*;": {
+                "selectors": [
+                    {
+                        "extract": {
+                            "define": "groups[0]"
+                        }
+                    }
+                ]
+            },
+        }
+    ]
     "replace":["message"],
     "selectors": [
         {

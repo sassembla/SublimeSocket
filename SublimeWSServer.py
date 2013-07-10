@@ -561,16 +561,19 @@ class SublimeWSServer:
 			return
 
 		sel = view.sel()[0]
+		
+		# get line without tab
+		lineOrigin = view.substr(view.line(sel))
+		line = re.sub(r'\t', '', lineOrigin)
+				
 
 		# latest input
 		enteredText = view.substr(sublime.Region(sel.a-1, sel.b))
 		
 		for completion in completionDefines:
-			if enteredText in  completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGERS_KEYWORDS]:
+			if enteredText in completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_TRIGGER]:
 				source = view.substr(sublime.Region(0, currentSize))
-
-				# クラスに関する情報はもうサーバ側に有ると思うので、あとは、この行の情報。今書きかけの情報
-				self.api.runCompletion(completion, source)
+				self.api.runCompletion(completion, source, line)
 
 
 	## KVSControl
