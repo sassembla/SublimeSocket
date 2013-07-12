@@ -748,33 +748,6 @@ class SublimeSocketAPI:
 		self.server.fireKVStoredItem(eventName, params)
 
 
-	def defineCompletionTrigger(self, params, client):
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_TRIGGER in params, "defineCompletionTrigger require 'trigger' param"
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_SELECTORS in params, "defineCompletionTrigger require 'selectors' param"
-		assert SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_REPLACEFROMTO in params, "defineCompletionTrigger reuire 'replacefromto' param"
-
-		# load defined filters
-		completionsKewordsAndPatternsArray = []
-
-		if self.server.isExistOnKVS(SublimeSocketAPISettings.DICT_COMPLETIONS):
-			completionsKewordsAndPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
-
-		completionsKewordsAndPatternsArray.append(params)
-		
-		# store
-		self.server.setKV(SublimeSocketAPISettings.DICT_COMPLETIONS, completionsKewordsAndPatternsArray)
-
-
-	## completion start. 
-	def runCompletion(self, params, source, lineNum):
-		selectors = params[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_SELECTORS]
-
-		completionParams = {}
-		completionParams[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_EXTRACTS] = source
-		completionParams[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_LINENUM] = lineNum
-
-		self.server.runAllSelector(params, selectors, completionParams)
-
 	def openPage(self, params):
 		assert params.has_key(SublimeSocketAPISettings.OPENPAGE_IDENTITY), "openPage require 'identity' param."
 		identity = params[SublimeSocketAPISettings.OPENPAGE_IDENTITY]

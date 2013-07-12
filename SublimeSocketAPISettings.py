@@ -39,6 +39,7 @@ F_RUNWITHBUFFER_TARGET	= "target"
 F_RUNWITHBUFFER_VIEW		= "view"
 F_RUNWITHBUFFER_BODY		= "body"
 F_RUNWITHBUFFER_PATH		= "path"
+F_RUNWITHBUFFER_LINE		= "line"
 SIZE_OF_BUFFER					= 100000
 
 # internal APIs/
@@ -170,13 +171,6 @@ API_EVENTEMIT			= "eventEmit"
 EVENTEMIT_TARGET	= "target"
 EVENTEMIT_EVENT		= "event"
 
-API_DEFINECOMPLETIONTRIGGER = "defineCompletionTrigger"
-DEFINECOMPLETIONTRIGGER_TRIGGER	= "trigger"
-DEFINECOMPLETIONTRIGGER_SELECTORS	= "selectors"
-DEFINECOMPLETIONTRIGGER_REPLACEFROMTO	= "replacefromto"
-DEFINECOMPLETIONTRIGGER_EXTRACTS = "extracts"
-DEFINECOMPLETIONTRIGGER_LINENUM = "linenum"
-
 API_OPENPAGE			= "openPage"
 OPENPAGE_IDENTITY = "identity"
 
@@ -199,8 +193,6 @@ VIEW_SELF					= "view"
 
 VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_COLLECT] #list of acceptable-view renew event names.
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
-VIEW_EVENTS_COMPLETION = ["on_load", "on_modified"]
-
 
 DICT_FILTERS			= "DICT_FILTERS"
 

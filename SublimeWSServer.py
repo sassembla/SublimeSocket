@@ -32,7 +32,6 @@ class SublimeWSServer:
 		self.temporaryEventDict = {}
 
 		self.deletedRegionIdPool = []
-		self.viewSize = -1
 
 
 	def start(self, host, port):
@@ -485,14 +484,6 @@ class SublimeWSServer:
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
-		# completion triggers will react
-		if eventName in SublimeSocketAPISettings.VIEW_EVENTS_COMPLETION:
-			# get filter key-values array
-			completionkeywordsArray = self.getV(SublimeSocketAPISettings.DICT_COMPLETIONS)
-			if completionkeywordsArray:
-				if 0 < len(completionkeywordsArray):
-					self.runCompletionOrNot(completionkeywordsArray, eventParam)
-
 
 	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
 		for case in PythonSwitch(eventName):
@@ -528,11 +519,16 @@ class SublimeWSServer:
 					body = bodyView.substr(bodyView.word(currentRegion))
 					path = bodyView.file_name()
 
+					# get line num
+					sel = view.sel()[0]
+					(line, x) = view.rowcol(sel.a)
+
 					reactDict = reactorsDict[eventName][currentDict]
 
 					# append 'body' 'path' param from buffer
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
+					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_LINE] = line
 
 					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					
@@ -544,36 +540,7 @@ class SublimeWSServer:
 				print "unknown foundation api", command
 				break
 
-	def runCompletionOrNot (self, completionDefines, eventParam):
-		view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
-				
-		currentSize = view.size()
-		compare = self.viewSize
-		self.viewSize = currentSize
-
-		if compare < currentSize:#gain, will runCompletion
-			pass
-		else:# not gain.
-			return
-
-		# pick up first selection only
-		if 1 < len(view.sel()):
-			return
-
-		sel = view.sel()[0]
-		
-		# get line num
-		(linenum, x) = view.rowcol(sel.a)
-
-		# latest input
-		enteredText = view.substr(sublime.Region(sel.a-1, sel.b))
-		
-		for completion in completionDefines:
-			if enteredText in completion[SublimeSocketAPISettings.DEFINECOMPLETIONTRIGGER_TRIGGER]:
-				source = view.substr(sublime.Region(0, currentSize))
-				self.api.runCompletion(completion, source, linenum+1)
-
-
+	
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
 		if 1 < len(subCommandAndParam):
