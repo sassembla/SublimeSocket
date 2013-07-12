@@ -520,15 +520,16 @@ class SublimeWSServer:
 					path = bodyView.file_name()
 
 					# get line num
-					sel = view.sel()[0]
-					(line, x) = view.rowcol(sel.a)
+					sel = bodyView.sel()[0]
+					(line, x) = bodyView.rowcol(sel.a)
+					lineStr = str(line)
 
 					reactDict = reactorsDict[eventName][currentDict]
 
 					# append 'body' 'path' param from buffer
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_LINE] = line
+					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_LINE] = lineStr
 
 					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					

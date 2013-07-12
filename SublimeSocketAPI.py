@@ -196,10 +196,6 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
-			if case(SublimeSocketAPISettings.API_DEFINECOMPLETIONTRIGGER):
-				self.defineCompletionTrigger(params, client)
-				break
-
 			if case(SublimeSocketAPISettings.API_OPENPAGE):
 				sublime.set_timeout(lambda: self.openPage(params), 0)
 				break
