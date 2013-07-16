@@ -196,6 +196,10 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_RUNCOMPLETION):
+				self.runCompletion(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_OPENPAGE):
 				sublime.set_timeout(lambda: self.openPage(params), 0)
 				break
@@ -742,6 +746,48 @@ class SublimeSocketAPI:
 		assert eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT), "eventEmit only emit 'user-defined' event such as starts with 'event_' keyword."
 
 		self.server.fireKVStoredItem(eventName, params)
+
+
+	def runCompletion(self, params):
+		assert SublimeSocketAPISettings.RUNCOMPLETION_VIEW in params, "runCompletion require 'view' param."
+		assert SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS in params, "runCompletion require 'completion' param."
+		assert SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD in params, "runCompletion require 'formathead' param"
+		assert SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL in params, "runCompletion require 'formattail' param"
+
+		formatHead = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD]
+		formatTail = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL]
+		
+		completions = params[SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS]
+		
+		pastSize = int(params[SublimeSocketAPISettings.RUNCOMPLETION_PASTSIZE])
+
+		# 各配列の内容を変形、なのでmapだけでOKだわ
+		def transformToStr(sourceDict):
+			a = formatHead
+			b = formatTail
+			for key in sourceDict:
+				a = a.replace(key, sourceDict[key])
+				b = b.replace(key, sourceDict[key])
+			
+			return (a.encode("utf-8"), b.encode("utf-8"))
+			
+		completionStrs = map(transformToStr, completions)
+		
+		def delayed_complete():
+			currentViewPath = params[SublimeSocketAPISettings.RUNCOMPLETION_VIEW]
+			view = self.internal_detectViewInstance(currentViewPath)
+
+			# backspace, del, replace,, something "reduced" -> assume "completion canceled".
+			if pastSize > view.size():
+				view.run_command("hide_auto_complete")
+				self.server.setCompletion([])
+				return
+
+			self.server.setCompletion(completionStrs)
+			view.run_command("auto_complete")
+			
+		sublime.set_timeout(delayed_complete, 1)
+		
 
 
 	def openPage(self, params):

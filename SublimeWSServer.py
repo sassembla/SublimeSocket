@@ -32,6 +32,7 @@ class SublimeWSServer:
 		self.temporaryEventDict = {}
 
 		self.deletedRegionIdPool = []
+		self.completions = []
 
 
 	def start(self, host, port):
@@ -115,7 +116,7 @@ class SublimeWSServer:
 		client.clientId = newIdentity
 		self.clients[newIdentity] = client	
 
-	# remove from Client dict
+	#"" remove from Client dict
 	def deleteClientId(self, clientId):
 		if self.clients.has_key(clientId):
 			del self.clients[clientId]
@@ -283,6 +284,10 @@ class SublimeWSServer:
 			sublime.set_timeout(lambda: self.eventIntervals(target, event, selectorsArray, interval), interval)
 
 
+	def setCompletion(self, completions):
+		self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS] = completions
+
+
 	# run user-defined event.
 	def runOrSetUserDefinedEvent(self, eventName, eventParam, reactorsDict):
 		# emit now or set to fire with interval
@@ -295,8 +300,8 @@ class SublimeWSServer:
 		reactDict = reactorsDict[eventName][target]
 		
 		selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
-		print("reactDict, selector, eventParam", reactDict, selector, eventParam)
 		self.runAllSelector(reactDict, selector, eventParam)
+
 
 	def runAllSelector(self, reactorDict, selectorsArray, eventParam):
 		def runForeachAPI(selector):
@@ -318,7 +323,6 @@ class SublimeWSServer:
 			self.api.runAPI(command, params)
 
 		[runForeachAPI(selector) for selector in selectorsArray]
-
 
 
 	## emit event if params matches the regions that sink in view
@@ -485,6 +489,17 @@ class SublimeWSServer:
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
 
+	## return param
+	def getKVStoredItem(self, eventName, eventParam=None):
+		
+		if eventName in SublimeSocketAPISettings.REACTIVE_REACTABLE_EVENT:
+			if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
+				
+				completions = self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
+				del self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
+				return completions
+	
+
 	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
 		for case in PythonSwitch(eventName):
 			if case(SublimeSocketAPISettings.SS_FOUNDATION_NOVIEWFOUND):
@@ -521,15 +536,15 @@ class SublimeWSServer:
 
 					# get line num
 					sel = bodyView.sel()[0]
-					(line, x) = bodyView.rowcol(sel.a)
-					lineStr = str(line)
+					(row, col) = bodyView.rowcol(sel.a)
+					rowColStr = str(row)+","+str(col)
 
 					reactDict = reactorsDict[eventName][currentDict]
 
 					# append 'body' 'path' param from buffer
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
 					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_LINE] = lineStr
+					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ROWCOL] = rowColStr
 
 					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					
