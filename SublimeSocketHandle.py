@@ -183,8 +183,7 @@ class CaptureEditing(sublime_plugin.EventListener):
   def on_query_completions(self, view, prefix, locations):
     ret = self.get("on_query_completions", view)
     if ret:
-      if 0 < len(ret):
-        return ret
+      return ret
 
 
   ## call when the event happen
