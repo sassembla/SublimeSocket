@@ -196,6 +196,10 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_PREPARECOMPLETION):
+				self.prepareCompletion(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_RUNCOMPLETION):
 				self.runCompletion(params)
 				break
@@ -366,14 +370,29 @@ class SublimeSocketAPI:
 
 	## send message to the specific client.
 	def monocastMessage(self, params):
-		
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "monocastMessage require 'target' param"
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "monocastMessage require 'message' param"
+		if SublimeSocketAPISettings.OUTPUT_FORMAT in params:
+
+			print("formatted monocast!", params)
+			format = params[SublimeSocketAPISettings.OUTPUT_FORMAT]
+			# targetとformat以外のキーの値を置換する
+			for key in params:
+				if key != SublimeSocketAPISettings.OUTPUT_TARGET:
+					if key != SublimeSocketAPISettings.OUTPUT_FORMAT:
+						currentParam = params[key]
+						format = format.replace(key, currentParam)
+
+			params[SublimeSocketAPISettings.OUTPUT_MESSAGE] = format
+			del params[SublimeSocketAPISettings.OUTPUT_FORMAT]
+			self.monocastMessage(params)
+			return
+
+
+		print("unformatted monocast!", params)
+		assert SublimeSocketAPISettings.OUTPUT_TARGET in params, "monocastMessage require 'target' param"
+		assert SublimeSocketAPISettings.OUTPUT_MESSAGE in params, "monocastMessage require 'message' param"
 		
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
-		
-		# message = message.decode('utf-8')
 
 		# header and footer with delimiter
 		delim = ""
@@ -399,7 +418,6 @@ class SublimeSocketAPI:
 
 		else:
 			print "monocastMessage failed. target:", target, "is not exist in clients:", self.server.clients
-
 
 	## send message to the other via SS.
 	def showAtLog(self, params):
@@ -747,21 +765,34 @@ class SublimeSocketAPI:
 
 		self.server.fireKVStoredItem(eventName, params)
 
+	def prepareCompletion(self, params):
+		assert SublimeSocketAPISettings.PREPARECOMPLETION_ID in params, "prepareCompletion require 'id' param"
+		self.server.prepareCompletion(params[SublimeSocketAPISettings.PREPARECOMPLETION_ID])
 
 	def runCompletion(self, params):
 		assert SublimeSocketAPISettings.RUNCOMPLETION_VIEW in params, "runCompletion require 'view' param."
 		assert SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS in params, "runCompletion require 'completion' param."
-		assert SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD in params, "runCompletion require 'formathead' param"
-		assert SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL in params, "runCompletion require 'formattail' param"
+		assert SublimeSocketAPISettings.RUNCOMPLETION_ID in params, "runCompletion require 'id' param."
 
-		formatHead = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD]
-		formatTail = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL]
-		
-		completions = params[SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS]
-		
-		pastSize = int(params[SublimeSocketAPISettings.RUNCOMPLETION_PASTSIZE])
+		identity = params[SublimeSocketAPISettings.RUNCOMPLETION_ID]
 
-		# 各配列の内容を変形、なのでmapだけでOKだわ
+		# cancelled
+		if self.server.isLoadingCompletion(identity):
+			pass
+		else:
+			return
+
+		completions = params[SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS]		
+
+		formatHead = ""
+		if SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD in params:
+			formatHead = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD]
+
+		formatTail = ""
+		if SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL in params:
+			formatTail = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL]
+		
+		
 		def transformToStr(sourceDict):
 			a = formatHead
 			b = formatTail
@@ -777,13 +808,10 @@ class SublimeSocketAPI:
 			currentViewPath = params[SublimeSocketAPISettings.RUNCOMPLETION_VIEW]
 			view = self.internal_detectViewInstance(currentViewPath)
 
-			# backspace, del, replace,, something "reduced" -> assume "completion canceled".
-			if pastSize > view.size():
-				view.run_command("hide_auto_complete")
-				self.server.setCompletion([])
-				return
-
-			self.server.setCompletion(completionStrs)
+			# set completion
+			self.server.updateCompletion(identity, completionStrs)
+			print("open completion")
+			# display completions
 			view.run_command("auto_complete")
 			
 		sublime.set_timeout(delayed_complete, 1)
