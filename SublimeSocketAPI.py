@@ -371,8 +371,6 @@ class SublimeSocketAPI:
 	## send message to the specific client.
 	def monocastMessage(self, params):
 		if SublimeSocketAPISettings.OUTPUT_FORMAT in params:
-
-			print("formatted monocast!", params)
 			format = params[SublimeSocketAPISettings.OUTPUT_FORMAT]
 			# targetとformat以外のキーの値を置換する
 			for key in params:
@@ -386,8 +384,6 @@ class SublimeSocketAPI:
 			self.monocastMessage(params)
 			return
 
-
-		print("unformatted monocast!", params)
 		assert SublimeSocketAPISettings.OUTPUT_TARGET in params, "monocastMessage require 'target' param"
 		assert SublimeSocketAPISettings.OUTPUT_MESSAGE in params, "monocastMessage require 'message' param"
 		
@@ -656,10 +652,12 @@ class SublimeSocketAPI:
 		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_notFound(view, self.internal_detectViewInstance(view), line, message, condition), 0)
 
 
+
 	## emit ss_runWithBuffer event
 	def runWithBuffer(self, params):
-		assert params.has_key(SublimeSocketAPISettings.RUNWITHBUFFER_VIEW), "runWithBuffer require 'view' param"
+		assert SublimeSocketAPISettings.RUNWITHBUFFER_VIEW in params, "runWithBuffer require 'view' param"
 		self.server.fireKVStoredItem(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER, params)
+
 
 
 	## emit notification mechanism
@@ -810,7 +808,6 @@ class SublimeSocketAPI:
 
 			# set completion
 			self.server.updateCompletion(identity, completionStrs)
-			print("open completion")
 			# display completions
 			view.run_command("auto_complete")
 			

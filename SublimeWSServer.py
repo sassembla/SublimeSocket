@@ -285,7 +285,6 @@ class SublimeWSServer:
 
 	# ready for react completion. old-loading completion will ignore.
 	def prepareCompletion(self, identity):
-		print("prepareCompletion", identity)
 		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
 			del self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
 
@@ -293,21 +292,16 @@ class SublimeWSServer:
 		self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS][identity] = {}
 
 	def updateCompletion(self, identity, completions):
-		print("updated,,", identity)
 		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
 			if identity in self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]:
-				print("identity is on!")
 				self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS][identity] = completions
 
 	def isLoadingCompletion(self, identity):
-		print("isLoadingCompletion", identity)
 		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
 			currentCompletionDict = self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
 			if identity in currentCompletionDict:
-				print("true!")
 				return True
 
-		print("false!")
 		return False
 
 	# run user-defined event.
@@ -333,16 +327,16 @@ class SublimeWSServer:
 			params = selector[command]
 
 			# print "params", params, "command", command
-
+			currentParams = params.copy()
 			# replace parameters if key 'replacefromto' is exist
 			if reactorDict.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
 				for fromKey in reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO].keys():
 					toKey = reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO][fromKey]
 					
 					# replace or append
-					params[toKey] = eventParam[fromKey]
+					currentParams[toKey] = eventParam[fromKey]
 
-			self.api.runAPI(command, params)
+			self.api.runAPI(command, currentParams)
 
 		[runForeachAPI(selector) for selector in selectorsArray]
 
@@ -420,9 +414,7 @@ class SublimeWSServer:
 
 	## input to sublime from server.
 	# fire event in KVS, if exist.
-	def fireKVStoredItem(self, eventName, eventParam=None):
-		# print "fireKVStoredItem eventListen!", eventName,"eventParam",eventParam
-
+	def fireKVStoredItem(self, eventName, eventParam):
 		# event listener adopt
 		if eventName in SublimeSocketAPISettings.REACTIVE_RESERVED_INTERVAL_EVENT:
 			# store data to temporary.
@@ -557,20 +549,18 @@ class SublimeWSServer:
 					(row, col) = bodyView.rowcol(sel.a)
 					rowColStr = str(row)+","+str(col)
 
-					reactDict = reactorsDict[eventName][currentDict]
-
-					if True:
-						return
-
-					# append 'body' 'path' param from buffer
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ID] = str(uuid.uuid4())
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ROWCOL] = rowColStr
-
-					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+					reactDict = reactorsDict[eventName][currentDict].copy()
+					currentSelector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					
-					self.runAllSelector(reactDict, selector, eventParam)
+					# append 'body' 'path' param from buffer
+					currentEventParam = {}
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_VIEW] = bodyView
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ID] = str(uuid.uuid4())
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ROWCOL] = rowColStr
+					
+					self.runAllSelector(reactDict, currentSelector, currentEventParam)
 
 				break
 				
@@ -617,7 +607,6 @@ class SublimeWSServer:
 
 	## put key-value onto KeyValueStore
 	def setKV(self, key, value):
-		print("key",key, "value",value)
 		self.kvs.setKeyValue(key, value)
 
 
