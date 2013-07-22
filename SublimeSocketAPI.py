@@ -196,6 +196,10 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_CANCELCOMPLETION):
+				self.cancelCompletion(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_PREPARECOMPLETION):
 				self.prepareCompletion(params)
 				break
@@ -763,8 +767,36 @@ class SublimeSocketAPI:
 
 		self.server.fireKVStoredItem(eventName, params)
 
+	def cancelCompletion(self, params):
+		assert SublimeSocketAPISettings.CANCELCOMPLETION_VIEW in params, "cancelCompletion require 'view' param."
+		assert SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER in params, "cancelCompletion require 'trigger' param."
+
+		if params[SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER] in SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGERS:
+			trigger = params[SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER]
+
+			for case in PythonSwitch(trigger):
+				if case(SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER_BASEREDUCED):
+					currentViewSize = params[SublimeSocketAPISettings.CANCELCOMPLETION_VIEW].size()
+					completionLockCountDict = self.server.getCurrentCompletingsDict()
+					if SublimeSocketAPISettings.RUNCOMPLETION_LOCKCOUNT in completionLockCountDict:
+						completionLockCount = completionLockCountDict[SublimeSocketAPISettings.RUNCOMPLETION_LOCKCOUNT]
+						if currentViewSize < completionLockCount:
+							view = params[SublimeSocketAPISettings.CANCELCOMPLETION_VIEW]
+							
+							# cancel completion
+							def delayed_cancel_complete():
+								# cancel completions
+								view.run_command("hide_auto_complete")
+								
+							sublime.set_timeout(delayed_cancel_complete, 1)
+							self.prepareCompletion({SublimeSocketAPISettings.PREPARECOMPLETION_ID:"cancelled"})
+
+					break
+				if case():
+					break
+
 	def prepareCompletion(self, params):
-		assert SublimeSocketAPISettings.PREPARECOMPLETION_ID in params, "prepareCompletion require 'id' param"
+		assert SublimeSocketAPISettings.PREPARECOMPLETION_ID in params, "prepareCompletion require 'id' param."
 		self.server.prepareCompletion(params[SublimeSocketAPISettings.PREPARECOMPLETION_ID])
 
 	def runCompletion(self, params):
@@ -806,8 +838,11 @@ class SublimeSocketAPI:
 			currentViewPath = params[SublimeSocketAPISettings.RUNCOMPLETION_VIEW]
 			view = self.internal_detectViewInstance(currentViewPath)
 
+			# memory view size as lockcount. unlock completion when reduce size than this count
+			lockcount = view.size()
+			
 			# set completion
-			self.server.updateCompletion(identity, completionStrs)
+			self.server.updateCompletion(identity, completionStrs, lockcount)
 			# display completions
 			view.run_command("auto_complete")
 			
