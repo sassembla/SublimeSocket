@@ -114,6 +114,32 @@ class SublimeSocketThread(threading.Thread):
       }
 
       self._server.fireKVStoredItem(eventName, eventParam)
+
+  def fromServer(self, eventName, view=None):
+    if self._server is None:
+      pass
+    else:
+      # avoid empty-file
+      if view.is_scratch():
+        # print "scratch buffer."
+        return
+        
+      elif not view.file_name():
+        # print "no path"
+        return
+
+      view_file_name = view.file_name()
+      
+      eventParam = {
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF:  view,
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_ID:        view.id(),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID:  view.buffer_id(),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH:      view_file_name,
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_BASENAME:  os.path.basename(view_file_name),
+        SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME:     view.name()
+      }
+
+      return self._server.getKVStoredItem(eventName, eventParam)
     
   def currentConnections(self):
     self._server.showCurrentStatusAndConnections()
@@ -148,13 +174,17 @@ class CaptureEditing(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     self.update("on_pre_save", view)
 
-
   def on_post_save(self, view):
     self.update("on_post_save", view)
     
   def on_selection_modified(self, view):
     self.update("on_selection_modified", view)
     
+  def on_query_completions(self, view, prefix, locations):
+    ret = self.get("on_query_completions", view)
+    if ret:
+      return ret
+
 
   ## call when the event happen
   def update(self, eventName, view = None):    
@@ -162,4 +192,10 @@ class CaptureEditing(sublime_plugin.EventListener):
 
     if thread is not None and thread.is_alive():
       thread.toServer(eventName, view)
+
+  def get(self, eventName, view = None):    
+    global thread
+
+    if thread is not None and thread.is_alive():
+      return thread.fromServer(eventName, view)
 

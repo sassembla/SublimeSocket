@@ -111,6 +111,48 @@
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
             <option>
+ss@monocastMessage:
+{
+    "target": "sublimesocketpreference",
+    "format": "1,2,3,4",
+    "1": "here",
+    "2": "comes",
+    "3": "daredevil",
+    "4": "2!!"
+}                
+            </option>
+            <option>
+ss@defineCompletionTrigger:
+{
+    "trigger": ".",
+    "replacefromto": {
+        "extracts": "message",
+        "linenum": "header"
+    },
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "Hello World"
+            }
+        },
+        {
+            "monocastMessage": {
+                "target": "sublimesocketpreference",
+                "message": "",
+                "header": ""
+            }
+        }
+    ]
+}
+            </option>
+            <option>
+ss@monocastMessage:
+{
+    "target": "06_10_13_14_32_08",
+    "message": "hereComes"
+}
+            </option>
+            <option>
 ss@特定のIdentityでページを開く/openPage:
 {
     "identity": "06_10_13_14_32_08"
@@ -161,10 +203,6 @@ ss@同じフィルタにヒットする複数のログが吐き出された場�
     "name": "06/09/13 12:23:07",
     "source": "something\nsomething",
     "debug":true
-}
-->assertTrue:
-{
-    
 }
             </option>
             <option>

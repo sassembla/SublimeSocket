@@ -196,6 +196,18 @@ class SublimeSocketAPI:
 				self.eventEmit(params)
 				break
 
+			if case(SublimeSocketAPISettings.API_CANCELCOMPLETION):
+				self.cancelCompletion(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_PREPARECOMPLETION):
+				self.prepareCompletion(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_RUNCOMPLETION):
+				self.runCompletion(params)
+				break
+
 			if case(SublimeSocketAPISettings.API_OPENPAGE):
 				sublime.set_timeout(lambda: self.openPage(params), 0)
 				break
@@ -362,14 +374,25 @@ class SublimeSocketAPI:
 
 	## send message to the specific client.
 	def monocastMessage(self, params):
-		
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_TARGET), "monocastMessage require 'target' param"
-		assert params.has_key(SublimeSocketAPISettings.OUTPUT_MESSAGE), "monocastMessage require 'message' param"
+		if SublimeSocketAPISettings.OUTPUT_FORMAT in params:
+			format = params[SublimeSocketAPISettings.OUTPUT_FORMAT]
+			# targetとformat以外のキーの値を置換する
+			for key in params:
+				if key != SublimeSocketAPISettings.OUTPUT_TARGET:
+					if key != SublimeSocketAPISettings.OUTPUT_FORMAT:
+						currentParam = params[key]
+						format = format.replace(key, currentParam)
+
+			params[SublimeSocketAPISettings.OUTPUT_MESSAGE] = format
+			del params[SublimeSocketAPISettings.OUTPUT_FORMAT]
+			self.monocastMessage(params)
+			return
+
+		assert SublimeSocketAPISettings.OUTPUT_TARGET in params, "monocastMessage require 'target' param"
+		assert SublimeSocketAPISettings.OUTPUT_MESSAGE in params, "monocastMessage require 'message' param"
 		
 		target = params[SublimeSocketAPISettings.OUTPUT_TARGET]
 		message = params[SublimeSocketAPISettings.OUTPUT_MESSAGE]
-		
-		# message = message.decode('utf-8')
 
 		# header and footer with delimiter
 		delim = ""
@@ -395,7 +418,6 @@ class SublimeSocketAPI:
 
 		else:
 			print "monocastMessage failed. target:", target, "is not exist in clients:", self.server.clients
-
 
 	## send message to the other via SS.
 	def showAtLog(self, params):
@@ -448,36 +470,35 @@ class SublimeSocketAPI:
 			return
 
 		filterSource = params[SublimeSocketAPISettings.FILTER_SOURCE]
-		# print "filterName", filterName, "	/filterSource",filterSource
 
 		# get filter key-values array
 		filterPatternsArray = self.server.getV(SublimeSocketAPISettings.DICT_FILTERS)[filterName]
 
-		# print "filterPatternsArray", filterPatternsArray
-		results = []
-		for pattern in filterPatternsArray:
-			# regx key filterSource
-			
 
-			(key, executablesDict) = pattern.items()[0]
-			
-			debug = False
-			if type(params) == dict:
+		debug = False
+		if type(params) == dict:
 				if params.has_key(SublimeSocketAPISettings.FILTER_DEBUG):
 					debug = params[SublimeSocketAPISettings.FILTER_DEBUG]
 
+			
+		self.filterReplace(self.runAPI, filterSource, filterPatternsArray, debug)
+
+	## find filters-match sentence in source, then replace specific words, then run func(command, replacedP`arams)  
+	def filterReplace(self, func, source, filters, debug=False):
+		for pattern in filters:
+
+			(key, executablesDict) = pattern.items()[0]
+			
 			if debug:
-				print "filterSource", filterSource
+				print "source", source
 
-			patternIndex = 0
-
-			for searched in re.finditer(re.compile(r'%s' % key, re.M), filterSource):
+			for searched in re.finditer(re.compile(r'%s' % key, re.M), source):
 				
 				if searched:
 					if debug:
 						print "matched."
 						print "filtering regexp:", key
-						print "filterSource", filterSource
+						print "filterSource", source
 						print "filtering searched.group()",searched.group()
 						print "filtering searched.groups()",searched.groups()
 						
@@ -493,8 +514,10 @@ class SublimeSocketAPI:
 							if executablesDict.has_key(SublimeSocketAPISettings.FILTER_COMMENT):
 								print "matched defineFilter comment:", executablesDict[SublimeSocketAPISettings.FILTER_COMMENT]
 
-					currentGroupSize = len(searched.groups())
 					
+					searchedResult = searched.groups()
+
+					currentGroupSize = len(searchedResult)
 					# run
 					for executableDict in executablesArray:
 						
@@ -516,9 +539,9 @@ class SublimeSocketAPI:
 								for index in range(currentGroupSize):
 									# replace all expression
 									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										result = re.sub(r'groups\[' + str(index) + '\]', searched.groups()[index], result)
+										result = re.sub(r'groups\[' + str(index) + '\]', searchedResult[index], result)
 
-								result = re.sub(r'filterSource\[\]', filterSource, result)
+								result = re.sub(r'filterSource\[\]', source, result)
 								return result
 								
 
@@ -536,10 +559,10 @@ class SublimeSocketAPI:
 									
 									# replace all expression
 									if re.findall(r'groups\[(' + str(index) + ')\]', result):
-										froms = searched.groups()[index].decode('utf-8')
+										froms = searchedResult[index].decode('utf-8')
 										result = re.sub(r'groups\[' + str(index) + '\]', froms, result)
 
-								result = re.sub(r'filterSource\[\]', filterSource, result)
+								result = re.sub(r'filterSource\[\]', source, result)
 								return {key:result}
 							# replace "groups[x]" expression in the value of dictionary to 'searched.groups()[x]' value
 							params_dicts = map(replaceGroupsInDictionaryKeyword, paramsSource.keys())
@@ -564,32 +587,12 @@ class SublimeSocketAPI:
 							print "filtering command:", command, "params:", params
 
 						# execute
-						self.runAPI(command, params)
+						func(command, params)
 						
-						# report
-						results.append("filter:" + filterName + " no:" + str(patternIndex) + " succeeded:" + str(command)+":"+str(params)+"	/	")
-						
-					# increment filter-index for report
-					patternIndex = patternIndex + 1
 				else:
 					if debug:
 						print "filtering not match"
 
-				# except Exception as e:
-				# 	print "filter error", str(e), "	/key",key, "/executablesDict",executablesDict
-				# 	while True:
-				# 		pass
-						
-				# 	return "filter error", str(e), "no:" + str(patternIndex)
-		
-		# return succeded signal
-		ret = str("".join(results))
-		if ret: 
-			buf = self.encoder.text(ret, mask=0)
-			client.send(buf)
-		else:
-			# print "no message"
-			pass
 
 	## set reactor for reactive-event
 	def setReactor(self, params, client):
@@ -653,10 +656,12 @@ class SublimeSocketAPI:
 		sublime.set_timeout(lambda: self.checkIfViewExist_appendRegion_Else_notFound(view, self.internal_detectViewInstance(view), line, message, condition), 0)
 
 
+
 	## emit ss_runWithBuffer event
 	def runWithBuffer(self, params):
-		assert params.has_key(SublimeSocketAPISettings.RUNWITHBUFFER_VIEW), "runWithBuffer require 'view' param"
+		assert SublimeSocketAPISettings.RUNWITHBUFFER_VIEW in params, "runWithBuffer require 'view' param"
 		self.server.fireKVStoredItem(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER, params)
+
 
 
 	## emit notification mechanism
@@ -761,6 +766,88 @@ class SublimeSocketAPI:
 		assert eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT), "eventEmit only emit 'user-defined' event such as starts with 'event_' keyword."
 
 		self.server.fireKVStoredItem(eventName, params)
+
+	def cancelCompletion(self, params):
+		assert SublimeSocketAPISettings.CANCELCOMPLETION_VIEW in params, "cancelCompletion require 'view' param."
+		assert SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER in params, "cancelCompletion require 'trigger' param."
+
+		if params[SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER] in SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGERS:
+			trigger = params[SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER]
+
+			for case in PythonSwitch(trigger):
+				if case(SublimeSocketAPISettings.CANCELCOMPLETION_TRIGGER_BASEREDUCED):
+					currentViewSize = params[SublimeSocketAPISettings.CANCELCOMPLETION_VIEW].size()
+					completionLockCountDict = self.server.getCurrentCompletingsDict()
+					if SublimeSocketAPISettings.RUNCOMPLETION_LOCKCOUNT in completionLockCountDict:
+						completionLockCount = completionLockCountDict[SublimeSocketAPISettings.RUNCOMPLETION_LOCKCOUNT]
+						if currentViewSize < completionLockCount:
+							view = params[SublimeSocketAPISettings.CANCELCOMPLETION_VIEW]
+							
+							# cancel completion
+							def delayed_cancel_complete():
+								# cancel completions
+								view.run_command("hide_auto_complete")
+								
+							sublime.set_timeout(delayed_cancel_complete, 1)
+							self.prepareCompletion({SublimeSocketAPISettings.PREPARECOMPLETION_ID:"cancelled"})
+
+					break
+				if case():
+					break
+
+	def prepareCompletion(self, params):
+		assert SublimeSocketAPISettings.PREPARECOMPLETION_ID in params, "prepareCompletion require 'id' param."
+		self.server.prepareCompletion(params[SublimeSocketAPISettings.PREPARECOMPLETION_ID])
+
+	def runCompletion(self, params):
+		assert SublimeSocketAPISettings.RUNCOMPLETION_VIEW in params, "runCompletion require 'view' param."
+		assert SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS in params, "runCompletion require 'completion' param."
+		assert SublimeSocketAPISettings.RUNCOMPLETION_ID in params, "runCompletion require 'id' param."
+
+		identity = params[SublimeSocketAPISettings.RUNCOMPLETION_ID]
+
+		# cancelled
+		if self.server.isLoadingCompletion(identity):
+			pass
+		else:
+			return
+
+		completions = params[SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS]		
+
+		formatHead = ""
+		if SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD in params:
+			formatHead = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATHEAD]
+
+		formatTail = ""
+		if SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL in params:
+			formatTail = params[SublimeSocketAPISettings.RUNCOMPLETION_FORMATTAIL]
+		
+		
+		def transformToStr(sourceDict):
+			a = formatHead
+			b = formatTail
+			for key in sourceDict:
+				a = a.replace(key, sourceDict[key])
+				b = b.replace(key, sourceDict[key])
+			
+			return (a.encode("utf-8"), b.encode("utf-8"))
+			
+		completionStrs = map(transformToStr, completions)
+		
+		def delayed_complete():
+			currentViewPath = params[SublimeSocketAPISettings.RUNCOMPLETION_VIEW]
+			view = self.internal_detectViewInstance(currentViewPath)
+
+			# memory view size as lockcount. unlock completion when reduce size than this count
+			lockcount = view.size()
+			
+			# set completion
+			self.server.updateCompletion(identity, completionStrs, lockcount)
+			# display completions
+			view.run_command("auto_complete")
+			
+		sublime.set_timeout(delayed_complete, 1)
+		
 
 
 	def openPage(self, params):

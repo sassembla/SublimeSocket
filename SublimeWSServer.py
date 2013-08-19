@@ -32,6 +32,7 @@ class SublimeWSServer:
 		self.temporaryEventDict = {}
 
 		self.deletedRegionIdPool = []
+		self.completions = []
 
 
 	def start(self, host, port):
@@ -115,7 +116,7 @@ class SublimeWSServer:
 		client.clientId = newIdentity
 		self.clients[newIdentity] = client	
 
-	# remove from Client dict
+	#"" remove from Client dict
 	def deleteClientId(self, clientId):
 		if self.clients.has_key(clientId):
 			del self.clients[clientId]
@@ -128,7 +129,6 @@ class SublimeWSServer:
 		
 		self.api.parse(apiData, currentClient)
 
-		
 	## tearDown the server
 	def tearDown(self):
 		for clientId in self.clients:
@@ -149,7 +149,6 @@ class SublimeWSServer:
 		serverTearDownMessage = 'SublimeSocket WebSocketServing tearDown @ ' + str(self.host) + ':' + str(self.port)
 		print '\n', serverTearDownMessage, "\n"
 		sublime.set_timeout(lambda: sublime.status_message(serverTearDownMessage), 0)
-
 
 	## return the filter has been defined or not
 	def isFilterDefined(self, filterName):
@@ -217,12 +216,12 @@ class SublimeWSServer:
 
 		# check event kind
 		# delete when set the reactor of the event.
-		if self.temporaryEventDict.has_key(event):
+		if event in self.temporaryEventDict:
 			del self.temporaryEventDict[event]
 		
 		# set default interval
 		interval = 0
-		if params.has_key(SublimeSocketAPISettings.REACTOR_INTERVAL):
+		if SublimeSocketAPISettings.REACTOR_INTERVAL in params:
 			interval = params[SublimeSocketAPISettings.REACTOR_INTERVAL]
 
 		reactorsDict = {}
@@ -233,11 +232,11 @@ class SublimeWSServer:
 		reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS] = selectorsArray
 		reactDict[SublimeSocketAPISettings.REACTOR_INTERVAL] = interval
 
-		if params.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
+		if SublimeSocketAPISettings.REACTOR_REPLACEFROMTO in params:
 			reactDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO] = params[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO]
 
 		# already set or not-> spawn dictionary for event.
-		if reactorsDict.has_key(event):
+		if event in reactorsDict:
 			pass
 		else:
 			reactorsDict[event] = {}
@@ -284,6 +283,43 @@ class SublimeWSServer:
 			# continue
 			sublime.set_timeout(lambda: self.eventIntervals(target, event, selectorsArray, interval), interval)
 
+	# ready for react completion. old-loading completion will ignore.
+	def prepareCompletion(self, identity):
+		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
+			del self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
+
+		# re-generate completions dictionaries
+		self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS] = {}
+		self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS][identity] = {}
+
+		# reset current completing data
+		self.temporaryEventDict[SublimeSocketAPISettings.REACTIVE_CURRENT_COMPLETINGS] = {}
+
+
+	def updateCompletion(self, identity, completions, lockcount):
+		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
+			if identity in self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]:
+				# set completion
+				self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS][identity] = completions
+
+				# set current completing data
+				self.temporaryEventDict[SublimeSocketAPISettings.REACTIVE_CURRENT_COMPLETINGS] = {
+					SublimeSocketAPISettings.RUNCOMPLETION_ID:identity,
+					SublimeSocketAPISettings.RUNCOMPLETION_LOCKCOUNT:lockcount
+				}
+
+	def getCurrentCompletingsDict(self):
+		if SublimeSocketAPISettings.REACTIVE_CURRENT_COMPLETINGS in self.temporaryEventDict:
+			return self.temporaryEventDict[SublimeSocketAPISettings.REACTIVE_CURRENT_COMPLETINGS]
+		return {}
+
+	def isLoadingCompletion(self, identity):
+		if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
+			currentCompletionDict = self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
+			if identity in currentCompletionDict:
+				return True
+
+		return False
 
 	# run user-defined event.
 	def runOrSetUserDefinedEvent(self, eventName, eventParam, reactorsDict):
@@ -297,8 +333,8 @@ class SublimeWSServer:
 		reactDict = reactorsDict[eventName][target]
 		
 		selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
-
 		self.runAllSelector(reactDict, selector, eventParam)
+
 
 	def runAllSelector(self, reactorDict, selectorsArray, eventParam):
 		def runForeachAPI(selector):
@@ -308,19 +344,18 @@ class SublimeWSServer:
 			params = selector[command]
 
 			# print "params", params, "command", command
-
-			# replace parameters if key 'replace' exist
+			currentParams = params.copy()
+			# replace parameters if key 'replacefromto' is exist
 			if reactorDict.has_key(SublimeSocketAPISettings.REACTOR_REPLACEFROMTO):
 				for fromKey in reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO].keys():
 					toKey = reactorDict[SublimeSocketAPISettings.REACTOR_REPLACEFROMTO][fromKey]
 					
 					# replace or append
-					params[toKey] = eventParam[fromKey]
+					currentParams[toKey] = eventParam[fromKey]
 
-			self.api.runAPI(command, params)
+			self.api.runAPI(command, currentParams)
 
 		[runForeachAPI(selector) for selector in selectorsArray]
-
 
 
 	## emit event if params matches the regions that sink in view
@@ -396,9 +431,7 @@ class SublimeWSServer:
 
 	## input to sublime from server.
 	# fire event in KVS, if exist.
-	def fireKVStoredItem(self, eventName, eventParam=None):
-		# print "fireKVStoredItem eventListen!", eventName,"eventParam",eventParam
-
+	def fireKVStoredItem(self, eventName, eventParam):
 		# event listener adopt
 		if eventName in SublimeSocketAPISettings.REACTIVE_RESERVED_INTERVAL_EVENT:
 			# store data to temporary.
@@ -410,7 +443,7 @@ class SublimeWSServer:
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 			
 			# if exist, continue
-			if reactorsDict.has_key(eventName):
+			if eventName in reactorsDict:
 				# interval-set or not
 				self.runOrSetUserDefinedEvent(eventName, eventParam, reactorsDict)
 
@@ -421,7 +454,7 @@ class SublimeWSServer:
 			reactorsDict = self.getV(SublimeSocketAPISettings.DICT_REACTORS)
 			
 			# if exist, continue
-			if reactorsDict.has_key(eventName):
+			if eventName in reactorsDict:
 				self.runFoundationEvent(eventName, eventParam, reactorsDict)
 
 
@@ -438,7 +471,6 @@ class SublimeWSServer:
 				pass
 
 			else:
-				# print "open then add!!", eventParam
 				viewDict = {}
 				
 				# update or append if exist.
@@ -452,8 +484,8 @@ class SublimeWSServer:
 				filePath = viewInstance.file_name()
 
 				viewInfo = {}
-				if viewDict.has_key(filePath):
-					viewInfo = viewDict[filePath]
+				if filePath in viewDict:
+					viewInfo = viewDict[filePath]	
 
 				viewInfo[SublimeSocketAPISettings.VIEW_ID] = viewInstance.id()
 				viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = viewInstance.buffer_id()
@@ -483,10 +515,18 @@ class SublimeWSServer:
 			filePath = viewInstance.file_name()
 
 			# delete
-			if viewDict.has_key(filePath):
+			if filePath in viewDict:
 				del viewDict[filePath]
 				self.setKV(SublimeSocketAPISettings.DICT_VIEWS, viewDict)
 
+
+	## return param
+	def getKVStoredItem(self, eventName, eventParam=None):
+		if eventName in SublimeSocketAPISettings.REACTIVE_REACTABLE_EVENT:
+			if SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS in self.temporaryEventDict:
+				for completionsKey in self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS]:
+					return self.temporaryEventDict[SublimeSocketAPISettings.REACTABLE_EVENT_ON_QUERY_COMPLETIONS][completionsKey]
+		
 
 	def runFoundationEvent(self, eventName, eventParam, reactorsDict):
 		for case in PythonSwitch(eventName):
@@ -499,7 +539,6 @@ class SublimeWSServer:
 				break
 
 			if case(SublimeSocketAPISettings.SS_FOUNDATION_RUNWITHBUFFER):
-				
 				for currentDict in reactorsDict[eventName]:
 					# get data from view-buffer
 					bodyView = eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_VIEW]
@@ -522,23 +561,31 @@ class SublimeWSServer:
 					body = bodyView.substr(bodyView.word(currentRegion))
 					path = bodyView.file_name()
 
-					reactDict = reactorsDict[eventName][currentDict]
+					# get line num
+					sel = bodyView.sel()[0]
+					(row, col) = bodyView.rowcol(sel.a)
+					rowColStr = str(row)+","+str(col)
 
-					# append 'body' 'path' param from buffer
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
-					eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
-
-					selector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
+					reactDict = reactorsDict[eventName][currentDict].copy()
+					currentSelector = reactDict[SublimeSocketAPISettings.REACTOR_SELECTORS]
 					
-					self.runAllSelector(reactDict, selector, eventParam)
+					# append 'body' 'path' param from buffer
+					currentEventParam = {}
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_VIEW] = bodyView
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ID] = str(uuid.uuid4())
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_BODY] = body
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_PATH] = path
+					currentEventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_ROWCOL] = rowColStr
+					
+					self.runAllSelector(reactDict, currentSelector, currentEventParam)
 
 				break
-
+				
 			if case():
 				print "unknown foundation api", command
 				break
-			
 
+	
 	## KVSControl
 	def KVSControl(self, subCommandAndParam):
 		if 1 < len(subCommandAndParam):

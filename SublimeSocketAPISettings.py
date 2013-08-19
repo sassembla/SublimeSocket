@@ -20,7 +20,7 @@ API_PARAM_CONCAT	= "|"
 API_PARAM_DELIM		= ","
 
 
-API_VERSION = "1.2.3"
+API_VERSION = "1.3.0"
 SOCKET_VERSION = 2	# for Sublime Text 2
 
 # SublimeSocket internal event definition
@@ -39,7 +39,12 @@ F_RUNWITHBUFFER_TARGET	= "target"
 F_RUNWITHBUFFER_VIEW		= "view"
 F_RUNWITHBUFFER_BODY		= "body"
 F_RUNWITHBUFFER_PATH		= "path"
+F_RUNWITHBUFFER_ID			= "id"
+F_RUNWITHBUFFER_ROWCOL		= "rowcol"
 SIZE_OF_BUFFER					= 100000
+
+
+REACTABLE_EVENT_ON_QUERY_COMPLETIONS = "on_query_completions"
 
 
 # internal APIs/
@@ -90,7 +95,9 @@ FOUNDATIONREACTOR_INTERVAL_DEFAULT	= 0
 
 REACTIVE_RESERVED_INTERVAL_EVENT	= ["on_modified", "on_selection_modified", "on_pre_save", "on_post_save"]
 REACTIVE_PREFIX_USERDEFINED_EVENT	= "event_"
+REACTIVE_REACTABLE_EVENT			= [REACTABLE_EVENT_ON_QUERY_COMPLETIONS]
 REACTIVE_FOUNDATION_EVENT = [SS_FOUNDATION_NOVIEWFOUND, SS_FOUNDATION_RUNWITHBUFFER]
+REACTIVE_CURRENT_COMPLETINGS = "currentcompletings"
 
 API_KEYVALUESTORE	= "kvs"
 KVS_SHOWALL				= "showAll"
@@ -133,6 +140,7 @@ RUNSHELL_REPLACE_At_s_At_s_At			= " "
 API_BROADCASTMESSAGE	= "broadcastMessage"
 API_MONOCASTMESSAGE		= "monocastMessage"
 OUTPUT_TARGET			= "target"
+OUTPUT_FORMAT			= "format"
 OUTPUT_MESSAGE		= "message"
 OUTPUT_DELIMITER	= "delimiter"
 OUTPUT_HEADER			= "header"
@@ -171,6 +179,24 @@ API_EVENTEMIT			= "eventEmit"
 EVENTEMIT_TARGET	= "target"
 EVENTEMIT_EVENT		= "event"
 
+API_CANCELCOMPLETION = "cancelCompletion"
+CANCELCOMPLETION_VIEW = "view"
+CANCELCOMPLETION_TRIGGER = "trigger"
+CANCELCOMPLETION_TRIGGER_BASEREDUCED = "trigger_basereduced"
+CANCELCOMPLETION_TRIGGERS = [CANCELCOMPLETION_TRIGGER_BASEREDUCED]
+
+API_PREPARECOMPLETION = "prepareCompletion"
+PREPARECOMPLETION_ID	= "id"
+
+API_RUNCOMPLETION	= "runCompletion"
+RUNCOMPLETION_VIEW	= "view"
+RUNCOMPLETION_COMPLETIONS = "completion"
+RUNCOMPLETION_FORMATHEAD = "formathead"
+RUNCOMPLETION_FORMATTAIL = "formattail"
+RUNCOMPLETION_ID	= "id"
+RUNCOMPLETION_LOCKCOUNT = "lockcount"
+
+
 API_OPENPAGE			= "openPage"
 OPENPAGE_IDENTITY = "identity"
 
@@ -194,9 +220,7 @@ VIEW_SELF					= "view"
 VIEW_EVENTS_RENEW	= ["on_new", "on_clone", "on_load", "on_modified", SS_EVENT_COLLECT] #list of acceptable-view renew event names.
 VIEW_EVENTS_DEL		= ["on_close"] #list of acceptable-view del event names.
 
-
 DICT_FILTERS			= "DICT_FILTERS"
-
 
 DICT_REACTORS			= "DICT_REACTORS"
 
