@@ -1,5 +1,5 @@
 # SublimeSocket
-##### version 1.2.2
+##### version 1.3.1
 **API Server** for the SublimeText.   
 Control SublimeTextAPI via WebSocket protocol.  
 ![alt roundabout](https://dl.dropbox.com/u/36583594/2013%3A04%3A05%201-17-34/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202013-04-05%2013.27.48.png)  
