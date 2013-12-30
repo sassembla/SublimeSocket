@@ -543,20 +543,7 @@ class SublimeWSServer:
 					# get data from view-buffer
 					bodyView = eventParam[SublimeSocketAPISettings.F_RUNWITHBUFFER_VIEW]
 
-					currentRegion = sublime.Region(0, 0)
-
-					# continue until size not changed.
-					before = -1
-					count = 1
-
-					while True:
-						if currentRegion.b == before:
-							break
-
-						before = currentRegion.b
-						currentRegion = bodyView.word(sublime.Region(0, SublimeSocketAPISettings.SIZE_OF_BUFFER * count))
-
-						count = count + 1
+					currentRegion = sublime.Region(0, bodyView.size())
 
 					body = bodyView.substr(bodyView.word(currentRegion))
 					path = bodyView.file_name()
