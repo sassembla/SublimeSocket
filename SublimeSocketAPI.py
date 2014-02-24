@@ -662,7 +662,7 @@ class SublimeSocketAPI:
 
 
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SHOWTOOLTIP_VIEW, SublimeSocketAPISettings.SHOWTOOLTIP_NAME)
-		if not view:
+		if view == None:
 			return
 
 		def getItemKey(item):
@@ -739,7 +739,7 @@ class SublimeSocketAPI:
 			del params[SublimeSocketAPISettings.SCROLLTO_COUNT]
 
 		(view, _, _) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SCROLLTO_VIEW, SublimeSocketAPISettings.SCROLLTO_NAME)
-		if not view:
+		if view == None:
 			return
 
 		if SublimeSocketAPISettings.SCROLLTO_LINE in params:
@@ -786,7 +786,7 @@ class SublimeSocketAPI:
 			code = compile(transformerCode, "", "exec")
 
 		else:
-			assert False, "no resource found for transform. transform require '' or '' params."
+			assert False, "no resource found for transform. transform require 'transformerpath' or 'source' params."
 
 		assert code, "no transformer generated. failed to generate from:"+transformerName
 
@@ -811,7 +811,7 @@ class SublimeSocketAPI:
 
 		before = sys.stdout
 		try:
-			def output(paramDict):
+			def output(self, paramDict):
 				print(start)
 				iterated = False
 				for key, val in paramDict.items():
@@ -831,8 +831,7 @@ class SublimeSocketAPI:
 			sys.stdout = TransformerStream(result)
 		
 			# run transformer.py DSL.
-			print("transformのexecが古い")
-			# exec(code, {"inputs":params, "keys":list(params), "output":output}, None)
+			exec(code, {"inputs":paerams, "keys":list(params), "output":output}, None)
 
 			
 		except Exception as e:
@@ -1310,7 +1309,7 @@ class SublimeSocketAPI:
 		assert SublimeSocketAPISettings.SELECTEDREGIONS_SELECTEDS in params, "selectedRegions require 'selecteds' param."
 		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SELECTEDREGIONS_VIEW, SublimeSocketAPISettings.SELECTEDREGIONS_NAME)
-		if not view:
+		if view == None:
 			return
 
 		isExactly = True
@@ -1552,31 +1551,30 @@ class SublimeSocketAPI:
 
 		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.VIEWEMIT_VIEW, SublimeSocketAPISettings.VIEWEMIT_NAME)
-		if not view:
+		if view == None:
 			return
 
-		if view:
-			if not self.isExecutableWithDelay(SublimeSocketAPISettings.SS_FOUNDATION_VIEWEMIT, identity, delay):
-				pass
+		if not self.isExecutableWithDelay(SublimeSocketAPISettings.SS_FOUNDATION_VIEWEMIT, identity, delay):
+			pass
 
-			else:
-				body = self.editorAPI.bodyOfView(view)
+		else:
+			body = self.editorAPI.bodyOfView(view)
 
-				modifiedPath = path.replace(":","&").replace("\\", "/")
+			modifiedPath = path.replace(":","&").replace("\\", "/")
 
-				# get modifying line num
-				rowColStr = self.editorAPI.selectionAsStr(view)
-				
-				SushiJSONParser.runSelectors(
-					params, 
-					SublimeSocketAPISettings.VIEWEMIT_INJECTIONS, 
-					[body, path, name, modifiedPath, rowColStr, identity],
-					self.runAPI
-				)
+			# get modifying line num
+			rowColStr = self.editorAPI.selectionAsStr(view)
+			
+			SushiJSONParser.runSelectors(
+				params, 
+				SublimeSocketAPISettings.VIEWEMIT_INJECTIONS, 
+				[body, path, name, modifiedPath, rowColStr, identity],
+				self.runAPI
+			)
 
 	def modifyView(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.MODIFYVIEW_VIEW, SublimeSocketAPISettings.MODIFYVIEW_NAME)
-		if not view:
+		if view == None:
 			return
 
 		line = 0
@@ -1615,10 +1613,9 @@ class SublimeSocketAPI:
 	## generate selection to view
 	def setSelection(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SETSELECTION_VIEW, SublimeSocketAPISettings.SETSELECTION_NAME)
-		if not view:
-			return
 
-		assert view, "setSelection require 'view' or 'name' param."
+		if view == None:
+			return
 		
 		assert SublimeSocketAPISettings.SETSELECTION_SELECTIONS in params, "setSelection require 'selections' param."
 		
@@ -1671,7 +1668,7 @@ class SublimeSocketAPI:
 
 	def clearSelection(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.CLEARSELECTION_VIEW, SublimeSocketAPISettings.CLEARSELECTION_NAME)
-		if not view:
+		if view == None:
 			return
 
 		cleards = self.editorAPI.clearSelectionOfView(view)
@@ -1720,7 +1717,7 @@ class SublimeSocketAPI:
 		
 		
 		# add region
-		if view:
+		if view != None:
 			regions = []
 			regions.append(self.editorAPI.getLineRegion(view, line))
 
@@ -1917,7 +1914,7 @@ class SublimeSocketAPI:
 	def cancelCompletion(self, params):
 		(view, _, _) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.CANCELCOMPLETION_VIEW, SublimeSocketAPISettings.CANCELCOMPLETION_NAME)
 		
-		if view:
+		if view != None:
 			# hide completion
 			self.editorAPI.runCommandOnView(view, "hide_auto_complete")
 
@@ -1934,7 +1931,7 @@ class SublimeSocketAPI:
 		assert SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS in params, "runCompletion require 'completion' param."
 		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.RUNCOMPLETION_VIEW, SublimeSocketAPISettings.RUNCOMPLETION_NAME)
-		if not view:
+		if view == None:
 			return
 
 		
@@ -1977,7 +1974,7 @@ class SublimeSocketAPI:
 
 	def forcelySave(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.FORCELYSAVE_VIEW, SublimeSocketAPISettings.FORCELYSAVE_NAME)
-		if not view:
+		if view == None:
 			return
 
 		self.editorAPI.runCommandOnView(view, 'forcely_save')
@@ -2166,7 +2163,7 @@ class SublimeSocketAPI:
 				deletedRegionIdentities = []
 				for regionIdentity in targetRegionsDict:
 					(view, _) = self.internal_detectViewInstance(path)
-					if view:
+					if view != None:
 						self.editorAPI.removeRegionFromView(view, regionIdentity)
 
 						deletedRegionIdentities.append(regionIdentity)
@@ -2259,7 +2256,7 @@ class SublimeSocketAPI:
 			path = self.internal_detectViewPath(view)
 
 
-		if view and path:
+		if view != None and path:
 			return (view, path, name)
 		else:
 			return (None, None, None)
