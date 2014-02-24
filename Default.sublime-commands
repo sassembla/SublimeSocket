@@ -1,26 +1,38 @@
 [
     {
         "caption": "SublimeSocket: on",
-        "command": "socketon"
+        "command": "socket_on"
     },
     
     {
-        "caption": "SublimeSocket: on > open preference",
-        "command": "on_then_openpref"
+        "caption": "SublimeSocket: restart server (close transfer)",
+        "command": "socket_restart"
     },
-
-    {
-        "caption": "SublimeSocket: open preference",
-        "command": "openpreference"
-    },
-
-    {
-        "caption": "SublimeSocket: status",
-        "command": "statuscheck"
-    },
-
+    
     {
         "caption": "SublimeSocket: off",
-        "command": "socketoff"
+        "command": "socket_off"
+    },
+
+    {
+        "caption": "SublimeSocket: on > test",
+        "command": "socket_on_then_test"
+    },
+
+    {
+        "caption": "SublimeSocket: transfer: information",
+        "command": "transfer_info"
+    },
+
+
+    {
+        "caption": "SublimeSocket: kvs: show",
+        "command": "kvs_show"
+    },
+
+    {
+        "caption": "SublimeSocket: kvs: flush",
+        "command": "kvs_flush"
     }
+
 ]

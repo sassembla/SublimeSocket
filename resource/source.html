@@ -110,6 +110,64 @@
         
         <div>
           <select multiple="multiple" class="span9 offset2" style="height:280px" onchange="setter.set(this[this.selectedIndex].value)">
+          <option>
+ss@テストランナー/runTests:
+{
+    "path": "/Users/highvision/Library/Application Support/Sublime Text 3/Packages/SublimeSocket3/resource/tests/tests.subs"
+}
+          </option>
+          <option>
+ss@改行入りの文字列のフィルタチェック/defineFilter:
+{
+    "name": "filter_13/12/04 18:16:49",
+    "patterns": [
+        {
+            "(.*)dummyline": {
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "should be 1/2:groups[0] in filterSource[]/."
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "^dummyline": {
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "dummy"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "dotall":true
+}
+->filtering:
+{
+    "name": "filter_13/12/04 18:16:49",
+    "source": "1
+2 dummyline",
+    "debug":false
+}
+->assertResult:
+{
+    "id": "contains value",
+    "contains": {
+        "runFiltering": [
+            {
+                "filter_13/12/04 18:16:49": {
+                    "message": "should be 1/2:1\n2  in 1\n2 dummyline/."
+                }
+            }
+        ]
+    },
+    "message": "notmatch."
+}
+          </option>
             <option>
 ss@monocastMessage:
 {
@@ -825,7 +883,7 @@ ss@Run setting on folder./runSetting:
             </option>
 
             <option>
-ss@Define filter only./defineFilter:
+ss@フィルタの定義を行う/defineFilter:
 {
     "name": "s",
     "patterns": [
@@ -833,19 +891,19 @@ ss@Define filter only./defineFilter:
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
                 "selectors": [
                     {
-                        "eval": [
-                            "sublime.message_dialog('onlySetFilter groups[0]')"
-                        ]
+                        "showAtLog": {
+                            "message": "groups[0]"
+                        }
                     }
                 ]
             }
         }
     ]
-}   
+}  
             </option>
 
             <option>
-ss@Set filter for specific case, then show dialog by run case with filter/defineFilter:
+ss@フィルタ定義と実行/defineFilter:
 {
     "name": "s",
     "patterns": [
@@ -853,12 +911,9 @@ ss@Set filter for specific case, then show dialog by run case with filter/define
             "-----CompilerOutput:-stdout--exitcode: (.+?)--.": {
                 "selectors": [
                     {
-                        "eval": [
-                            "sublime.message_dialog('singleParam filterSource[]')",
-                            "sublime.message_dialog('singleParamgroups[0]')",
-                            "sublime.message_dialog('2param groups[0], filterSource[]')",
-                            "sublime.message_dialog('multiparam groups[0], filterSource[], groups[0], filterSource[]')"
-                        ]
+                        "showAtLog": {
+                            "message": "filterSource[], groups[0]"
+                        }
                     }
                 ]
             }
@@ -934,23 +989,10 @@ ss@When modified, broadCastMessage./setReactor:
     "interval": 100
 }
             </option>
-
-            <option>
-ss@Show dialog on SublimeText./eval:
-[
-    "sublime.message_dialog('show dialog from WebSocket Client')"
-]
-            </option>
-            
-            <option>
-ss@Add region to CurrentFile's line 20./eval:
-[
-    "self.getLineCount_And_SetToArray(active_view, 20, lines)",
-    "regions.append(active_view.line(lines[0]))",
-    "active_view.add_regions('hereComes', regions, 'comment', 'dot', sublime.DRAW_OUTLINED)"
-]
-            </option>
-
+ss@ログ出力HelloWorld/showAtLog:
+{
+    "message": "hello world!"
+}
           </select>
         </div>
         

@@ -1,6 +1,0 @@
-
-
-ss@monocastMessage:{
-	"message": "日本語",
-	"target": "sublimesocketpreference"
-}
