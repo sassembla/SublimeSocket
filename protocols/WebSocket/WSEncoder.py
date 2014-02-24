@@ -133,11 +133,11 @@ class WSEncoder:
 		currentByteArray = bytearray()
 		# add length param
 		if length < 126:
-			currentByteArray = basebytes + bytes(chr((mask << 7) | length), 'utf-8')
+			currentByteArray = basebytes + bytes(chr((mask << 7) | length))
 		elif length < (1 << 16): # 65536
-			currentByteArray = basebytes + bytes(chr((mask << 7) | 0x7e), 'utf-8') + struct.pack('!H', length)
+			currentByteArray = basebytes + bytes(chr((mask << 7) | 0x7e)) + struct.pack('!H', length)
 		elif length < (1 << 63): # 9223372036854775808
-			currentByteArray = basebytes + bytes(chr((mask << 7) | 0x7f), 'utf-8') + struct.pack('!Q', length)
+			currentByteArray = basebytes + bytes(chr((mask << 7) | 0x7f)) + struct.pack('!Q', length)
 		else:
 			raise ValueError('Frame too large')
 

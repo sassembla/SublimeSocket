@@ -120,7 +120,7 @@ class EditorAPI:
 			view.run_command(command)
 
 	def closeView(self, view):
-		view.close()
+		self.runCommandOnView(view, "forcely_close")
 
 	def viewSize(self, view):
 		return view.size()

@@ -317,8 +317,19 @@ class ClearSelectionCommand(sublime_plugin.TextCommand):
     self.view.sel().clear()
 
 
-class ForcelySave(sublime_plugin.TextCommand):
+class ForcelySaveCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     self.view.run_command("save")
+    
 
+# not work in ST2
+# class ForcelyCloseCommand(sublime_plugin.TextCommand):
+#   def run(self, edit):
+#     self.view.run_command("close file")
+#     self.view.run_command("close File")
+#     self.view.run_command("close_File")
+#     self.view.run_command("closeFile")
+#     self.view.run_command("CloseFile")
+#     self.view.run_command("Close File")
+#     self.view.run_command("close")
     
