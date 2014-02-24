@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import struct, array
 
-import PythonSwitch
+from PythonSwitch import PythonSwitch
 
 # Protocole version	see-> http://tools.ietf.org/html/rfc6455
 VERSION = 13

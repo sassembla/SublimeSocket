@@ -2,7 +2,7 @@
 import SublimeSocketAPISettings
 
 from .WSEncoder import WSEncoder
-import PythonSwitch
+from PythonSwitch import PythonSwitch
 
 # Protocole version	see-> http://tools.ietf.org/html/rfc6455
 VERSION = 13

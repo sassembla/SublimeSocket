@@ -20,7 +20,7 @@ from editorAPIs.SublimeText.EditorAPI import EditorAPI
 
 import SublimeSocketAPISettings
 
-import parserImpl.SushiJSON
+from parserImpl import SushiJSON
 from parserImpl.SushiJSON import SushiJSONParser
 from parserImpl.SushiJSON import SushiJSONTestParser
 
@@ -67,207 +67,208 @@ class SublimeSocketAPI:
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, clientId=None):
-						
-  		# python-switch
-		for case in PythonSwitch(command):
-			if case(SublimeSocketAPISettings.API_CONNECTEDCALL):
-				self.server.transferConnected(clientId)
-				break
+		
+		def runInMainThread():		
+	  		# python-switch
+			for case in PythonSwitch(command):
+				if case(SublimeSocketAPISettings.API_CONNECTEDCALL):
+					self.server.transferConnected(clientId)
+					break
 
-			if case(SushiJSON.SETTESTBEFOREAFTER_BEFORESELECTORS):
-				SushiJSONParser.runSelectors(
-					params,
-					[],
-					[],
-					self.runAPI
-				)
-				break
-				
-			if case(SushiJSON.SETTESTBEFOREAFTER_AFTERSELECTORS):
-				SushiJSONParser.runSelectors(
-					params,
-					[],
-					[],
-					self.runAPI
-				)
-				break
+				if case(SushiJSON.SETTESTBEFOREAFTER_BEFORESELECTORS):
+					SushiJSONParser.runSelectors(
+						params,
+						[],
+						[],
+						self.runAPI
+					)
+					break
+					
+				if case(SushiJSON.SETTESTBEFOREAFTER_AFTERSELECTORS):
+					SushiJSONParser.runSelectors(
+						params,
+						[],
+						[],
+						self.runAPI
+					)
+					break
 
-			if case(SublimeSocketAPISettings.API_CHANGEIDENTITY):
-				self.changeIdentity(params, clientId)
-				break
+				if case(SublimeSocketAPISettings.API_CHANGEIDENTITY):
+					self.changeIdentity(params, clientId)
+					break
 
-			if case(SublimeSocketAPISettings.API_ASSERTRESULT):
-				self.assertResult(params)
-				break
+				if case(SublimeSocketAPISettings.API_ASSERTRESULT):
+					self.assertResult(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_AFTERASYNC):
-				self.afterAsync(params)
-				break
+				if case(SublimeSocketAPISettings.API_AFTERASYNC):
+					self.afterAsync(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_WAIT):
-				self.wait(params)
-				break
+				if case(SublimeSocketAPISettings.API_WAIT):
+					self.wait(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_COUNTUP):
-				self.countUp(params)
-				break			
+				if case(SublimeSocketAPISettings.API_COUNTUP):
+					self.countUp(params)
+					break			
 
-			if case(SublimeSocketAPISettings.API_RESETCOUNTS):
-				self.resetCounts(params)
-				break
+				if case(SublimeSocketAPISettings.API_RESETCOUNTS):
+					self.resetCounts(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_RUNSUSHIJSON):
-				self.runSushiJSON(params)
-				break
+				if case(SublimeSocketAPISettings.API_RUNSUSHIJSON):
+					self.runSushiJSON(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_TEARDOWN):
-				self.server.tearDown()
-				break
+				if case(SublimeSocketAPISettings.API_TEARDOWN):
+					self.server.tearDown()
+					break
 
-			if case(SublimeSocketAPISettings.API_CREATEBUFFER):
-				self.createBuffer(params)
-				break
+				if case(SublimeSocketAPISettings.API_CREATEBUFFER):
+					self.createBuffer(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_OPENFILE):
-				self.openFile(params)
-				break
+				if case(SublimeSocketAPISettings.API_OPENFILE):
+					self.openFile(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_CLOSEFILE):
-				self.closeFile(params)
-				break
+				if case(SublimeSocketAPISettings.API_CLOSEFILE):
+					self.closeFile(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_CLOSEALLBUFFER):
-				self.closeAllBuffer(params)
-				break
+				if case(SublimeSocketAPISettings.API_CLOSEALLBUFFER):
+					self.closeAllBuffer(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SELECTEDREGIONS):
-				self.selectedRegions(params)
-				break
+				if case(SublimeSocketAPISettings.API_SELECTEDREGIONS):
+					self.selectedRegions(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_COLLECTVIEWS):
-				self.collectViews(params)
-				break
-				
-			if case(SublimeSocketAPISettings.API_DEFINEFILTER):
-				self.defineFilter(params)
-				break
+				if case(SublimeSocketAPISettings.API_COLLECTVIEWS):
+					self.collectViews(params)
+					break
+					
+				if case(SublimeSocketAPISettings.API_DEFINEFILTER):
+					self.defineFilter(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_FILTERING):
-				self.filtering(params)
-				break
+				if case(SublimeSocketAPISettings.API_FILTERING):
+					self.filtering(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SETEVENTREACTOR):
-				self.setEventReactor(params)
-				break
-				
-			if case(SublimeSocketAPISettings.API_SETVIEWREACTOR):
-				self.setViewReactor(params)
-				break
+				if case(SublimeSocketAPISettings.API_SETEVENTREACTOR):
+					self.setEventReactor(params)
+					break
+					
+				if case(SublimeSocketAPISettings.API_SETVIEWREACTOR):
+					self.setViewReactor(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_RESETREACTORS):
-				self.resetReactors(params)
-				break
+				if case(SublimeSocketAPISettings.API_RESETREACTORS):
+					self.resetReactors(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_VIEWEMIT):
-				self.viewEmit(params)
-				break
+				if case(SublimeSocketAPISettings.API_VIEWEMIT):
+					self.viewEmit(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_MODIFYVIEW):
-				self.modifyView(params)
-				break
+				if case(SublimeSocketAPISettings.API_MODIFYVIEW):
+					self.modifyView(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SETSELECTION):
-				self.setSelection(params)
-				break
+				if case(SublimeSocketAPISettings.API_SETSELECTION):
+					self.setSelection(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_CLEARSELECTION):
-				self.clearSelection(params)
-				break
+				if case(SublimeSocketAPISettings.API_CLEARSELECTION):
+					self.clearSelection(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_RUNSHELL):
-				self.runShell(params)
-				break
+				if case(SublimeSocketAPISettings.API_RUNSHELL):
+					self.runShell(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_BROADCASTMESSAGE):
-				self.broadcastMessage(params)
-				break
+				if case(SublimeSocketAPISettings.API_BROADCASTMESSAGE):
+					self.broadcastMessage(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_MONOCASTMESSAGE):
-				self.monocastMessage(params)
-				break
+				if case(SublimeSocketAPISettings.API_MONOCASTMESSAGE):
+					self.monocastMessage(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SHOWATLOG):
-				self.showAtLog(params)
-				break
+				if case(SublimeSocketAPISettings.API_SHOWATLOG):
+					self.showAtLog(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SHOWDIALOG):
-				self.showDialog(params)
-				break
+				if case(SublimeSocketAPISettings.API_SHOWDIALOG):
+					self.showDialog(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SHOWTOOLTIP):
-				self.showToolTip(params)
-				break
+				if case(SublimeSocketAPISettings.API_SHOWTOOLTIP):
+					self.showToolTip(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SCROLLTO):
-				self.scrollTo(params)
-				break
+				if case(SublimeSocketAPISettings.API_SCROLLTO):
+					self.scrollTo(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_TRANSFORM):
-				self.transform(params)
-				break
+				if case(SublimeSocketAPISettings.API_TRANSFORM):
+					self.transform(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_APPENDREGION):
-				self.appendRegion(params)
-				break
+				if case(SublimeSocketAPISettings.API_APPENDREGION):
+					self.appendRegion(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_NOTIFY):
-				self.notify(params)
-				break
+				if case(SublimeSocketAPISettings.API_NOTIFY):
+					self.notify(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_GETALLFILEPATH):
-				self.getAllFilePath(params)
-				break
+				if case(SublimeSocketAPISettings.API_GETALLFILEPATH):
+					self.getAllFilePath(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_READFILE):
-				self.readFile(params)
-				break
+				if case(SublimeSocketAPISettings.API_READFILE):
+					self.readFile(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_EVENTEMIT):
-				self.eventEmit(params)
-				break
+				if case(SublimeSocketAPISettings.API_EVENTEMIT):
+					self.eventEmit(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_CANCELCOMPLETION):
-				self.cancelCompletion(params)
-				break
+				if case(SublimeSocketAPISettings.API_CANCELCOMPLETION):
+					self.cancelCompletion(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_RUNCOMPLETION):
-				self.runCompletion(params)
-				break
+				if case(SublimeSocketAPISettings.API_RUNCOMPLETION):
+					self.runCompletion(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_FORCELYSAVE):
-				self.forcelySave(params)
-				break
+				if case(SublimeSocketAPISettings.API_FORCELYSAVE):
+					self.forcelySave(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SETSUBLIMESOCKETWINDOWBASEPATH):
-				self.setSublimeSocketWindowBasePath(params)
-				break
+				if case(SublimeSocketAPISettings.API_SETSUBLIMESOCKETWINDOWBASEPATH):
+					self.setSublimeSocketWindowBasePath(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_SHOWSTATUSMESSAGE):
-				self.showStatusMessage(params)
-				break
+				if case(SublimeSocketAPISettings.API_SHOWSTATUSMESSAGE):
+					self.showStatusMessage(params)
+					break
 
-			if case(SublimeSocketAPISettings.API_ERASEALLREGIONS):
-				self.eraseAllRegions(params)
-				break
+				if case(SublimeSocketAPISettings.API_ERASEALLREGIONS):
+					self.eraseAllRegions(params)
+					break
 
-			if case (SublimeSocketAPISettings.API_VERSIONVERIFY):
-				self.versionVerify(params, clientId)
-				break
+				if case (SublimeSocketAPISettings.API_VERSIONVERIFY):
+					self.versionVerify(params, clientId)
+					break
 
-			if case():
-				self.editorAPI.printMessage("unknown command "+ command + " /")
-				break
-				
+				if case():
+					self.editorAPI.printMessage("unknown command "+ command + " /")
+					break
+		self.editorAPI.runAfterDelay(lambda: runInMainThread(), 0)
 
 	def runReactor(self, reactorType, params, eventParams):
 		if SushiJSON.SUSHIJSON_KEYWORD_INJECTS in params:
@@ -902,7 +903,7 @@ class SublimeSocketAPI:
 			self.editorAPI.packagePath() + "/"+SublimeSocketAPISettings.MY_PLUGIN_PATHNAME+"/")
 		
 		data = ""
-		with open(filePath, encoding='utf8') as f:
+		with open(filePath) as f:
 			data = f.read()
 
 		
@@ -1988,17 +1989,20 @@ class SublimeSocketAPI:
 
 		
 	def setSublimeSocketWindowBasePath(self, params):
-		basepath = self.editorAPI.getFileName()
-		if basepath:
-			basename = os.path.basename(basepath)
-			self.sublimeSocketWindowBasePath = basepath
-			
-			SushiJSONParser.runSelectors(
-				params,
-				SublimeSocketAPISettings.SETSUBLIMESOCKETWINDOWBASEPATH_INJECTIONS,
-				[basepath, basename],
-				self.runAPI
-			)
+		def runInMainThread():
+			basepath = self.editorAPI.getFileName()
+			if basepath:
+				basename = os.path.basename(basepath)
+				self.sublimeSocketWindowBasePath = basepath
+				
+				SushiJSONParser.runSelectors(
+					params,
+					SublimeSocketAPISettings.SETSUBLIMESOCKETWINDOWBASEPATH_INJECTIONS,
+					[basepath, basename],
+					self.runAPI
+				)
+		self.editorAPI.runAfterDelay(lambda: runInMainThread(), 0)
+
 		
 		
 	## verify SublimeSocket API-version and SublimeSocket version

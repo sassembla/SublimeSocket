@@ -147,7 +147,7 @@ class WSClient:
 		handshakeMessage = handshakeMessage + currentBytes + '\r\n'
 		handshakeMessage = handshakeMessage + '-----------------\r\n'
 		
-		bufferdBytes = bytes(currentBytes, 'utf-8')
+		bufferdBytes = bytes(currentBytes)
 		self.send(bufferdBytes)
 		
 

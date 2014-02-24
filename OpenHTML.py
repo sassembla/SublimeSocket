@@ -41,7 +41,7 @@ class Openhtml(sublime_plugin.TextCommand):
     html = ""
 
     # prepare html contents    
-    with open(sourcePath, mode='r', encoding='utf-8') as htmlFile:
+    with open(sourcePath, mode='r') as htmlFile:
         html = htmlFile.read()
         
     # replace host:port
@@ -55,7 +55,7 @@ class Openhtml(sublime_plugin.TextCommand):
     html = html.replace(SublimeSocketAPISettings.SS_VERSION_REPLACE, SublimeSocketAPISettings.SSAPI_VERSION)
 
     # generate preference
-    with open(outputPath, mode='w', encoding='utf-8') as htmlFile:
+    with open(outputPath, mode='w') as htmlFile:
         htmlFile.write(html)
         
     # set Target-App to open Preference.html
