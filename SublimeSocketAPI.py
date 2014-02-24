@@ -20,9 +20,9 @@ from editorAPIs.SublimeText.EditorAPI import EditorAPI
 
 import SublimeSocketAPISettings
 
-
-import parser
-# from parser.SushiJSON import SushiJSONTestParser
+import parserImpl.SushiJSON
+from parserImpl.SushiJSON import SushiJSONParser
+from parserImpl.SushiJSON import SushiJSONTestParser
 
 ## API Parse the action
 class SublimeSocketAPI:

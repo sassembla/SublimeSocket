@@ -84,7 +84,7 @@ class EditorAPI:
 		return sublime.Region(theFrom, theTo)
 
 	def statusMessage(self, message):
-		sublime.status_message(message)
+		self.runAfterDelay(lambda: sublime.status_message(message), 0)
 
 	def printMessage(self, message):
 		print(SublimeSocketAPISettings.LOG_prefix, message)

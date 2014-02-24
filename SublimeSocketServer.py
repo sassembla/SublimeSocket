@@ -147,9 +147,12 @@ class SublimeSocketServer:
 	# other series
 
 	def onTransferRenew(self):
-		settingCommands = self.api.editorAPI.loadSettings("onTransferRenew")
-		for command in settingCommands:
-			self.api.runAPI(command, None)
+		def runInMainThread () :
+			settingCommands = self.api.editorAPI.loadSettings("onTransferRenew")
+			for command in settingCommands:
+				self.api.runAPI(command, None)
+
+		self.api.editorAPI.runAfterDelay(lambda: runInMainThread(), 0)
 
 
 
