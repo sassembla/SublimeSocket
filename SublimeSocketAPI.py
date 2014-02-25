@@ -831,7 +831,7 @@ class SublimeSocketAPI:
 			sys.stdout = TransformerStream(result)
 		
 			# run transformer.py DSL.
-			exec(code, {"inputs":paerams, "keys":list(params), "output":output}, None)
+			exec(code, {"inputs":params, "keys":list(params), "output":"output"}, None)
 
 			
 		except Exception as e:
