@@ -33,6 +33,27 @@ beforeafter>thebeforeafterselectors/selector: {
 // }
 
 
+// test>createBufferでコンテンツあるやつが存在してないのでは？/createBuffer: {
+//     "name": "createBufferWithContents.txt",
+//     "contents": "haha\nhehe\nfufu",
+//     "selectors": [
+//         {
+//             "showAtLog<-name": {
+//                 "format": "[name] contents added."
+//             }
+//         }
+//     ]
+// }->assertResult: {
+//     "id": "create buffer with contents.",
+//     "contains": {
+//         "showAtLog": {
+//             "output": "createBufferWithContents.txt contents added."
+//         }
+//     },
+//     "description": "not match."
+// }
+
+
 // test>regionを現在のviewに表示する/setViewReactor: {
 //     "target": "something",
 //     "react": "ss_f_noViewFound",
@@ -99,7 +120,7 @@ beforeafter>thebeforeafterselectors/selector: {
 // }
 
 
-// test>バッファを作り、appendRegionし、閉じて、eraseAllRegionssする/createBuffer: {
+// test>バッファを作り、appendRegionし、閉じて、eraseAllRegionsする/createBuffer: {
 //     "name": "bufferForAddRegionThenEraseAfterClosed.txt"
 // }->appendRegion: {
 //     "name": "bufferForAddRegionThenEraseAfterClosed.txt",
@@ -117,7 +138,7 @@ beforeafter>thebeforeafterselectors/selector: {
 //         }
 //     ]
 // }->assertResult: {
-//     "id": "eraseAllRegionss never run.",
+//     "id": "eraseAllRegions never run.",
 //     "contains": {
 //         "showAtLog": {
 //             "output": "{}"
@@ -125,91 +146,6 @@ beforeafter>thebeforeafterselectors/selector: {
 //     },
 //     "description": "not match."
 // }
-
-
-test>setSelectionと合わせて、toolTipの箇所にscrollする/openFile: {
-    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
-}->setViewReactor: {
-    "target": "someone",
-    "react": "ss_on_selection_modified_by_setselection",
-    "reactors": [
-        {
-            "showAtLog": {
-                "message": "ugoiteru"
-            }
-        },
-        {
-            "transform<-name, selecteds": {
-                "code": "
-name = inputs[\"name\"]\n
-tail = inputs[\"selecteds\"][0][1]\n
-output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
-                ",
-                "injects": {
-                    "name": "name",
-                    "tail": "tail",
-                    "message": "message"
-                },
-                "selectors": [
-                    {
-                        "showAtLog<-name, tail": {
-                            "format": "[name] and [tail]."
-                        }
-                    },
-                    {
-                        "showToolTip<-name, tail, message": {
-                            "injects": {
-                                "name": "name",
-                                "tail": "count",
-                                "message": "message"
-                            },
-                            "onselected": [
-                                {
-                                    "will show!": [
-                                        {
-                                            "showAtLog<-message": {
-                                                
-                                            }
-                                        }
-                                    ]
-                                    
-                                }
-                            ],
-                            "oncancelled": [],
-                            "finally": [
-                                {
-                                    "scrollTo<-name, count": {
-
-                                    }
-                                }
-                            ]
-                        }
-
-                    }
-                ]
-            }
-        }
-    ]
-}->setSelection: {
-    "name": "sample3.txt",
-    "selections": [
-        {
-            "from": 10,
-            "to": 11
-        }
-    ]
-}->assertResult: {
-    "id": "setSelection cause viewReactor, transform, showAtLog, then showToolTip.",
-    "contains": {
-        "showAtLog": {
-            "output": "sample3.txt and 11."
-        }
-    },
-    "description": "not match.",
-    "debug": true
-}->closeFile: {
-    "name": "sample3.txt"
-}
 
 
 // test>lineでscrollする/openFile: {
@@ -304,7 +240,7 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 //         }
 //     ]
 // }->assertResult: {
-//     "id": "toolTipShouldShow",
+//     "id": "inject free definied param.",
 //     "contains": {
 //         "showAtLog": {
 //             "output": "inject.txt"
@@ -337,65 +273,6 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 //     "contains": {
 //         "showAtLog": {
 //             "output": "hahaha, a, b"
-//         }
-//     },
-//     "description": "not match."
-// }
-
-
-// test>nestしたfilterでのバグ、selectorの変更が効かない、かと思ったが、injectsの非交換バグだった。/createBuffer: {
-//     "name": "nestedFilterCase.txt"
-// }->defineFilter: {
-//     "name": "quickfix",
-//     "filters": [
-//         {
-//             "(.*)1 (.*)2 ([0-9].*?)a3 (.*)4": {
-//                 "injects": {
-//                     "groups[3]": "name",
-//                     "groups[1]": "add",
-//                     "groups[2]": "to"
-//                 },
-//                 "selectors": [
-//                     {
-//                         "showToolTip<-name, add, to": {
-//                             "injects": {
-//                                 "name": "name",
-//                                 "add": "add",
-//                                 "to": "to"
-//                             },
-//                             "onselected": [
-//                                 {
-//                                     "fix?": [
-//                                         {
-//                                             "modifyView<-name, add, to": {
-                                                
-//                                             }
-//                                         },
-//                                         {
-//                                             "showAtLog<-add": {
-//                                                 "format": "the [add] will be add-ed."
-//                                             }
-//                                         }
-//                                     ]
-//                                 }
-//                             ],
-//                             "oncancelled": [
-                                
-//                             ]
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->filtering: {
-//     "name": "quickfix",
-//     "source": "the1 test2 4a3 nestedFilterCase.txt4"
-// }->assertResult: {
-//     "id": "inject works with out of APIDefined injection.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "the test will be add-ed."
 //         }
 //     },
 //     "description": "not match."
@@ -436,7 +313,7 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 //         }
 //     ]
 // }->assertResult: {
-//     "id": "transform uses the code made from json",
+//     "id": "transform uses the code made from json 2",
 //     "contains": {
 //         "showAtLog": {
 //             "output": "hereComes2"
@@ -446,125 +323,266 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 // }
 
 
-// test>transformでlistとdictを扱う/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->viewEmit: {
-//     "name": "sample.txt",
-//     "identity": "allParamTransformer",
-//     "selectors": [
-//         {
-//             "allValueInjectionのテスト/transform<-path, body": {
-//                 "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/listTransformer.py",
-//                 "selectors": [
-//                     {
-//                         "showToolTip<-name, onselected": {
-//                             "oncancelled": [
+    // test>setSelectionと合わせて、toolTipの箇所にscrollする/openFile: {
+    //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
+    // }->setViewReactor: {
+    //     "target": "someone",
+    //     "react": "ss_on_selection_modified_by_setselection",
+    //     "reactors": [
+    //         {
+    //             "transform<-name, selecteds": {
+    //                 "debug": true,
+    //                 "code": "
+    // name = inputs[\"name\"]\n
+    // tail = inputs[\"selecteds\"][0][1]\n
+    // output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
+    //                 ",
+    //                 "injects": {
+    //                     "name": "name",
+    //                     "tail": "tail",
+    //                     "message": "message"
+    //                 },
+    //                 "selectors": [
+    //                     {
+    //                         "showAtLog<-name, tail": {
+    //                             "format": "[name] and [tail]."
+    //                         }
+    //                     },
+    //                     {
+    //                         "showToolTip<-name, tail, message": {
+    //                             "injects": {
+    //                                 "name": "name",
+    //                                 "tail": "count",
+    //                                 "message": "message"
+    //                             },
+    //                             "onselected": [
+    //                                 {
+    //                                     "will show!": [
+    //                                         {
+    //                                             "showAtLog<-message": {
+                                                    
+    //                                             }
+    //                                         }
+    //                                     ]
+                                        
+    //                                 }
+    //                             ],
+    //                             "oncancelled": [],
+    //                             "finally": [
+    //                                 {
+    //                                     "scrollTo<-name, count": {
+
+    //                                     }
+    //                                 }
+    //                             ]
+    //                         }
+
+    //                     }
+    //                 ]
+    //             }
+    //         }
+    //     ]
+    // }->setSelection: {
+    //     "name": "sample3.txt",
+    //     "selections": [
+    //         {
+    //             "from": 10,
+    //             "to": 11
+    //         }
+    //     ]
+    // }->assertResult: {
+    //     "id": "setSelection cause viewReactor, transform, showAtLog, then showToolTip.",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "sample3.txt and 11."
+    //         }
+    //     },
+    //     "description": "not match.",
+    //     "debug": true
+    // }->closeFile: {
+    //     "name": "sample3.txt"
+    // }
+
+
+    // test>nestしたfilterでのバグ、selectorの変更が効かない、かと思ったが、injectsの非交換バグだった。/createBuffer: {
+    //     "name": "nestedFilterCase.txt"
+    // }->defineFilter: {
+    //     "name": "quickfix",
+    //     "filters": [
+    //         {
+    //             "(.*)1 (.*)2 ([0-9].*?)a3 (.*)4": {
+    //                 "injects": {
+    //                     "groups[3]": "name",
+    //                     "groups[1]": "add",
+    //                     "groups[2]": "to"
+    //                 },
+    //                 "selectors": [
+    //                     {
+    //                         "showToolTip<-name, add, to": {
+    //                             "injects": {
+    //                                 "name": "name",
+    //                                 "add": "add",
+    //                                 "to": "to"
+    //                             },
+    //                             "onselected": [
+    //                                 {
+    //                                     "fix?": [
+    //                                         {
+    //                                             "modifyView<-name, add, to": {
+                                                    
+    //                                             }
+    //                                         },
+    //                                         {
+    //                                             "showAtLog<-add": {
+    //                                                 "format": "the [add] will be add-ed."
+    //                                             }
+    //                                         }
+    //                                     ]
+    //                                 }
+    //                             ],
+    //                             "oncancelled": [
+                                    
+    //                             ]
+    //                         }
+    //                     }
+    //                 ]
+    //             }
+    //         }
+    //     ]
+    // }->filtering: {
+    //     "name": "quickfix",
+    //     "source": "the1 test2 4a3 nestedFilterCase.txt4"
+    // }->assertResult: {
+    //     "id": "inject works with out of APIDefined injection.",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "the test will be add-ed."
+    //         }
+    //     },
+    //     "description": "not match."
+    // }
+
+
+    // test>transformでlistとdictを扱う/openFile: {
+    //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+    // }->viewEmit: {
+    //     "name": "sample.txt",
+    //     "identity": "allParamTransformer",
+    //     "selectors": [
+    //         {
+    //             "allValueInjectionのテスト/transform<-path, body": {
+    //                 "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/listTransformer.py",
+    //                 "selectors": [
+    //                     {
+    //                         "showToolTip<-name, onselected": {
+    //                             "oncancelled": [
+                                    
+    //                             ]
+    //                         }
+    //                     }
+    //                 ],
+    //                 "debug": true
+    //             }
+    //         }
+    //     ]
+    // }->assertResult: {
+    //     "id": "transform with list and dict.",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "this is a"
+    //         }
+    //     },
+    //     "description": "not match."
+    // }->closeFile: {
+    //     "name": "sample.txt"
+    // }
+
+
+    // test>transformでparamsAをparamsBに変更する。/openFile: {
+    //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+    // }->viewEmit: {
+    //     "name": "sample.txt",
+    //     "identity": "allParamTransformer",
+    //     "selectors": [
+    //         {
+    //             "allValueInjectionのテスト、全要素を並べてtoolTipにする/transform<-": {
+    //                 "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/toolTipTransformer.py",
+    //                 "selectors": [
+    //                     {
+    //                         "showToolTip<-name, onselected, oncancelled": {
                                 
-//                             ]
-//                         }
-//                     }
-//                 ],
-//                 "debug": true
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "transform with list and dict.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "this is a"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+    //                         }
+    //                     }
+    //                 ],
+    //                 "debug": true
+    //             }
+    //         }
+    //     ]
+    // }->assertResult: {
+    //     "id": "APIName<- means all param injection.",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "here comes a as a daredevil!!"
+    //         }
+    //     },
+    //     "description": "not match.",
+    //     "debug": true
+    // }->closeFile: {
+    //     "name": "sample.txt"
+    // }
 
 
-// test>transformでparamsAをparamsBに変更する。/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->viewEmit: {
-//     "name": "sample.txt",
-//     "identity": "allParamTransformer",
-//     "selectors": [
-//         {
-//             "allValueInjectionのテスト、全要素を並べてtoolTipにする/transform<-": {
-//                 "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/toolTipTransformer.py",
-//                 "selectors": [
-//                     {
-//                         "showToolTip<-name, onselected, oncancelled": {
-                            
-//                         }
-//                     }
-//                 ],
-//                 "debug": true
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "APIName<- means all param injection.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "here comes a as a daredevil!!"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
-
-
-// test>quickFix的な機構のテスト、appendRegionからのToolTip、filterでの入力でコードを打ち込む。/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->defineFilter: {
-//     "name": "quickfix-adoptable-pattern",
-//     "filters": [
-//         {
-//             "^(.*)": {
-//                 "selectors": [
-//                     {
-//                         "showAtLog<-groups[0]": {
-//                             "format": "quickfix ready. [groups[0]]"
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->showToolTip: {
-//     "name": "sample.txt",
-//     "onselected": [
-//         {
-//             "sample": [
-//                 {
-//                     "transform<-selectedtitle": {
-//                         "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/setSelectedNameToFilter.py",
-//                         "selectors": [
-//                             {
-//                                 "filtering<-source": {
-//                                     "name": "quickfix-adoptable-pattern"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ]
-// }->assertResult: {
-//     "id": "set quickfix",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "quickfix ready. sample"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+    // test>quickFix的な機構のテスト、appendRegionからのToolTip、filterでの入力でコードを打ち込む。/openFile: {
+    //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+    // }->defineFilter: {
+    //     "name": "quickfix-adoptable-pattern",
+    //     "filters": [
+    //         {
+    //             "^(.*)": {
+    //                 "selectors": [
+    //                     {
+    //                         "showAtLog<-groups[0]": {
+    //                             "format": "quickfix ready. [groups[0]]"
+    //                         }
+    //                     }
+    //                 ]
+    //             }
+    //         }
+    //     ]
+    // }->showToolTip: {
+    //     "name": "sample.txt",
+    //     "onselected": [
+    //         {
+    //             "sample": [
+    //                 {
+    //                     "transform<-selectedtitle": {
+    //                         "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/setSelectedNameToFilter.py",
+    //                         "selectors": [
+    //                             {
+    //                                 "filtering<-source": {
+    //                                     "name": "quickfix-adoptable-pattern"
+    //                                 }
+    //                             }
+    //                         ]
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ],
+    //     "oncancelled": [
+            
+    //     ]
+    // }->assertResult: {
+    //     "id": "set quickfix",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "quickfix ready. sample"
+    //         }
+    //     },
+    //     "description": "not match."
+    // }->closeFile: {
+    //     "name": "sample.txt"
+    // }
 
 
 // test>viewEmitで別途injectを使う/createBuffer: {
@@ -1035,31 +1053,31 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 // }
 
 
-// test>openFileしてforcelySave/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->forcelySave: {
-//     "name": "sample.txt",
-//     "injects": {
-//         "name": "message"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {
-      
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "forcelySave with selectors",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "sample.txt"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+test>openFileしてforcelySave/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->forcelySave: {
+    "name": "sample.txt",
+    "injects": {
+        "name": "message"
+    },
+    "selectors": [
+        {
+            "showAtLog<-message": {
+   
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "forcelySave with selectors",
+    "contains": {
+        "showAtLog": {
+            "output": "sample.txt"
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
 // test>getAllFilePathとselectors/openFile: {
@@ -1688,202 +1706,202 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 // }
 
 
-// test>transormの応用例、2件のregionDataをそれぞれToolTipに変形する/setViewReactor: {
-//     "target": "containsregiontarget",
-//     "react": "ss_on_selection_modified_by_setselection",
-//     "reactors": [
-//         {
-//             "selectedRegions<-name, selecteds": {
-//                 "isexactly": false,
-//                 "selectors": [
-//                     {
-//                         "transform<-path, crossed": {
-//                             "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/containsRegionTargetTransformer.py",
-//                             "selectors": [
-//                                 {
-//                                     "showToolTip<-name, onselected, oncancelled": {
-                                        
-//                                     }
-//                                 }
-//                             ]
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->一行目のregion/appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "name": "sample.txt",
-//     "condition": "keyword"
-// }->2行目のregion/appendRegion: {
-//     "line": "2",
-//     "message": "test2",
-//     "name": "sample.txt",
-//     "condition": "keyword"
-// }->1行目と2行目のregionを選択/setSelection: {
-//     "name": "sample.txt",
-//     "selections": [
-//         {
-//             "from": 0,
-//             "to": 1
-//         },
-//         {
-//             "from": 2,
-//             "to": 3
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "show 2 regions messages in toolTip1. @a",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "here comes a as a daredevil!!"
-//         }
-//     },
-//     "description": "not match."
-// }->assertResult: {
-//     "id": "show 2 regions messages in toolTip2. @b",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "here comes b as a daredevil!!"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+//     // test>transormの応用例、2件のregionDataをそれぞれToolTipに変形する/setViewReactor: {
+//     //     "target": "containsregiontarget",
+//     //     "react": "ss_on_selection_modified_by_setselection",
+//     //     "reactors": [
+//     //         {
+//     //             "selectedRegions<-name, selecteds": {
+//     //                 "isexactly": false,
+//     //                 "selectors": [
+//     //                     {
+//     //                         "transform<-path, crossed": {
+//     //                             "transformerpath": "SUBLIMESOCKET_PATH:tests/testResources/containsRegionTargetTransformer.py",
+//     //                             "selectors": [
+//     //                                 {
+//     //                                     "showToolTip<-name, onselected, oncancelled": {
+                                            
+//     //                                     }
+//     //                                 }
+//     //                             ]
+//     //                         }
+//     //                     }
+//     //                 ]
+//     //             }
+//     //         }
+//     //     ]
+//     // }->openFile: {
+//     //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+//     // }->一行目のregion/appendRegion: {
+//     //     "line": "1",
+//     //     "message": "test",
+//     //     "name": "sample.txt",
+//     //     "condition": "keyword"
+//     // }->2行目のregion/appendRegion: {
+//     //     "line": "2",
+//     //     "message": "test2",
+//     //     "name": "sample.txt",
+//     //     "condition": "keyword"
+//     // }->1行目と2行目のregionを選択/setSelection: {
+//     //     "name": "sample.txt",
+//     //     "selections": [
+//     //         {
+//     //             "from": 0,
+//     //             "to": 1
+//     //         },
+//     //         {
+//     //             "from": 2,
+//     //             "to": 3
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "show 2 regions messages in toolTip1. @a",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "here comes a as a daredevil!!"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }->assertResult: {
+//     //     "id": "show 2 regions messages in toolTip2. @b",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "here comes b as a daredevil!!"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }->closeFile: {
+//     //     "name": "sample.txt"
+//     // }
 
 
-// test>試験的なtransormerの応用例、2件のregionDataをToolTipに変形、内容は空/setViewReactor: {
-//     "target": "containsregiontarget",
-//     "react": "ss_on_selection_modified_by_setselection",
-//     "reactors": [
-//         {
-//             "selectedRegions<-name, selecteds": {
-//                 "selectors": [
-//                     {
-//                         "showToolTip<-name, messages": {
-//                             "transformToToolTip": "messages",
-//                             "onselected": [
-//                                 {
-//                                     "sample": [
-                                        
-//                                     ]
-//                                 }
-//                             ],
-//                             "oncancelled": [
-                                
-//                             ]
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "name": "sample.txt",
-//     "condition": "keyword"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test2",
-//     "name": "sample.txt",
-//     "condition": "keyword"
-// }->setSelection: {
-//     "name": "sample.txt",
-//     "selections": [
-//         {
-//             "from": 0,
-//             "to": 1
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "show 2 regions messages in toolTip, with empty",
-//     "notcontains": {
-//         "showAtLog": {
-//             "output": "hereComes!"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+//     // test>試験的なtransormerの応用例、2件のregionDataをToolTipに変形、内容は空/setViewReactor: {
+//     //     "target": "containsregiontarget",
+//     //     "react": "ss_on_selection_modified_by_setselection",
+//     //     "reactors": [
+//     //         {
+//     //             "selectedRegions<-name, selecteds": {
+//     //                 "selectors": [
+//     //                     {
+//     //                         "showToolTip<-name, messages": {
+//     //                             "transformToToolTip": "messages",
+//     //                             "onselected": [
+//     //                                 {
+//     //                                     "sample": [
+                                            
+//     //                                     ]
+//     //                                 }
+//     //                             ],
+//     //                             "oncancelled": [
+                                    
+//     //                             ]
+//     //                         }
+//     //                     }
+//     //                 ]
+//     //             }
+//     //         }
+//     //     ]
+//     // }->openFile: {
+//     //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+//     // }->appendRegion: {
+//     //     "line": "1",
+//     //     "message": "test",
+//     //     "name": "sample.txt",
+//     //     "condition": "keyword"
+//     // }->appendRegion: {
+//     //     "line": "1",
+//     //     "message": "test2",
+//     //     "name": "sample.txt",
+//     //     "condition": "keyword"
+//     // }->setSelection: {
+//     //     "name": "sample.txt",
+//     //     "selections": [
+//     //         {
+//     //             "from": 0,
+//     //             "to": 1
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "show 2 regions messages in toolTip, with empty",
+//     //     "notcontains": {
+//     //         "showAtLog": {
+//     //             "output": "hereComes!"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }->closeFile: {
+//     //     "name": "sample.txt"
+//     // }
 
 
-// test>setSelectionでselectedRegionsを引き起こし、tooltipへと値を引き継ぐ/setViewReactor: {
-//     "target": "containsregiontarget",
-//     "react": "ss_on_selection_modified_by_setselection",
-//     "reactors": [
-//         {
-//             "selectedRegions<-name, selecteds": {
-//                 "isexactly": false,
-//                 "selectors": [
-//                     {
-//                         "showToolTip<-name": {
-//                             "onselected": [
-//                                 {
-//                                     "test1": [
-//                                         {
-//                                             "transform<-name": {
-//                                                 "code": "
-// import os\n
+//     // test>setSelectionでselectedRegionsを引き起こし、tooltipへと値を引き継ぐ/setViewReactor: {
+//     //     "target": "containsregiontarget",
+//     //     "react": "ss_on_selection_modified_by_setselection",
+//     //     "reactors": [
+//     //         {
+//     //             "selectedRegions<-name, selecteds": {
+//     //                 "isexactly": false,
+//     //                 "selectors": [
+//     //                     {
+//     //                         "showToolTip<-name": {
+//     //                             "onselected": [
+//     //                                 {
+//     //                                     "test1": [
+//     //                                         {
+//     //                                             "transform<-name": {
+//     //                                                 "code": "
+//     // import os\n
 
-// message = inputs[\"name\"]\n
-// output({\"message\":message})\n
-//                                                 ",
-//                                                 "selectors": [
-//                                                     {
-//                                                         "showAtLog<-message": {
-                                                            
-//                                                         }
-//                                                     }
-//                                                 ]
-//                                             }
-//                                         }
-//                                     ]
-//                                 }
-//                             ],
-//                             "oncancelled": [
-                                
-//                             ]
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "name": "sample.txt",
-//     "condition": "keyword"
-// }->setSelection: {
-//     "name": "sample.txt",
-//     "selections": [
-//         {
-//             "from": 0,
-//             "to": 1
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "fire tooltip with inject",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "sample.txt"
-//         }
-//     },
-//     "description": "no showAtLog found."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+//     // message = inputs[\"name\"]\n
+//     // output({\"message\":message})\n
+//     //                                                 ",
+//     //                                                 "selectors": [
+//     //                                                     {
+//     //                                                         "showAtLog<-message": {
+                                                                
+//     //                                                         }
+//     //                                                     }
+//     //                                                 ]
+//     //                                             }
+//     //                                         }
+//     //                                     ]
+//     //                                 }
+//     //                             ],
+//     //                             "oncancelled": [
+                                    
+//     //                             ]
+//     //                         }
+//     //                     }
+//     //                 ]
+//     //             }
+//     //         }
+//     //     ]
+//     // }->openFile: {
+//     //     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+//     // }->appendRegion: {
+//     //     "line": "1",
+//     //     "message": "test",
+//     //     "name": "sample.txt",
+//     //     "condition": "keyword"
+//     // }->setSelection: {
+//     //     "name": "sample.txt",
+//     //     "selections": [
+//     //         {
+//     //             "from": 0,
+//     //             "to": 1
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "fire tooltip with inject",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "sample.txt"
+//     //         }
+//     //     },
+//     //     "description": "no showAtLog found."
+//     // }->closeFile: {
+//     //     "name": "sample.txt"
+//     // }
 
 
 // test>setSelectionでselectedRegionsを引き起こそうとするが、regionが無い/setViewReactor: {
@@ -1925,229 +1943,229 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 // }
 
 
-// test>ツールチップの表示/createBuffer: {
-//     "name": "showToolTipView.txt"
-// }->showToolTip: {
-//     "name": "showToolTipView.txt",
-//     "onselected": [
-//         {
-//             "will show the tooltip": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "toolTipContentsButNotFire."
-//                     }
-//                 }
-//             ]
-//         },
-//         {
-//             "will show the tooltip2": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "toolTipContentsButNotFire."
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ],
-//     "selectors": [
-//         {
-//             "showAtLog<-titles": {
-//                 "format": "[titles]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "toolTipShouldShow 1",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "['will show the tooltip', 'will show the tooltip2']"
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>ツールチップの表示/createBuffer: {
+//     //     "name": "showToolTipView.txt"
+//     // }->showToolTip: {
+//     //     "name": "showToolTipView.txt",
+//     //     "onselected": [
+//     //         {
+//     //             "will show the tooltip": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "toolTipContentsButNotFire."
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         },
+//     //         {
+//     //             "will show the tooltip2": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "toolTipContentsButNotFire."
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         }
+//     //     ],
+//     //     "oncancelled": [
+            
+//     //     ],
+//     //     "selectors": [
+//     //         {
+//     //             "showAtLog<-titles": {
+//     //                 "format": "[titles]"
+//     //             }
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "toolTipShouldShow 1",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "['will show the tooltip', 'will show the tooltip2']"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
-// test>ツールチップの表示2/createBuffer: {
-//     "name": "showToolTipView.txt"
-// }->showToolTip: {
-//     "name": "showToolTipView.txt",
-//     "onselected": [
-//         {
-//             "will show the tooltip": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "toolTipContentsButNotFire."
-//                     }
-//                 }
-//             ]
-//         },
-//         {
-//             "will show the tooltip2": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "toolTipContentsButNotFire."
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ],
-//     "selectors": [
-//         {
-//             "showAtLog<-titles": {
-//                 "format": "[titles]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "toolTipShouldShow 2",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "['will show the tooltip', 'will show the tooltip2']"
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>ツールチップの表示2/createBuffer: {
+//     //     "name": "showToolTipView.txt"
+//     // }->showToolTip: {
+//     //     "name": "showToolTipView.txt",
+//     //     "onselected": [
+//     //         {
+//     //             "will show the tooltip": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "toolTipContentsButNotFire."
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         },
+//     //         {
+//     //             "will show the tooltip2": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "toolTipContentsButNotFire."
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         }
+//     //     ],
+//     //     "oncancelled": [
+            
+//     //     ],
+//     //     "selectors": [
+//     //         {
+//     //             "showAtLog<-titles": {
+//     //                 "format": "[titles]"
+//     //             }
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "toolTipShouldShow 2",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "['will show the tooltip', 'will show the tooltip2']"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
-// test>ツールチップの選択、一択を選ぶ/createBuffer: {
-//     "name": "selectToolTip.txt"
-// }->showToolTip: {
-//     "name": "selectToolTip.txt",
-//     "onselected": [
-//         {
-//             "showAtLogItem": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "hereComes choice 1"
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ]
-// }->assertResult: {
-//     "id": "choiceTheHead",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "hereComes choice 1"
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>ツールチップの選択、一択を選ぶ/createBuffer: {
+//     //     "name": "selectToolTip.txt"
+//     // }->showToolTip: {
+//     //     "name": "selectToolTip.txt",
+//     //     "onselected": [
+//     //         {
+//     //             "showAtLogItem": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "hereComes choice 1"
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         }
+//     //     ],
+//     //     "oncancelled": [
+            
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "choiceTheHead",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "hereComes choice 1"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
-// test>onselected項目がない場合、効果無しなので表示しない。/createBuffer: {
-//     "name": "selectToolTip.txt"
-// }->showToolTip: {
-//     "name": "selectToolTip.txt",
-//     "onselected": [
-        
-//     ],
-//     "oncancelled": [
-//         {
-//             "showAtLog": {
-//                 "message": "no choice."
-//             }
-//         }
-//     ],
-//     "selectors": [
-//         {
-//             "showAtLog<-titles": {
-//                 "format": "[titles]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "no coice on toolTip",
-//     "notcontains": {
-//         "showAtLog": {
-//             "output": "[]"
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>onselected項目がない場合、効果無しなので表示しない。/createBuffer: {
+//     //     "name": "selectToolTip.txt"
+//     // }->showToolTip: {
+//     //     "name": "selectToolTip.txt",
+//     //     "onselected": [
+            
+//     //     ],
+//     //     "oncancelled": [
+//     //         {
+//     //             "showAtLog": {
+//     //                 "message": "no choice."
+//     //             }
+//     //         }
+//     //     ],
+//     //     "selectors": [
+//     //         {
+//     //             "showAtLog<-titles": {
+//     //                 "format": "[titles]"
+//     //             }
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "no coice on toolTip",
+//     //     "notcontains": {
+//     //         "showAtLog": {
+//     //             "output": "[]"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
-// test>ツールチップの選択後、inject済のviewを使ってappendRegionする/createBuffer: {
-//     "name": "selectToolTip.txt"
-// }->showToolTip: {
-//     "name": "selectToolTip.txt",
-//     "onselected": [
-//         {
-//             "add region": [
-//                 {
-//                     "appendRegion<-name": {
-//                         "line": "1",
-//                         "message": "test",
-//                         "condition": "keyword",
-//                         "selectors": [
-//                             {
-//                                 "showAtLog<-identity, condition, line, from, to, message": {
-//                                     "format": "[identity], [condition], [line], [from], [to], [message]"
-//                                 }
-//                             }
-//                         ]
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ]
-// }->assertResult: {
-//     "id": "choice and add region to buffer.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "ss_(0, 0), keyword, 1, 0, 0, test"
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>ツールチップの選択後、inject済のviewを使ってappendRegionする/createBuffer: {
+//     //     "name": "selectToolTip.txt"
+//     // }->showToolTip: {
+//     //     "name": "selectToolTip.txt",
+//     //     "onselected": [
+//     //         {
+//     //             "add region": [
+//     //                 {
+//     //                     "appendRegion<-name": {
+//     //                         "line": "1",
+//     //                         "message": "test",
+//     //                         "condition": "keyword",
+//     //                         "selectors": [
+//     //                             {
+//     //                                 "showAtLog<-identity, condition, line, from, to, message": {
+//     //                                     "format": "[identity], [condition], [line], [from], [to], [message]"
+//     //                                 }
+//     //                             }
+//     //                         ]
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         }
+//     //     ],
+//     //     "oncancelled": [
+            
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "choice and add region to buffer.",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "ss_(0, 0), keyword, 1, 0, 0, test"
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
-// test>ツールチップ選択orキャンセル後、最終的に動作するfinallyな仕掛け/createBuffer: {
-//     "name": "onFinally.txt"
-// }->showToolTip: {
-//     "name": "onFinally.txt",
-//     "onselected": [
-//         {
-//             "name": [
-//                 {
-//                     "showAtLog": {
-//                         "message": "hit."
-//                     }
-//                 }
-//             ]
-//         }
-//     ],
-//     "oncancelled": [
-        
-//     ],
-//     "finally": [
-//         {
-//             "showAtLog": {
-//                 "message": "finally."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "finally will run",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "finally."
-//         }
-//     },
-//     "description": "not match."
-// }
+//     // test>ツールチップ選択orキャンセル後、最終的に動作するfinallyな仕掛け/createBuffer: {
+//     //     "name": "onFinally.txt"
+//     // }->showToolTip: {
+//     //     "name": "onFinally.txt",
+//     //     "onselected": [
+//     //         {
+//     //             "name": [
+//     //                 {
+//     //                     "showAtLog": {
+//     //                         "message": "hit."
+//     //                     }
+//     //                 }
+//     //             ]
+//     //         }
+//     //     ],
+//     //     "oncancelled": [
+            
+//     //     ],
+//     //     "finally": [
+//     //         {
+//     //             "showAtLog": {
+//     //                 "message": "finally."
+//     //             }
+//     //         }
+//     //     ]
+//     // }->assertResult: {
+//     //     "id": "finally will run",
+//     //     "contains": {
+//     //         "showAtLog": {
+//     //             "output": "finally."
+//     //         }
+//     //     },
+//     //     "description": "not match."
+//     // }
 
 
 // test>setSelectionとselectors/createBuffer: {
@@ -3997,3 +4015,18 @@ output({\"name\":name, \"tail\":tail, \"message\":str(tail)})
 //     },
 //     "description": "not match."
 // }
+
+
+test>closeAllFiles: {
+    "selectors": [
+        {
+            "showAtLog<-closeds": {
+                "format": "[closeds]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "close all files for test in ST2",
+    "isnotempty": "showAtLog",
+    "description": "is empty."
+}

@@ -69,16 +69,16 @@ class EditorAPI:
 		sublime.message_dialog(message)
 
 	def showPopupMenu(self, view, items, reactor):
-		view.show_popup_menu(items, reactor);
+		pass
+		# view.show_popup_menu(items, reactor); ST2 has no popup. 
+		# run "open new view", write "items" each line, append region for each line and set event.
+		# future...
 
 	def openFile(self, name):
 		return sublime.active_window().open_file(name)
 
 	def windows(self):
 		return sublime.windows()
-
-	def viewsOfWindow(self, window):
-		return window.views()
 
 	def generateRegion(self, theFrom, theTo):
 		return sublime.Region(theFrom, theTo)
@@ -120,7 +120,14 @@ class EditorAPI:
 			view.run_command(command)
 
 	def closeView(self, view):
-		self.runCommandOnView(view, "forcely_close")
+		print("closeView: no feature can close file in ST2")
+		pass
+
+	def closeAllViewsInCurrentWindow(self):
+		return self.runCommandOnView(sublime.active_window().active_view(), "forcelyCloseAllFiles")
+
+	def allViewsInCurrentWindow(self):
+		return sublime.active_window().views()
 
 	def viewSize(self, view):
 		return view.size()
