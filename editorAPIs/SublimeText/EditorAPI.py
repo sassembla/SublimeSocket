@@ -113,7 +113,7 @@ class EditorAPI:
 	def nameOfView(self, view):
 		return view.file_name()
 
-	def runCommandOnView(self, view, command, params=None):
+	def runCommandOn(self, view, command, params=None):
 		if params:
 			view.run_command(command, params)
 		else:
@@ -121,10 +121,9 @@ class EditorAPI:
 
 	def closeView(self, view):
 		print("closeView: no feature can close file in ST2")
-		pass
-
+		
 	def closeAllViewsInCurrentWindow(self):
-		return self.runCommandOnView(sublime.active_window().active_view(), "forcelyCloseAllFiles")
+		self.runCommandOn(sublime.active_window(), "close_all")
 
 	def allViewsInCurrentWindow(self):
 		return sublime.active_window().views()

@@ -7,6 +7,11 @@ beforeafter>thebeforeafterselectors/selector: {
             }
         },
         {
+            "closeAllFiles": {
+                
+            }
+        },
+        {
             "resetReactors": {
                 
             }
@@ -20,307 +25,307 @@ beforeafter>thebeforeafterselectors/selector: {
 }
 
 
-// test>helloWorld/showAtLog: {
-//     "message": "hello world."
-// }->assertResult: {
-//     "id": "helloWorld",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "hello world."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>helloWorld/showAtLog: {
+    "message": "hello world."
+}->assertResult: {
+    "id": "helloWorld",
+    "contains": {
+        "showAtLog": {
+            "output": "hello world."
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>createBufferでコンテンツあるやつが存在してないのでは？/createBuffer: {
-//     "name": "createBufferWithContents.txt",
-//     "contents": "haha\nhehe\nfufu",
-//     "selectors": [
-//         {
-//             "showAtLog<-name": {
-//                 "format": "[name] contents added."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "create buffer with contents.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "createBufferWithContents.txt contents added."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>createBufferでコンテンツあるやつが存在してないのでは？/createBuffer: {
+    "name": "createBufferWithContents.txt",
+    "contents": "haha\nhehe\nfufu",
+    "selectors": [
+        {
+            "showAtLog<-name": {
+                "format": "[name] contents added."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "create buffer with contents.",
+    "contains": {
+        "showAtLog": {
+            "output": "createBufferWithContents.txt contents added."
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>regionを現在のviewに表示する/setViewReactor: {
-//     "target": "something",
-//     "react": "ss_f_noViewFound",
-//     "reactors": [
-//         {
-//             "showAtLog": {
-//                 "message": "noViewFound fired."
-//             }
-//         }
-//     ]
-// }->viewEmit: {
-//     "identity": "show region on this view",
-//     "name": "ss_viewkey_current",
-//     "selectors": [
-//         {
-//             "appendRegion<-name": {
-//                 "line": 1,
-//                 "message": "test",
-//                 "condition": "keyword",
-//                 "selectors": [
-//                     {
-//                         "showAtLog": {
-//                             "message": "displayed."
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "show region on this view.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "displayed."
-//         }
-//     },
-//     "description": "not match."
-// }->eraseAllRegions: {
+test>regionを現在のviewに表示する/setViewReactor: {
+    "target": "something",
+    "react": "ss_f_noViewFound",
+    "reactors": [
+        {
+            "showAtLog": {
+                "message": "noViewFound fired."
+            }
+        }
+    ]
+}->viewEmit: {
+    "identity": "show region on this view",
+    "name": "ss_viewkey_current",
+    "selectors": [
+        {
+            "appendRegion<-name": {
+                "line": 1,
+                "message": "test",
+                "condition": "keyword",
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "displayed."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "show region on this view.",
+    "contains": {
+        "showAtLog": {
+            "output": "displayed."
+        }
+    },
+    "description": "not match."
+}->eraseAllRegions: {
 
-// }
-
-
-// test>readFileからselectors/readFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt",
-//     "injects": {
-//         "data": "data",
-//         "originalpath": "originalpath"
-//     }, 
-//     "selectors": [
-//         {
-//             "showAtLog<-data, originalpath": {
-//                 "format": "[originalpath], [data]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "get file's contents, then show at log.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt, a\nb\nc"
-//         }
-//     },
-//     "description": "not match."
-// }
+}
 
 
-// test>バッファを作り、appendRegionし、閉じて、eraseAllRegionsする/createBuffer: {
-//     "name": "bufferForAddRegionThenEraseAfterClosed.txt"
-// }->appendRegion: {
-//     "name": "bufferForAddRegionThenEraseAfterClosed.txt",
-//     "line": "1",
-//     "message": "test",
-//     "condition": "keyword"
-// }->closeAllBuffer: {
-
-// }->eraseAllRegions: {
-//     "selectors": [
-//         {
-//             "showAtLog<-deletes": {
-//                 "format": "[deletes]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "eraseAllRegions never run.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "{}"
-//         }
-//     },
-//     "description": "not match."
-// }
+test>readFileからselectors/readFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt",
+    "injects": {
+        "data": "data",
+        "originalpath": "originalpath"
+    }, 
+    "selectors": [
+        {
+            "showAtLog<-data, originalpath": {
+                "format": "[originalpath], [data]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "get file's contents, then show at log.",
+    "contains": {
+        "showAtLog": {
+            "output": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt, a\nb\nc"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>lineでscrollする/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
-// }->scrollTo: {
-//     "name": "sample3.txt",
-//     "line": 30,
-//     "selectors": [
-//         {
-//             "showAtLog": {
-//                 "message": "scroll done."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "scroll to line",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "scroll done."
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample3.txt"
-// }
+test>バッファを作り、appendRegionし、閉じて、eraseAllRegionsする/createBuffer: {
+    "name": "bufferForAddRegionThenEraseAfterClosed.txt"
+}->appendRegion: {
+    "name": "bufferForAddRegionThenEraseAfterClosed.txt",
+    "line": "1",
+    "message": "test",
+    "condition": "keyword"
+}->closeAllBuffer: {
+
+}->eraseAllRegions: {
+    "selectors": [
+        {
+            "showAtLog<-deletes": {
+                "format": "[deletes]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "eraseAllRegions never run.",
+    "contains": {
+        "showAtLog": {
+            "output": "{}"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>countでscrollする/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
-// }->scrollTo: {
-//     "name": "sample3.txt",
-//     "count": 130,
-//     "selectors": [
-//         {
-//             "showAtLog": {
-//                 "message": "scroll done 2."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "scroll to line2",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "scroll done 2."
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample3.txt"
-// }
+test>lineでscrollする/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
+}->scrollTo: {
+    "name": "sample3.txt",
+    "line": 30,
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "scroll done."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "scroll to line",
+    "contains": {
+        "showAtLog": {
+            "output": "scroll done."
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample3.txt"
+}
 
 
-// test>lineとcountがセットされている場合、lineでscrollする/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
-// }->scrollTo: {
-//     "name": "sample3.txt",
-//     "count": 130,
-//     "line": 30,
-//     "selectors": [
-//         {
-//             "showAtLog": {
-//                 "message": "scroll done 3."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "scroll to line3",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "scroll done 3."
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample3.txt"
-// }
+test>countでscrollする/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
+}->scrollTo: {
+    "name": "sample3.txt",
+    "count": 130,
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "scroll done 2."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "scroll to line2",
+    "contains": {
+        "showAtLog": {
+            "output": "scroll done 2."
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample3.txt"
+}
 
 
-// test>APIDefined以外のinjectsを反映させる/createBuffer: {
-//     "name": "inject.txt"
-// }->viewEmit: {
-//     "identity": "test for out of APIDefined injection",
-//     "name": "inject.txt",
-//     "injects": {
-//         "name": "message"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {
-
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "inject free definied param.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "inject.txt"
-//         }
-//     },
-//     "description": "not match."
-// }
-
-
-// test>defineFilterでinjectsを使わない場合/defineFilter: {
-//     "name": "defineFilterWithoutInjects",
-//     "filters": [
-//         {
-//             "(.*), (.*)": {
-//                 "selectors": [
-//                     {
-//                         "showAtLog<-groups[0], groups[1]": {
-//                             "format": "hahaha, [groups[0]], [groups[1]]"
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->filtering: {
-//     "name": "defineFilterWithoutInjects",
-//     "source": "a, b"
-// }->assertResult: {
-//     "id": "defineFilter without injects.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "hahaha, a, b"
-//         }
-//     },
-//     "description": "not match."
-// }
+test>lineとcountがセットされている場合、lineでscrollする/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
+}->scrollTo: {
+    "name": "sample3.txt",
+    "count": 130,
+    "line": 30,
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "scroll done 3."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "scroll to line3",
+    "contains": {
+        "showAtLog": {
+            "output": "scroll done 3."
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample3.txt"
+}
 
 
-// test>transformにcodeを使う/transform: {
-//     "code": "output({\"message\":\"hereComes\"})",
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {
+test>APIDefined以外のinjectsを反映させる/createBuffer: {
+    "name": "inject.txt"
+}->viewEmit: {
+    "identity": "test for out of APIDefined injection",
+    "name": "inject.txt",
+    "injects": {
+        "name": "message"
+    },
+    "selectors": [
+        {
+            "showAtLog<-message": {
+
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "inject free definied param.",
+    "contains": {
+        "showAtLog": {
+            "output": "inject.txt"
+        }
+    },
+    "description": "not match."
+}
+
+
+test>defineFilterでinjectsを使わない場合/defineFilter: {
+    "name": "defineFilterWithoutInjects",
+    "filters": [
+        {
+            "(.*), (.*)": {
+                "selectors": [
+                    {
+                        "showAtLog<-groups[0], groups[1]": {
+                            "format": "hahaha, [groups[0]], [groups[1]]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}->filtering: {
+    "name": "defineFilterWithoutInjects",
+    "source": "a, b"
+}->assertResult: {
+    "id": "defineFilter without injects.",
+    "contains": {
+        "showAtLog": {
+            "output": "hahaha, a, b"
+        }
+    },
+    "description": "not match."
+}
+
+
+test>transformにcodeを使う/transform: {
+    "code": "output({\"message\":\"hereComes\"})",
+    "selectors": [
+        {
+            "showAtLog<-message": {
                 
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "transform uses the code made from json",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "hereComes"
-//         }
-//     },
-//     "description": "not match."
-// }
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "transform uses the code made from json",
+    "contains": {
+        "showAtLog": {
+            "output": "hereComes"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>transformに、無理して長文を書く/transform: {
-//     "code": "
-// import os\n
-// for a in \"abc\":\n
-// \tprint(\"\", a)\n
-// output({\"message\":\"hereComes2\"})",
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {
+test>transformに、無理して長文を書く/transform: {
+    "code": "
+import os\n
+for a in \"abc\":\n
+\tprint(\"\", a)\n
+output({\"message\":\"hereComes2\"})",
+    "selectors": [
+        {
+            "showAtLog<-message": {
                 
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "transform uses the code made from json 2",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "hereComes2"
-//         }
-//     },
-//     "description": "not match."
-// }
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "transform uses the code made from json 2",
+    "contains": {
+        "showAtLog": {
+            "output": "hereComes2"
+        }
+    },
+    "description": "not match."
+}
 
 
     // test>setSelectionと合わせて、toolTipの箇所にscrollする/openFile: {
@@ -585,472 +590,472 @@ beforeafter>thebeforeafterselectors/selector: {
     // }
 
 
-// test>viewEmitで別途injectを使う/createBuffer: {
-//     "name": "injectionWithViewEmit.txt"
-// }->viewEmit: {
-//     "identity": "injectionWithViewEmit",
-//     "name": "injectionWithViewEmit.txt",
-//     "injects": {
-//         "path": "message"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {
+test>viewEmitで別途injectを使う/createBuffer: {
+    "name": "injectionWithViewEmit.txt"
+}->viewEmit: {
+    "identity": "injectionWithViewEmit",
+    "name": "injectionWithViewEmit.txt",
+    "injects": {
+        "path": "message"
+    },
+    "selectors": [
+        {
+            "showAtLog<-message": {
                 
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "inject message param from viewEmit's path param.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "injectionWithViewEmit.txt"
-//         }
-//     },
-//     "description": "not match."
-// }
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "inject message param from viewEmit's path param.",
+    "contains": {
+        "showAtLog": {
+            "output": "injectionWithViewEmit.txt"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>parameterInjectの上書き内容に関するaccept制約のテスト。bodyに関する値だけを受け取るので、pathの値が変化したい。/createBuffer: {
-//     "name": "view2.txt"
-// }->viewEmit: {
-//     "identity": "viewForInjectContents",
-//     "name": "view2.txt",
-//     "selectors": [
-//         {
-//             "showAtLog<-body": {
-//                 "format": "path [body]."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "no path replacement",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "path ."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>parameterInjectの上書き内容に関するaccept制約のテスト。bodyに関する値だけを受け取るので、pathの値が変化したい。/createBuffer: {
+    "name": "view2.txt"
+}->viewEmit: {
+    "identity": "viewForInjectContents",
+    "name": "view2.txt",
+    "selectors": [
+        {
+            "showAtLog<-body": {
+                "format": "path [body]."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "no path replacement",
+    "contains": {
+        "showAtLog": {
+            "output": "path ."
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>openFileで、存在しないファイルを開いた場合、即閉じる/openFile: {
-//     "path": "notExistFile",
-//     "selectors": [
-//         {
-//             "showAtLog<-path, name": {
-//                 "format": "[path], [name]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "cannot open not exist file",
-//     "notcontains": {
-//         "showAtLog": {
-//             "output": "notExistFile, notExistFile"
-//         }
-//     },
-//     "description": "not match."
-// }
+test>openFileで、存在しないファイルを開いた場合、即閉じる/openFile: {
+    "path": "notExistFile",
+    "selectors": [
+        {
+            "showAtLog<-path, name": {
+                "format": "[path], [name]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "cannot open not exist file",
+    "notcontains": {
+        "showAtLog": {
+            "output": "notExistFile, notExistFile"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>完了通知が出ない。突破してはいる。組み合わせでエラーが出ていたのを解消したもの。viewの切り替え問題を含んでいた。/createBuffer: {
-//     "name": "completionTestView.txt"
-// }->viewEmit: {
-//     "identity": "completionTestView",
-//     "name": "completionTestView.txt",
-//     "selectors": [
-//         {
-//             "要素が一つだと一択のため勝手に入力される/runCompletion<-name": {
-//                 "completion": [
-//                     {
-//                         "HEAD": "DrawLine",
-//                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-//                         "return": "Void",
-//                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-//                         "head": "DrawLine"
-//                     }
-//                 ],
-//                 "formathead": "HEADparamsTypeDef\treturn",
-//                 "formattail": "headparamsTargetFmt$0"
-//             }
-//         }
-//     ]
-// }->setViewReactor: {
-//     "target": "someone",
-//     "react": "ss_v_increased",
-//     "reactors": [
-//         {
-//             "showAtLog": {
-//                 "message": "increased."
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "add": "1"
-// }->assertResult: {
-//     "id": "view text increased",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "increased."
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+test>完了通知が出ない。突破してはいる。組み合わせでエラーが出ていたのを解消したもの。viewの切り替え問題を含んでいた。/createBuffer: {
+    "name": "completionTestView.txt"
+}->viewEmit: {
+    "identity": "completionTestView",
+    "name": "completionTestView.txt",
+    "selectors": [
+        {
+            "要素が一つだと一択のため勝手に入力される/runCompletion<-name": {
+                "completion": [
+                    {
+                        "HEAD": "DrawLine",
+                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+                        "return": "Void",
+                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+                        "head": "DrawLine"
+                    }
+                ],
+                "formathead": "HEADparamsTypeDef\treturn",
+                "formattail": "headparamsTargetFmt$0"
+            }
+        }
+    ]
+}->setViewReactor: {
+    "target": "someone",
+    "react": "ss_v_increased",
+    "reactors": [
+        {
+            "showAtLog": {
+                "message": "increased."
+            }
+        }
+    ]
+}->openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->modifyView: {
+    "name": "sample.txt",
+    "add": "1"
+}->assertResult: {
+    "id": "view text increased",
+    "contains": {
+        "showAtLog": {
+            "output": "increased."
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
-// test>modifyView と selectors/createBuffer: {
-//     "name": "bufferForModifyThenRunSelectors"
-// }->modifyView: {
-//     "name": "bufferForModifyThenRunSelectors",
-//     "count": 1,
-//     "add": "some",
-//     "injects": {
-//         "add": "message"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {}
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "modifyView with selectors.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "some"
-//         }
-//     },
-//     "description": "not match."
-// }
+test>modifyView と selectors/createBuffer: {
+    "name": "bufferForModifyThenRunSelectors"
+}->modifyView: {
+    "name": "bufferForModifyThenRunSelectors",
+    "count": 1,
+    "add": "some",
+    "injects": {
+        "add": "message"
+    },
+    "selectors": [
+        {
+            "showAtLog<-message": {}
+        }
+    ]
+}->assertResult: {
+    "id": "modifyView with selectors.",
+    "contains": {
+        "showAtLog": {
+            "output": "some"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>modifyViewの行数指定バージョン/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "add": "\n1",
-//     "line": 3
-// }->viewEmit: {
-//     "name": "sample.txt",
-//     "identity": "addToLine",
-//     "selectors": [
-//         {
-//             "showAtLog<-body": {
-//                 "format": "[body]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "view line increased",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "a\nb\nc\n1"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+test>modifyViewの行数指定バージョン/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->modifyView: {
+    "name": "sample.txt",
+    "add": "\n1",
+    "line": 3
+}->viewEmit: {
+    "name": "sample.txt",
+    "identity": "addToLine",
+    "selectors": [
+        {
+            "showAtLog<-body": {
+                "format": "[body]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "view line increased",
+    "contains": {
+        "showAtLog": {
+            "output": "a\nb\nc\n1"
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
-// test>modifyViewのポイント指定バージョン/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "add": "1",
-//     "to": 2
-// }->viewEmit: {
-//     "name": "sample.txt",
-//     "identity": "addToLine",
-//     "selectors": [
-//         {
-//             "showAtLog<-body": {
-//                 "format": "[body]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "view line increased",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "a\n1b\nc"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+test>modifyViewのポイント指定バージョン/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->modifyView: {
+    "name": "sample.txt",
+    "add": "1",
+    "to": 2
+}->viewEmit: {
+    "name": "sample.txt",
+    "identity": "addToLine",
+    "selectors": [
+        {
+            "showAtLog<-body": {
+                "format": "[body]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "view line increased",
+    "contains": {
+        "showAtLog": {
+            "output": "a\n1b\nc"
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
-// test>補完を外部からセット、そのままウインドウ表示する。候補が2つ以上のため、補完ウインドウが表示される。/createBuffer: {
-//     "name": "completionTestView2.txt"
-// }->runCompletion: {
-//     "name": "completionTestView2.txt",
-//     "completion": [
-//         {
-//             "HEAD": "DrawLine",
-//             "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-//             "return": "Void",
-//             "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-//             "head": "DrawLine"
-//         },
-//         {
-//             "HEAD": "DrawLine",
-//             "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-//             "return": "Void",
-//             "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-//             "head": "DrawLine"
-//         }
-//     ],
-//     "formathead": "HEADparamsTypeDef\treturn",
-//     "formattail": "headparamsTargetFmt$0",
-//     "selectors": [
-//         {
-//             "showAtLog<-name": {
-//                 "format": "runCompletion done at [name]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "runCompletion includes 2 completion",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "runCompletion done at completionTestView2.txt"
-//         }
-//     },
-//     "description": "not match."
-// }
+test>補完を外部からセット、そのままウインドウ表示する。候補が2つ以上のため、補完ウインドウが表示される。/createBuffer: {
+    "name": "completionTestView2.txt"
+}->runCompletion: {
+    "name": "completionTestView2.txt",
+    "completion": [
+        {
+            "HEAD": "DrawLine",
+            "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+            "return": "Void",
+            "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+            "head": "DrawLine"
+        },
+        {
+            "HEAD": "DrawLine",
+            "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+            "return": "Void",
+            "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+            "head": "DrawLine"
+        }
+    ],
+    "formathead": "HEADparamsTypeDef\treturn",
+    "formattail": "headparamsTargetFmt$0",
+    "selectors": [
+        {
+            "showAtLog<-name": {
+                "format": "runCompletion done at [name]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "runCompletion includes 2 completion",
+    "contains": {
+        "showAtLog": {
+            "output": "runCompletion done at completionTestView2.txt"
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
-//     "name": "completionCloseTestView.txt"
-// }->viewEmit: {
-//     "identity": "completionCloseTestView",
-//     "name": "completionCloseTestView.txt",
-//     "selectors": [
-//         {
-//             "runCompletion<-name": {
-//                 "completion": [
-//                     {
-//                         "HEAD": "DrawLine",
-//                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-//                         "return": "Void",
-//                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-//                         "head": "DrawLine"
-//                     },
-//                     {
-//                         "HEAD": "DrawLine",
-//                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-//                         "return": "Void",
-//                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-//                         "head": "DrawLine"
-//                     }
-//                 ],
-//                 "formathead": "HEADparamsTypeDef\treturn",
-//                 "formattail": "headparamsTargetFmt$0"
-//             }
-//         }
-//     ]
-// }->cancelCompletion: {
-//     "name": "completionCloseTestView.txt",
-//     "injects": {
-//         "name": "name"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-name": {
-//                 "format": "completion cancelled at [name]"
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "completion window close",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "completion cancelled at completionCloseTestView.txt"
-//         }
-//     },
-//     "description": "not close."
-// }
+test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
+    "name": "completionCloseTestView.txt"
+}->viewEmit: {
+    "identity": "completionCloseTestView",
+    "name": "completionCloseTestView.txt",
+    "selectors": [
+        {
+            "runCompletion<-name": {
+                "completion": [
+                    {
+                        "HEAD": "DrawLine",
+                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+                        "return": "Void",
+                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+                        "head": "DrawLine"
+                    },
+                    {
+                        "HEAD": "DrawLine",
+                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+                        "return": "Void",
+                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+                        "head": "DrawLine"
+                    }
+                ],
+                "formathead": "HEADparamsTypeDef\treturn",
+                "formattail": "headparamsTargetFmt$0"
+            }
+        }
+    ]
+}->cancelCompletion: {
+    "name": "completionCloseTestView.txt",
+    "injects": {
+        "name": "name"
+    },
+    "selectors": [
+        {
+            "showAtLog<-name": {
+                "format": "completion cancelled at [name]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "completion window close",
+    "contains": {
+        "showAtLog": {
+            "output": "completion cancelled at completionCloseTestView.txt"
+        }
+    },
+    "description": "not close."
+}
 
 
-// test>存在するファイルのviewに対してselectorを実行する,
-// viewEmit/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->viewEmit: {
-//     "identity": "viewEmitToSample.txt",
-//     "name": "sample.txt",
-//     "selectors": [
-//         {
-//             "showAtLog": {
-//                 "message": "view emit over."
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "view emit api test",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "view emit over."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>存在するファイルのviewに対してselectorを実行する,
+viewEmit/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->viewEmit: {
+    "identity": "viewEmitToSample.txt",
+    "name": "sample.txt",
+    "selectors": [
+        {
+            "showAtLog": {
+                "message": "view emit over."
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "view emit api test",
+    "contains": {
+        "showAtLog": {
+            "output": "view emit over."
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->setViewReactor: {
-//     "target": "viewReactor and inject",
-//     "react": "ss_on_selection_modified_by_setselection",
-//     "injects": {
-//         "name": "message"
-//     },
-//     "reactors": [
-//         {
-//             "showAtLog<-message": {
+test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->setViewReactor: {
+    "target": "viewReactor and inject",
+    "react": "ss_on_selection_modified_by_setselection",
+    "injects": {
+        "name": "message"
+    },
+    "reactors": [
+        {
+            "showAtLog<-message": {
                 
-//             }
-//         }
-//     ]
-// }->viewEmit: {
-//     "identity": "setSelectionToSample.txt",
-//     "name": "sample.txt",
-//     "selectors": [
-//         {
-//             "setSelection<-name": {
-//                 "selections": [
-//                     {
-//                         "from": 0,
-//                         "to": 2
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "viewEmit in deep level with API defined injection",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "sample.txt"
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+            }
+        }
+    ]
+}->viewEmit: {
+    "identity": "setSelectionToSample.txt",
+    "name": "sample.txt",
+    "selectors": [
+        {
+            "setSelection<-name": {
+                "selections": [
+                    {
+                        "from": 0,
+                        "to": 2
+                    }
+                ]
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "viewEmit in deep level with API defined injection",
+    "contains": {
+        "showAtLog": {
+            "output": "sample.txt"
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
-// test>deepなレイヤーのviewEmitを実行する/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->setViewReactor: {
-//     "target": "viewEmitTest",
-//     "react": "ss_on_selection_modified_by_setselection",
-//     "reactors": [
-//         {
-//             "viewEmit<-name": {
-//                 "identity": "deepLayerViewEmit",
-//                 "name": "sample.txt",
-//                 "selectors": [
-//                     {
-//                         "showAtLog": {
-//                             "message": "view emit over in deep nest."
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->viewEmit: {
-//     "identity": "setSelectionToSample.txt",
-//     "name": "sample.txt",
-//     "selectors": [
-//         {
-//             "setSelection<-name": {
-//                 "selections": [
-//                     {
-//                         "from": 0,
-//                         "to": 1
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "viewEmit in deep level",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "view emit over in deep nest."
-//         }
-//     },
-//     "description": "not match."
-// }->closeFile: {
-//     "name": "sample.txt"
-// }
+test>deepなレイヤーのviewEmitを実行する/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->setViewReactor: {
+    "target": "viewEmitTest",
+    "react": "ss_on_selection_modified_by_setselection",
+    "reactors": [
+        {
+            "viewEmit<-name": {
+                "identity": "deepLayerViewEmit",
+                "name": "sample.txt",
+                "selectors": [
+                    {
+                        "showAtLog": {
+                            "message": "view emit over in deep nest."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}->viewEmit: {
+    "identity": "setSelectionToSample.txt",
+    "name": "sample.txt",
+    "selectors": [
+        {
+            "setSelection<-name": {
+                "selections": [
+                    {
+                        "from": 0,
+                        "to": 1
+                    }
+                ]
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "viewEmit in deep level",
+    "contains": {
+        "showAtLog": {
+            "output": "view emit over in deep nest."
+        }
+    },
+    "description": "not match."
+}->closeFile: {
+    "name": "sample.txt"
+}
 
 
-// test>そのビューの文字列が増えたら、ss_v_increasedイベントがでる/setViewReactor: {
-//     "target": "someone",
-//     "react": "ss_v_increased",
-//     "reactors": [
-//         {
-//             "showAtLog": {
-//                 "message": "increased."
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "add": "1"
-// }->closeFile: {
-//     "name": "sample.txt"
-// }->assertResult: {
-//     "id": "view text increased2",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "increased."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>そのビューの文字列が増えたら、ss_v_increasedイベントがでる/setViewReactor: {
+    "target": "someone",
+    "react": "ss_v_increased",
+    "reactors": [
+        {
+            "showAtLog": {
+                "message": "increased."
+            }
+        }
+    ]
+}->openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->modifyView: {
+    "name": "sample.txt",
+    "add": "1"
+}->closeFile: {
+    "name": "sample.txt"
+}->assertResult: {
+    "id": "view text increased2",
+    "contains": {
+        "showAtLog": {
+            "output": "increased."
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>そのビューの文字列が減ったら、ss_v_decreasedイベントがでる/setViewReactor: {
-//     "target": "someone",
-//     "react": "ss_v_decreased",
-//     "reactors": [
-//         {
-//             "showAtLog": {
-//                 "message": "decreased."
-//             }
-//         }
-//     ]
-// }->openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "add": "1"
-// }->modifyView: {
-//     "name": "sample.txt",
-//     "reduce": 1
-// }->closeFile: {
-//     "name": "sample.txt"
-// }->assertResult: {
-//     "id": "view text decreased",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "decreased."
-//         }
-//     },
-//     "description": "not match."
-// }
+test>そのビューの文字列が減ったら、ss_v_decreasedイベントがでる/setViewReactor: {
+    "target": "someone",
+    "react": "ss_v_decreased",
+    "reactors": [
+        {
+            "showAtLog": {
+                "message": "decreased."
+            }
+        }
+    ]
+}->openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
+}->modifyView: {
+    "name": "sample.txt",
+    "add": "1"
+}->modifyView: {
+    "name": "sample.txt",
+    "reduce": 1
+}->closeFile: {
+    "name": "sample.txt"
+}->assertResult: {
+    "id": "view text decreased",
+    "contains": {
+        "showAtLog": {
+            "output": "decreased."
+        }
+    },
+    "description": "not match."
+}
 
 
 test>openFileしてforcelySave/openFile: {

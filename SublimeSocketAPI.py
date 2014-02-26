@@ -1207,7 +1207,7 @@ class SublimeSocketAPI:
 		# if "contents" exist, set contents to buffer.
 		if SublimeSocketAPISettings.CREATEBUFFER_CONTENTS in params:
 			contents = params[SublimeSocketAPISettings.CREATEBUFFER_CONTENTS]
-			self.editorAPI.runCommandOnView(view, 'insert_text', {'string': contents})
+			self.editorAPI.runCommandOn(view, 'insert_text', {'string': contents})
 		
 		SushiJSONParser.runSelectors(
 			params,
@@ -1308,11 +1308,8 @@ class SublimeSocketAPI:
 
 		# close all in this window
 		else:
-			print("こっちが着火してる筈")
 			self.editorAPI.closeAllViewsInCurrentWindow()
 			closeds = targetPaths
-
-
 
 		SushiJSONParser.runSelectors(
 			params,
@@ -1626,20 +1623,20 @@ class SublimeSocketAPI:
 				to = int(params[SublimeSocketAPISettings.MODIFYVIEW_TO])
 				line = self.editorAPI.getLineFromPoint(view, to)
 
-				self.editorAPI.runCommandOnView(view, 'insert_text', {'string': add, "fromParam":to})
+				self.editorAPI.runCommandOn(view, 'insert_text', {'string': add, "fromParam":to})
 
 			elif SublimeSocketAPISettings.MODIFYVIEW_LINE in params:
 				line = int(params[SublimeSocketAPISettings.MODIFYVIEW_LINE])
 				to = self.editorAPI.getTextPoint(view, line)
 
-				self.editorAPI.runCommandOnView(view, 'insert_text', {'string': add, "fromParam":to})
+				self.editorAPI.runCommandOn(view, 'insert_text', {'string': add, "fromParam":to})
 
 			# no "line" set = append the text to next to the last character of the view.
 			else:
-				self.editorAPI.runCommandOnView(view, 'insert_text', {'string': add, "fromParam":self.editorAPI.viewSize(view)})
+				self.editorAPI.runCommandOn(view, 'insert_text', {'string': add, "fromParam":self.editorAPI.viewSize(view)})
 			
 		if SublimeSocketAPISettings.MODIFYVIEW_REDUCE in params:
-			self.editorAPI.runCommandOnView(view, 'reduce_text')
+			self.editorAPI.runCommandOn(view, 'reduce_text')
 
 		SushiJSONParser.runSelectors(
 			params,
@@ -1954,7 +1951,7 @@ class SublimeSocketAPI:
 		
 		if view != None:
 			# hide completion
-			self.editorAPI.runCommandOnView(view, "hide_auto_complete")
+			self.editorAPI.runCommandOn(view, "hide_auto_complete")
 
 			SushiJSONParser.runSelectors(
 				params,
@@ -2000,7 +1997,7 @@ class SublimeSocketAPI:
 		self.updateCompletion(path, completionStrs)
 
 		# display completions
-		self.editorAPI.runCommandOnView(view, "auto_complete")
+		self.editorAPI.runCommandOn(view, "auto_complete")
 
 		SushiJSONParser.runSelectors(
 			params,
@@ -2015,7 +2012,7 @@ class SublimeSocketAPI:
 		if view == None:
 			return
 
-		self.editorAPI.runCommandOnView(view, 'forcely_save')
+		self.editorAPI.runCommandOn(view, "save")
 
 		SushiJSONParser.runSelectors(
 			params,
