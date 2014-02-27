@@ -1175,11 +1175,8 @@ class SublimeSocketAPI:
 
 		# renew event will run, but the view will not store KVS because of no-name view.
 		view = self.editorAPI.openFile(name)
-
+		
 		# buffer generated then set name and store to KVS.
-		message = "buffer "+ name +" created."
-		status = message
-
 		self.editorAPI.setNameToView(view, name)
 		
 		# restore to KVS with name
@@ -1212,7 +1209,7 @@ class SublimeSocketAPI:
 		SushiJSONParser.runSelectors(
 			params,
 			SublimeSocketAPISettings.CREATEBUFFER_INJECTIONS,
-			[name, status],
+			[name],
 			self.runAPI
 		)
 
@@ -1277,17 +1274,18 @@ class SublimeSocketAPI:
 		
 		name = params[SublimeSocketAPISettings.CLOSEFILE_NAME]
 		(view, name) = self.internal_detectViewInstance(name)
-		
-		path = self.internal_detectViewPath(view)
 
-		self.editorAPI.closeView(view)
-		
-		SushiJSONParser.runSelectors(
-			params,
-			SublimeSocketAPISettings.CLOSEFILE_INJECTIONS,
-			[path, name],
-			self.runAPI
-		)
+		if view != None:
+			path = self.internal_detectViewPath(view)
+
+			self.editorAPI.closeView(view)
+			
+			SushiJSONParser.runSelectors(
+				params,
+				SublimeSocketAPISettings.CLOSEFILE_INJECTIONS,
+				[path, name],
+				self.runAPI
+			)
 
 	def closeAllFiles(self, params):
 		expectPaths = []
@@ -2259,9 +2257,16 @@ class SublimeSocketAPI:
 
 	# view series
 
-	def internal_detectViewPath(self, view):
-		return self.editorAPI.nameOfView(view)
+	def internal_detectViewPath(self, view, name=""):
+		if view != None:
+			return self.editorAPI.nameOfView(view)
+		# else:
+		# 	assert name != "", "name is empty."
+		# 	self.intdev
+		# 	return 
 
+		return None
+		
 	def internal_getViewAndPathFromViewOrName(self, params, viewParamKey, nameParamKey):
 		view = None
 		path = None
@@ -2276,7 +2281,8 @@ class SublimeSocketAPI:
 			name = params[nameParamKey]
 			
 			(view, name) = self.internal_detectViewInstance(name)
-			path = self.internal_detectViewPath(view)
+			assert view != None and name, "view and name is empty."
+			path = self.internal_detectViewPath(view, name)
 
 
 		if view != None and path:
@@ -2304,19 +2310,22 @@ class SublimeSocketAPI:
 			viewSearchSource = viewSearchSource.replace("\\", "&")
 			viewSearchSource = viewSearchSource.replace("/", "&")
 
+			print("viewSearchSource", viewSearchSource)
+
 			# straight full match in viewSearchSource. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 
 				# replace path-expression by component with &.
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
-
+				print("vs viewSearchKey", viewSearchKey)
 				if re.findall(viewSearchSource, viewSearchKey):
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
 			
 			# partial match in viewSearchSource. "ccc.d" vs "********* ccc.d ************"
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
+				print("vs2 viewBasename", viewBasename)
 				if viewBasename in viewSearchSource:
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
 
@@ -2382,7 +2391,7 @@ class SublimeSocketAPI:
 		viewInfo = {}
 		if filePath in viewDict:
 			viewInfo = viewDict[filePath]
-
+		print("filePath2", filePath)
 		viewInfo[SublimeSocketAPISettings.VIEW_ISEXIST] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ISEXIST]
 		viewInfo[SublimeSocketAPISettings.VIEW_ID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ID]
 		viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID]
