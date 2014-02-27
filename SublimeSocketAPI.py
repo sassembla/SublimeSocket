@@ -67,7 +67,7 @@ class SublimeSocketAPI:
 
 	## run the specified API with JSON parameters. Dict or Array of JSON.
 	def runAPI(self, command, params, clientId=None):
-			
+						
   		# python-switch
 		for case in PythonSwitch(command):
 			if case(SublimeSocketAPISettings.API_CONNECTEDCALL):
@@ -271,7 +271,7 @@ class SublimeSocketAPI:
 			if case():
 				self.editorAPI.printMessage("unknown command "+ command + " /")
 				break
-
+				
 
 	def runReactor(self, reactorType, params, eventParams):
 		if SushiJSON.SUSHIJSON_KEYWORD_INJECTS in params:
@@ -1175,7 +1175,6 @@ class SublimeSocketAPI:
 
 		# renew event will run, but the view will not store KVS because of no-name view.
 		view = self.editorAPI.openFile(name)
-		
 		# buffer generated then set name and store to KVS.
 		self.editorAPI.setNameToView(view, name)
 		
@@ -1582,7 +1581,6 @@ class SublimeSocketAPI:
 		if SublimeSocketAPISettings.VIEWEMIT_DELAY in params:
 			delay = params[SublimeSocketAPISettings.VIEWEMIT_DELAY]
 
-		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.VIEWEMIT_VIEW, SublimeSocketAPISettings.VIEWEMIT_NAME)
 		if view == None:
 			return
@@ -2257,16 +2255,15 @@ class SublimeSocketAPI:
 
 	# view series
 
-	def internal_detectViewPath(self, view, name=""):
-		if view != None:
-			return self.editorAPI.nameOfView(view)
-		# else:
-		# 	assert name != "", "name is empty."
-		# 	self.intdev
-		# 	return 
-
-		return None
+	def internal_detectViewPath(self, view):
+		viewsDict = self.server.viewsDict()
 		
+		if viewsDict:
+			for path in list(viewsDict):
+				viewInstance = viewsDict[path][SublimeSocketAPISettings.VIEW_SELF]
+				if view == viewInstance:
+					return path
+
 	def internal_getViewAndPathFromViewOrName(self, params, viewParamKey, nameParamKey):
 		view = None
 		path = None
@@ -2280,10 +2277,10 @@ class SublimeSocketAPI:
 		elif nameParamKey and nameParamKey in params:
 			name = params[nameParamKey]
 			
-			(view, name) = self.internal_detectViewInstance(name)
-			assert view != None and name, "view and name is empty."
-			path = self.internal_detectViewPath(view, name)
-
+			if name:
+				(view, name) = self.internal_detectViewInstance(name)
+				path = self.internal_detectViewPath(view)
+				print("internal_getViewAndPathFromViewOrName last path", path)
 
 		if view != None and path:
 			return (view, path, name)
@@ -2293,9 +2290,10 @@ class SublimeSocketAPI:
 
 	## get the target view-s information if params includes "filename.something" or some pathes represents filepath.
 	def internal_detectViewInstance(self, name):
+		
 		# if specific path used, load current filename of the view.
 		if SublimeSocketAPISettings.SS_VIEWKEY_CURRENTVIEW == name:
-			name = self.editorAPI.getFileName()
+			return self.internal_detectViewInstance(self.editorAPI.getFileName())
 
 		viewDict = self.server.viewsDict()
 		if viewDict:
@@ -2307,28 +2305,27 @@ class SublimeSocketAPI:
 			if not viewSearchSource or len(viewSearchSource) is 0:
 				return None
 
+			print("internal_detectViewInstance name", name)
 			viewSearchSource = viewSearchSource.replace("\\", "&")
 			viewSearchSource = viewSearchSource.replace("/", "&")
-
 			print("viewSearchSource", viewSearchSource)
-
 			# straight full match in viewSearchSource. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 
 				# replace path-expression by component with &.
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
-				print("vs viewSearchKey", viewSearchKey)
+				print("viewSearchKey", viewSearchKey)
 				if re.findall(viewSearchSource, viewSearchKey):
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
 			
 			# partial match in viewSearchSource. "ccc.d" vs "********* ccc.d ************"
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
-				print("vs2 viewBasename", viewBasename)
 				if viewBasename in viewSearchSource:
+					print("viewBasename", viewBasename)
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-
+		print("name is overed", name)
 		# totally, return None and do nothing
 		return (None, None)
 
@@ -2391,7 +2388,7 @@ class SublimeSocketAPI:
 		viewInfo = {}
 		if filePath in viewDict:
 			viewInfo = viewDict[filePath]
-		print("filePath2", filePath)
+
 		viewInfo[SublimeSocketAPISettings.VIEW_ISEXIST] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ISEXIST]
 		viewInfo[SublimeSocketAPISettings.VIEW_ID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ID]
 		viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID]
