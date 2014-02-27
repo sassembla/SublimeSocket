@@ -1165,28 +1165,21 @@ class SublimeSocketAPI:
 		
 		name = params[SublimeSocketAPISettings.CREATEBUFFER_NAME]
 
-		if self.editorAPI.isBuffer(name):
-			pass
-		else:
-			result = "failed to create buffer "+ name +" because of the file is already exists."
-			
+		if not self.editorAPI.isBuffer(name):
 			return
-
 
 		# renew event will run, but the view will not store KVS because of no-name view.
 		view = self.editorAPI.openFile(name)
+		
 		# buffer generated then set name and store to KVS.
 		self.editorAPI.setNameToView(view, name)
 		
 		# restore to KVS with name
-		viewParams = self.editorAPI.generateSublimeViewInfo(
-			view,
+		viewParams = self.editorAPI.generateViewInfo(
+			view, None, name,
 			SublimeSocketAPISettings.VIEW_SELF,
-			SublimeSocketAPISettings.VIEW_ID,
-			SublimeSocketAPISettings.VIEW_BUFFERID,
 			SublimeSocketAPISettings.VIEW_PATH,
 			SublimeSocketAPISettings.VIEW_NAME,
-			SublimeSocketAPISettings.VIEW_VNAME,
 			SublimeSocketAPISettings.VIEW_SELECTEDS,
 			SublimeSocketAPISettings.VIEW_ISEXIST
 		)
@@ -1237,14 +1230,11 @@ class SublimeSocketAPI:
 			message = "file " + original_path + " is opened."
 			self.editorAPI.printMessage(message)
 			
-			viewParams = self.editorAPI.generateSublimeViewInfo(
-							view,
+			viewParams = self.editorAPI.generateViewInfo(
+							view, path, name,
 							SublimeSocketAPISettings.VIEW_SELF,
-							SublimeSocketAPISettings.VIEW_ID,
-							SublimeSocketAPISettings.VIEW_BUFFERID,
 							SublimeSocketAPISettings.VIEW_PATH,
 							SublimeSocketAPISettings.VIEW_NAME,
-							SublimeSocketAPISettings.VIEW_VNAME,
 							SublimeSocketAPISettings.VIEW_SELECTEDS,
 							SublimeSocketAPISettings.VIEW_ISEXIST
 						)
@@ -1670,14 +1660,11 @@ class SublimeSocketAPI:
 		selecteds = [appendSelection(selection) for selection in selections]
 
 		# emit viewReactor
-		viewParams = self.editorAPI.generateSublimeViewInfo(
-			view,
+		viewParams = self.editorAPI.generateViewInfo(
+			view, path, name,
 			SublimeSocketAPISettings.VIEW_SELF,
-			SublimeSocketAPISettings.VIEW_ID,
-			SublimeSocketAPISettings.VIEW_BUFFERID,
 			SublimeSocketAPISettings.VIEW_PATH,
 			SublimeSocketAPISettings.VIEW_NAME,
-			SublimeSocketAPISettings.VIEW_VNAME,
 			SublimeSocketAPISettings.VIEW_SELECTEDS,
 			SublimeSocketAPISettings.VIEW_ISEXIST)
 
@@ -2325,7 +2312,7 @@ class SublimeSocketAPI:
 				if viewBasename in viewSearchSource:
 					print("viewBasename", viewBasename)
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-		print("name is overed", name)
+		print("name is overed. no hit.", name)
 		# totally, return None and do nothing
 		return (None, None)
 
@@ -2333,32 +2320,33 @@ class SublimeSocketAPI:
 	## collect current views
 	def collectViews(self, params):
 		collecteds = []
-		# ここの粒度を直したい。
-		for views in [window.views() for window in self.editorAPI.windows()]:
-			for view in views:
-				viewParams = self.editorAPI.generateSublimeViewInfo(
-					view,
-					SublimeSocketAPISettings.VIEW_SELF,
-					SublimeSocketAPISettings.VIEW_ID,
-					SublimeSocketAPISettings.VIEW_BUFFERID,
-					SublimeSocketAPISettings.VIEW_PATH,
-					SublimeSocketAPISettings.VIEW_NAME,
-					SublimeSocketAPISettings.VIEW_VNAME,
-					SublimeSocketAPISettings.VIEW_SELECTEDS,
-					SublimeSocketAPISettings.VIEW_ISEXIST
-				)
 
-				emitIdentity = str(uuid.uuid4())
-				viewParams[SublimeSocketAPISettings.REACTOR_VIEWKEY_EMITIDENTITY] = emitIdentity
+		allOpenedPaths = self.editorAPI.allOpenedPaths()
+		
+		for path in allOpenedPaths:
+			view = self.editorAPI.viewFromPath(path)
+			name = path
+			
+			viewParams = self.editorAPI.generateViewInfo(
+				view, path, name,
+				SublimeSocketAPISettings.VIEW_SELF,
+				SublimeSocketAPISettings.VIEW_PATH,
+				SublimeSocketAPISettings.VIEW_NAME,
+				SublimeSocketAPISettings.VIEW_SELECTEDS,
+				SublimeSocketAPISettings.VIEW_ISEXIST
+			)
+
+			emitIdentity = str(uuid.uuid4())
+			viewParams[SublimeSocketAPISettings.REACTOR_VIEWKEY_EMITIDENTITY] = emitIdentity
 
 
-				self.fireReactor(
-					SublimeSocketAPISettings.REACTORTYPE_VIEW,
-					SublimeSocketAPISettings.SS_EVENT_COLLECT, 
-					viewParams
-				)
+			self.fireReactor(
+				SublimeSocketAPISettings.REACTORTYPE_VIEW,
+				SublimeSocketAPISettings.SS_EVENT_COLLECT, 
+				viewParams
+			)
 
-				collecteds.append(viewParams[SublimeSocketAPISettings.VIEW_PATH])
+			collecteds.append(viewParams[SublimeSocketAPISettings.VIEW_PATH])
 
 		SushiJSONParser.runSelectors(
 			params,
@@ -2366,20 +2354,13 @@ class SublimeSocketAPI:
 			[collecteds],
 			self.runAPI
 		)
-
 		
 	
 
 	def runRenew(self, eventParam):
 		viewInstance = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 		filePath = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH]
-
-		if self.editorAPI.isBuffer(filePath):
-			if self.editorAPI.isNamed(viewInstance):
-				pass
-			else:
-				# no name buffer view will ignore.
-				return
+		
 			
 		# update or append if exist.
 		viewDict = self.server.viewsDict()
@@ -2390,15 +2371,14 @@ class SublimeSocketAPI:
 			viewInfo = viewDict[filePath]
 
 		viewInfo[SublimeSocketAPISettings.VIEW_ISEXIST] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ISEXIST]
-		viewInfo[SublimeSocketAPISettings.VIEW_ID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_ID]
-		viewInfo[SublimeSocketAPISettings.VIEW_BUFFERID] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID]
+	
 		viewInfo[SublimeSocketAPISettings.VIEW_NAME] = filePath
-		viewInfo[SublimeSocketAPISettings.VIEW_VNAME] = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME]
 		viewInfo[SublimeSocketAPISettings.VIEW_SELF] = viewInstance
 
 		# add
 		viewDict[filePath] = viewInfo
 		self.server.updateViewsDict(viewDict)
+
 
 	def runDeletion(self, eventParam):
 		view = eventParam[SublimeSocketAPISettings.VIEW_SELF]

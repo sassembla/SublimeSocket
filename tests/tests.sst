@@ -303,7 +303,7 @@ test>APIDefined以外のinjectsを反映させる/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "toolTipShouldShow",
+    "id": "viewEmit to selectors.",
     "contains": {
         "showAtLog": {
             "output": "inject.txt"
@@ -1736,7 +1736,7 @@ test>transormの応用例、2件のregionDataをそれぞれToolTipに変形す�
         }
     ]
 }->assertResult: {
-    "id": "show 2 regions messages in toolTip1. @a",
+    "id": "ST3: show 2 regions messages in toolTip1. @a",
     "contains": {
         "showAtLog": {
             "output": "here comes a as a daredevil!!"
@@ -1744,7 +1744,7 @@ test>transormの応用例、2件のregionDataをそれぞれToolTipに変形す�
     },
     "description": "not match."
 }->assertResult: {
-    "id": "show 2 regions messages in toolTip2. @b",
+    "id": "ST3: show 2 regions messages in toolTip2. @b",
     "contains": {
         "showAtLog": {
             "output": "here comes b as a daredevil!!"
@@ -1873,7 +1873,7 @@ output({\"message\":message})\n
         }
     ]
 }->assertResult: {
-    "id": "fire tooltip with inject",
+    "id": "ST3: fire tooltip with inject",
     "contains": {
         "showAtLog": {
             "output": "sample.txt"
@@ -1959,7 +1959,7 @@ test>ツールチップの表示/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "toolTipShouldShow 1",
+    "id": "ST3: toolTipShouldShow 1",
     "contains": {
         "showAtLog": {
             "output": "['will show the tooltip', 'will show the tooltip2']"
@@ -2004,7 +2004,7 @@ test>ツールチップの表示2/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "toolTipShouldShow 2",
+    "id": "ST3: toolTipShouldShow 2",
     "contains": {
         "showAtLog": {
             "output": "['will show the tooltip', 'will show the tooltip2']"
@@ -2033,7 +2033,7 @@ test>ツールチップの選択、一択を選ぶ/createBuffer: {
         
     ]
 }->assertResult: {
-    "id": "choiceTheHead",
+    "id": "ST3: choiceTheHead",
     "contains": {
         "showAtLog": {
             "output": "hereComes choice 1"
@@ -2103,7 +2103,7 @@ test>ツールチップの選択後、inject済のviewを使ってappendRegion�
         
     ]
 }->assertResult: {
-    "id": "choice and add region to buffer.",
+    "id": "ST3: choice and add region to buffer.",
     "contains": {
         "showAtLog": {
             "output": "ss_(0, 0), keyword, 1, 0, 0, test"
@@ -2139,7 +2139,7 @@ test>ツールチップ選択orキャンセル後、最終的に動作するfina
         }
     ]
 }->assertResult: {
-    "id": "finally will run",
+    "id": "ST3: finally will run",
     "contains": {
         "showAtLog": {
             "output": "finally."
@@ -2333,7 +2333,7 @@ test>SublimeSocketとしての現在のbasePathを指定する/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "set basePath",
+    "id": "ST3: set basePath",
     "contains": {
         "showAtLog": {
             "output": "sample.txt"
@@ -2524,7 +2524,7 @@ test>特定のviewに対するreactorのテスト。/openFile: {
 }->このイベントでcloseイベントを発生させる/closeFile: {
     "name": "sample.txt"
 }->assertResult: {
-    "id": "close then run viewEmit to specific file",
+    "id": "ST3: close then run viewEmit to specific file",
     "contains": {
         "showAtLog": {
             "output": "name is sample.txt"
@@ -2967,7 +2967,7 @@ test>メッセージを複数のクライアント(同名でもOK)に配信す�
         }
     ]
 }->assertResult: {
-    "id": "broadcast message for every client",
+    "id": "broadcast message for every client 2",
     "contains": {
         "showAtLog": {
             "output": "['sublimesockettest', 'sublimesockettest'], broadcasting"
@@ -3170,7 +3170,7 @@ test>設定の実行が実行されきったかどうか/runSushiJSON: {
         }
     ]
 }->assertResult: {
-    "id": "setting done",
+    "id": "setting done2",
     "contains": {
         "showAtLog": {
             "output": "runSetting logs:['done.']"
@@ -3305,78 +3305,78 @@ test>適当な名前のファイルを開き、regionの追加に失敗(noViewFo
 }
 
 
-// test>eraseAllRegionsでselectors/createBuffer: {
-//     "name": "eraseAllRegionsWithSelectors.txt"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "condition": "keyword",
-//     "name": "eraseAllRegionsWithSelectors.txt"
-// }->eraseAllRegions: {
-//     "injects": {
-//         "deletes": "message"
-//     },
-//     "selectors": [
-//         {
-//             "showAtLog<-message": {}
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "eraseAllRegions with selectors.",
-//     "contains": {
-//         "showAtLog": {
-//             "output": {
-//                 "eraseAllRegionsWithSelectors.txt": ["ss_(0, 0)"]
-//             }
-//         }
-//     },
-//     "description": "not match."
-// }
+test>eraseAllRegionsでselectors/createBuffer: {
+    "name": "eraseAllRegionsWithSelectors.txt"
+}->appendRegion: {
+    "line": "1",
+    "message": "test",
+    "condition": "keyword",
+    "name": "eraseAllRegionsWithSelectors.txt"
+}->eraseAllRegions: {
+    "injects": {
+        "deletes": "message"
+    },
+    "selectors": [
+        {
+            "showAtLog<-message": {}
+        }
+    ]
+}->assertResult: {
+    "id": "eraseAllRegions with selectors.",
+    "contains": {
+        "showAtLog": {
+            "output": {
+                "eraseAllRegionsWithSelectors.txt": ["ss_(0, 0)"]
+            }
+        }
+    },
+    "description": "not match."
+}
 
 
-// test>eraseAllRegionsのテスト。複数のファイルを開き、各1つのregionを追加、消す/createBuffer: {
-//     "name": "notexistfileA.txt"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "condition": "keyword",
-//     "name": "notexistfileA.txt"
-// }->createBuffer: {
-//     "name": "notexistfileB.txt"
-// }->appendRegion: {
-//     "line": "1",
-//     "message": "test",
-//     "condition": "keyword",
-//     "name": "notexistfileB.txt"
-// }->eraseAllRegions: {
-//     "selectors": [
-//         {
-//             "transform<-deletes":{
-//                 "code": "
-// deletes = inputs[\"deletes\"]\n
-// part1 = deletes[\"notexistfileA.txt\"]\n
-// part2 = deletes[\"notexistfileB.txt\"]\n
-// output({\"part1\":part1, \"part2\":part2})
-//                 ",
-//                 "selectors": [
-//                     {
-//                         "showAtLog<-part1, part2": {
-//                             "format": "[part1], [part2]"
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "eraseAllRegions, two file and each 1 regions will become empty",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "['ss_(0, 0)'], ['ss_(0, 0)']"
-//         }
-//     },
-//     "description": "not all is empty."
-// }
+test>eraseAllRegionsのテスト。複数のファイルを開き、各1つのregionを追加、消す/createBuffer: {
+    "name": "notexistfileA.txt"
+}->appendRegion: {
+    "line": "1",
+    "message": "test",
+    "condition": "keyword",
+    "name": "notexistfileA.txt"
+}->createBuffer: {
+    "name": "notexistfileB.txt"
+}->appendRegion: {
+    "line": "1",
+    "message": "test",
+    "condition": "keyword",
+    "name": "notexistfileB.txt"
+}->eraseAllRegions: {
+    "selectors": [
+        {
+            "transform<-deletes":{
+                "code": "
+deletes = inputs[\"deletes\"]\n
+part1 = deletes[\"notexistfileA.txt\"]\n
+part2 = deletes[\"notexistfileB.txt\"]\n
+output({\"part1\":part1, \"part2\":part2})
+                ",
+                "selectors": [
+                    {
+                        "showAtLog<-part1, part2": {
+                            "format": "[part1], [part2]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "eraseAllRegions, two file and each 1 regions will become empty",
+    "contains": {
+        "showAtLog": {
+            "output": "['ss_(0, 0)'], ['ss_(0, 0)']"
+        }
+    },
+    "description": "not all is empty."
+}
 
 
 test>eraseのテスト、特定のviewのregionすべてを削除する。/createBuffer: {

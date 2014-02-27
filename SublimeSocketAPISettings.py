@@ -23,10 +23,7 @@ TRANSFER_METHODS			= [WEBSOCKET_SERVER]
 DICT_VIEWS					= "DICT_VIEWS"
 VIEW_SELF					= "view"
 VIEW_PATH					= "path"
-VIEW_ID						= "viewId"
-VIEW_BUFFERID				= "bufferId"
 VIEW_NAME					= "name"
-VIEW_VNAME					= "vname"
 VIEW_SELECTEDS				= "selecteds"
 VIEW_ISEXIST				= "isExist"
 	

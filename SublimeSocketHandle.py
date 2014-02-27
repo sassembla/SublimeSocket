@@ -160,14 +160,11 @@ class SublimeSocketThread(threading.Thread):
         # print "scratch buffer."
         return
 
-      eventParam = self.server.api.editorAPI.generateSublimeViewInfo(
-        view,
+      eventParam = self.server.api.editorAPI.generateViewInfo(
+        view, None, None,
         SublimeSocketAPISettings.REACTOR_VIEWKEY_VIEWSELF,
-        SublimeSocketAPISettings.REACTOR_VIEWKEY_ID,
-        SublimeSocketAPISettings.REACTOR_VIEWKEY_BUFFERID,
         SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH,
         SublimeSocketAPISettings.REACTOR_VIEWKEY_NAME,
-        SublimeSocketAPISettings.REACTOR_VIEWKEY_VNAME,
         SublimeSocketAPISettings.REACTOR_VIEWKEY_SELECTEDS,
         SublimeSocketAPISettings.REACTOR_VIEWKEY_ISEXIST
       )

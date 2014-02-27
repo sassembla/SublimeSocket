@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sublime, sublime_plugin
+from itertools import chain
 import os
 
 # for log prefix.
@@ -8,12 +9,30 @@ import SublimeSocketAPISettings
 
 ## sublime dependents apis and functions.
 class EditorAPI:
-	def generateSublimeViewInfo(self, viewInstance, viewKey, viewIdKey, viewBufferIdKey, viewPathKey, viewNameKey, viewVNameKey, viewSelectedsKey, isViewExist):
+	def generateViewInfo(
+		self, 
+		viewInstance, 
+		pathSource,
+		nameSource,
+		viewKey, 
+		viewPathKey, 
+		viewNameKey, 
+		viewSelectedsKey, 
+		isViewExist):
 		existOrNot = False
-
+		
 		if self.isBuffer(viewInstance.file_name()):
 			fileName = viewInstance.name()
 			name = fileName
+
+			if pathSource:
+				fileName = pathSource
+
+			if nameSource:
+				name = nameSource
+
+			if not fileName:
+				fileName = name
 			
 		else:
 			existOrNot = True
@@ -28,14 +47,11 @@ class EditorAPI:
 			if region.a != region.b:
 				regionTupel = (region.a, region.b)
 				selecteds.append(regionTupel)
-
+		print("generateViewInfo", viewInstance, fileName, name)
 		return {
 			viewKey : viewInstance,
-			viewIdKey: viewInstance.id(),
-			viewBufferIdKey: viewInstance.buffer_id(),
 			viewPathKey: fileName,
 			viewNameKey: name,
-			viewVNameKey: viewInstance.name(),
 			viewSelectedsKey: selecteds,
 			isViewExist: existOrNot
 		}
@@ -106,8 +122,18 @@ class EditorAPI:
 	def getFileName(self):
 		return sublime.active_window().active_view().file_name()
 
+	def allOpenedPaths(self):
+		views = list(chain.from_iterable([window.views() for window in self.windows()]))
+		return [self.nameOfView(view) for view in views]
+
+	def viewFromPath(self, fullpath):
+		views = list(chain.from_iterable([window.views() for window in self.windows()]))
+		for view in views:
+			if self.nameOfView(view) == fullpath:
+			 	return view
+
 	def setNameToView(self, view, name):
-		view.set_name(name)
+		view.set_name(name) # never effect if the target file is not saved in ST2.
 		return view
 
 	def nameOfView(self, view):
