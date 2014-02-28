@@ -105,8 +105,7 @@ test>readFileからselectors/readFile: {
             "output": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt, a\nb\nc"
         }
     },
-    "description": "not match.",
-    "debug": true
+    "description": "not match."
 }
 
 
@@ -513,8 +512,7 @@ test>transformでparamsAをparamsBに変更する。/openFile: {
             "output": "here comes a as a daredevil!!"
         }
     },
-    "description": "not match.",
-    "debug": true
+    "description": "not match."
 }->closeFile: {
     "name": "sample.txt"
 }
@@ -763,7 +761,7 @@ test>modifyViewのポイント指定バージョン/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "view line increased",
+    "id": "ST3: view line increased 2",
     "contains": {
         "showAtLog": {
             "output": "a\n1b\nc"
@@ -815,56 +813,56 @@ test>補完を外部からセット、そのままウインドウ表示する。
 }
 
 
-    // test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
-    //     "name": "completionCloseTestView.txt"
-    // }->viewEmit: {
-    //     "identity": "completionCloseTestView",
-    //     "name": "completionCloseTestView.txt",
-    //     "selectors": [
-    //         {
-    //             "runCompletion<-name": {
-    //                 "completion": [
-    //                     {
-    //                         "HEAD": "DrawLine",
-    //                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-    //                         "return": "Void",
-    //                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-    //                         "head": "DrawLine"
-    //                     },
-    //                     {
-    //                         "HEAD": "DrawLine",
-    //                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-    //                         "return": "Void",
-    //                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-    //                         "head": "DrawLine"
-    //                     }
-    //                 ],
-    //                 "formathead": "HEADparamsTypeDef\treturn",
-    //                 "formattail": "headparamsTargetFmt$0"
-    //             }
-    //         }
-    //     ]
-    // }->cancelCompletion: {
-    //     "name": "completionCloseTestView.txt",
-    //     "injects": {
-    //         "name": "name"
-    //     },
-    //     "selectors": [
-    //         {
-    //             "showAtLog<-name": {
-    //                 "format": "completion cancelled at [name]"
-    //             }
-    //         }
-    //     ]
-    // }->assertResult: {
-    //     "id": "completion window close",
-    //     "contains": {
-    //         "showAtLog": {
-    //             "output": "completion cancelled at completionCloseTestView.txt"
-    //         }
-    //     },
-    //     "description": "not close."
-    // }
+test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
+    "name": "completionCloseTestView.txt"
+}->viewEmit: {
+    "identity": "completionCloseTestView",
+    "name": "completionCloseTestView.txt",
+    "selectors": [
+        {
+            "runCompletion<-name": {
+                "completion": [
+                    {
+                        "HEAD": "DrawLine",
+                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+                        "return": "Void",
+                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+                        "head": "DrawLine"
+                    },
+                    {
+                        "HEAD": "DrawLine",
+                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+                        "return": "Void",
+                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+                        "head": "DrawLine"
+                    }
+                ],
+                "formathead": "HEADparamsTypeDef\treturn",
+                "formattail": "headparamsTargetFmt$0"
+            }
+        }
+    ]
+}->cancelCompletion: {
+    "name": "completionCloseTestView.txt",
+    "injects": {
+        "name": "name"
+    },
+    "selectors": [
+        {
+            "showAtLog<-name": {
+                "format": "completion cancelled at [name]"
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "completion window close",
+    "contains": {
+        "showAtLog": {
+            "output": "completion cancelled at completionCloseTestView.txt"
+        }
+    },
+    "description": "not close."
+}
 
 
 test>存在するファイルのviewに対してselectorを実行する,
@@ -922,7 +920,7 @@ test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "ST3: viewEmit in deep level with API defined injection",
+    "id": "viewEmit in deep level with API defined injection",
     "contains": {
         "showAtLog": {
             "output": "sample.txt"
@@ -970,7 +968,7 @@ test>deepなレイヤーのviewEmitを実行する/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "ST3: viewEmit in deep level",
+    "id": "viewEmit in deep level",
     "contains": {
         "showAtLog": {
             "output": "view emit over in deep nest."
