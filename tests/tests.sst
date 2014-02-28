@@ -18,6 +18,11 @@ beforeafter>thebeforeafterselectors/selector: {
             "showAtLog": {
                 "message": "test over"
             }
+        },
+        {   
+            "openFile": {
+                "path": "SUBLIMESOCKET_PATH:tests/tests.sst"
+            }
         }
     ]
 }
@@ -100,7 +105,8 @@ test>readFileからselectors/readFile: {
             "output": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt, a\nb\nc"
         }
     },
-    "description": "not match."
+    "description": "not match.",
+    "debug": true
 }
 
 
@@ -122,7 +128,7 @@ test>バッファを作り、appendRegionし、閉じて、eraseAllRegionssす�
         }
     ]
 }->assertResult: {
-    "id": "eraseAllRegionss never run.",
+    "id": "ST3: eraseAllRegionss never run.",
     "contains": {
         "showAtLog": {
             "output": "{}"
@@ -391,7 +397,7 @@ test>nestしたfilterでのバグ、selectorの変更が効かない、かと思
     "name": "quickfix",
     "source": "the1 test2 4a3 nestedFilterCase.txt4"
 }->assertResult: {
-    "id": "inject works with out of APIDefined injection.",
+    "id": "ST3: inject works with out of APIDefined injection.",
     "contains": {
         "showAtLog": {
             "output": "the test will be add-ed."
@@ -435,7 +441,7 @@ output({\"message\":\"hereComes2\"})",
         }
     ]
 }->assertResult: {
-    "id": "transform uses the code made from json",
+    "id": "transform uses the code made from json 2",
     "contains": {
         "showAtLog": {
             "output": "hereComes2"
@@ -468,7 +474,7 @@ test>transformでlistとdictを扱う/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "transform with list and dict.",
+    "id": "ST3: transform with list and dict.",
     "contains": {
         "showAtLog": {
             "output": "this is a"
@@ -501,13 +507,14 @@ test>transformでparamsAをparamsBに変更する。/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "APIName<- means all param injection.",
+    "id": "ST3: APIName<- means all param injection.",
     "contains": {
         "showAtLog": {
             "output": "here comes a as a daredevil!!"
         }
     },
-    "description": "not match."
+    "description": "not match.",
+    "debug": true
 }->closeFile: {
     "name": "sample.txt"
 }
@@ -554,7 +561,7 @@ test>quickFix的な機構のテスト、appendRegionからのToolTip、filterで
         
     ]
 }->assertResult: {
-    "id": "set quickfix",
+    "id": "ST3: set quickfix",
     "contains": {
         "showAtLog": {
             "output": "quickfix ready. sample"
@@ -642,7 +649,7 @@ test>完了通知が出ない。突破してはいる。組み合わせでエラ
     "name": "completionTestView.txt",
     "selectors": [
         {
-            "要素が一つだと一択のため勝手に入力される/runCompletion<-name": {
+            "このCompletionはnameを使っているのでキー間違いで着火しない。あくまで再現用。/runCompletion<-name": {
                 "completion": [
                     {
                         "HEAD": "DrawLine",
@@ -673,7 +680,7 @@ test>完了通知が出ない。突破してはいる。組み合わせでエラ
     "name": "sample.txt",
     "add": "1"
 }->assertResult: {
-    "id": "view text increased",
+    "id": "ST3: view text increased",
     "contains": {
         "showAtLog": {
             "output": "increased."
@@ -727,7 +734,7 @@ test>modifyViewの行数指定バージョン/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "view line increased",
+    "id": "ST3: view line increased",
     "contains": {
         "showAtLog": {
             "output": "a\nb\nc\n1"
@@ -808,56 +815,56 @@ test>補完を外部からセット、そのままウインドウ表示する。
 }
 
 
-test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
-    "name": "completionCloseTestView.txt"
-}->viewEmit: {
-    "identity": "completionCloseTestView",
-    "name": "completionCloseTestView.txt",
-    "selectors": [
-        {
-            "runCompletion<-name": {
-                "completion": [
-                    {
-                        "HEAD": "DrawLine",
-                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-                        "return": "Void",
-                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-                        "head": "DrawLine"
-                    },
-                    {
-                        "HEAD": "DrawLine",
-                        "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
-                        "return": "Void",
-                        "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
-                        "head": "DrawLine"
-                    }
-                ],
-                "formathead": "HEADparamsTypeDef\treturn",
-                "formattail": "headparamsTargetFmt$0"
-            }
-        }
-    ]
-}->cancelCompletion: {
-    "name": "completionCloseTestView.txt",
-    "injects": {
-        "name": "name"
-    },
-    "selectors": [
-        {
-            "showAtLog<-name": {
-                "format": "completion cancelled at [name]"
-            }
-        }
-    ]
-}->assertResult: {
-    "id": "completion window close",
-    "contains": {
-        "showAtLog": {
-            "output": "completion cancelled at completionCloseTestView.txt"
-        }
-    },
-    "description": "not close."
-}
+    // test>補完ウインドウを表示してcancelCompletionで閉じる/createBuffer: {
+    //     "name": "completionCloseTestView.txt"
+    // }->viewEmit: {
+    //     "identity": "completionCloseTestView",
+    //     "name": "completionCloseTestView.txt",
+    //     "selectors": [
+    //         {
+    //             "runCompletion<-name": {
+    //                 "completion": [
+    //                     {
+    //                         "HEAD": "DrawLine",
+    //                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+    //                         "return": "Void",
+    //                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+    //                         "head": "DrawLine"
+    //                     },
+    //                     {
+    //                         "HEAD": "DrawLine",
+    //                         "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+    //                         "return": "Void",
+    //                         "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+    //                         "head": "DrawLine"
+    //                     }
+    //                 ],
+    //                 "formathead": "HEADparamsTypeDef\treturn",
+    //                 "formattail": "headparamsTargetFmt$0"
+    //             }
+    //         }
+    //     ]
+    // }->cancelCompletion: {
+    //     "name": "completionCloseTestView.txt",
+    //     "injects": {
+    //         "name": "name"
+    //     },
+    //     "selectors": [
+    //         {
+    //             "showAtLog<-name": {
+    //                 "format": "completion cancelled at [name]"
+    //             }
+    //         }
+    //     ]
+    // }->assertResult: {
+    //     "id": "completion window close",
+    //     "contains": {
+    //         "showAtLog": {
+    //             "output": "completion cancelled at completionCloseTestView.txt"
+    //         }
+    //     },
+    //     "description": "not close."
+    // }
 
 
 test>存在するファイルのviewに対してselectorを実行する,
@@ -915,7 +922,7 @@ test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "viewEmit in deep level with API defined injection",
+    "id": "ST3: viewEmit in deep level with API defined injection",
     "contains": {
         "showAtLog": {
             "output": "sample.txt"
@@ -963,7 +970,7 @@ test>deepなレイヤーのviewEmitを実行する/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "viewEmit in deep level",
+    "id": "ST3: viewEmit in deep level",
     "contains": {
         "showAtLog": {
             "output": "view emit over in deep nest."
@@ -993,7 +1000,7 @@ test>そのビューの文字列が増えたら、ss_v_increasedイベントが�
 }->closeFile: {
     "name": "sample.txt"
 }->assertResult: {
-    "id": "view text increased2",
+    "id": "ST3: view text increased2",
     "contains": {
         "showAtLog": {
             "output": "increased."
@@ -1024,7 +1031,7 @@ test>そのビューの文字列が減ったら、ss_v_decreasedイベントが�
 }->closeFile: {
     "name": "sample.txt"
 }->assertResult: {
-    "id": "view text decreased",
+    "id": "ST3: view text decreased",
     "contains": {
         "showAtLog": {
             "output": "decreased."
@@ -1243,7 +1250,7 @@ test>resetCountsのselectors/countUp: {
         }
     ]
 }->assertResult: {
-    "id": "resetted labels are here.",
+    "id": "ST3: resetted labels are here.",
     "contains": {
         "showAtLog": {
             "output": "the resetted param is ['test']"
@@ -1375,7 +1382,7 @@ test>setSelectionでselectedRegionsを引き起こし、selectorに値を引き�
         }
     ]
 }->assertResult: {
-    "id": "viewReactor, fire event_showAtLog 2",
+    "id": "ST3: viewReactor, fire event_showAtLog 2",
     "contains": {
         "showAtLog": {
             "output": "the 'a\nb\nc' emitted with parameter"
@@ -1418,7 +1425,7 @@ output({\"tail\":str(listOfSelecteds[-1])})
         }
     ]
 }->assertResult: {
-    "id": "setSelection generates the result of one selecteds.",
+    "id": "ST3: setSelection generates the result of one selecteds.",
     "contains": {
         "showAtLog": {
             "output": "the (10, 11) is last of selections."
@@ -1465,7 +1472,7 @@ output({\"tail\":str(listOfSelecteds[-1])})
         }
     ]
 }->assertResult: {
-    "id": "setSelection generates the result of one selecteds.",
+    "id": "ST3: setSelection generates the result of one selecteds 2.",
     "contains": {
         "showAtLog": {
             "output": "the (10, 11) is last of selections."
@@ -1516,7 +1523,7 @@ output({\"tail\":str(listOfSelecteds[-1])})
         }
     ]
 }->assertResult: {
-    "id": "setSelection generates the result of one selecteds.",
+    "id": "ST3: setSelection generates the result of one selecteds 3.",
     "contains": {
         "showAtLog": {
             "output": "the (13, 15) is last of selections."
@@ -1572,7 +1579,7 @@ test>setSelectionでselectedRegionsを引き起こす/setViewReactor: {
         }
     ]
 }->assertResult: {
-    "id": "viewReactor, fire event_showAtLog 1",
+    "id": "ST3: viewReactor, fire event_showAtLog 1",
     "contains": {
         "showAtLog": {
             "output": "here comes!!"
@@ -1625,7 +1632,7 @@ test>regionの2contentsに対して、setSelectionでselectedRegionsを引き起
         }
     ]
 }->順番の正当性が無いので失敗する。/assertResult: {
-    "id": "contains 2 regions and there datas.",
+    "id": "ST3: contains 2 regions and there datas.",
     "contains": {
         "showAtLog": {
             "output": "the ['test2', 'test']"
@@ -1675,7 +1682,7 @@ test>selectedRegionsからの値変形チェック/setViewReactor: {
         }
     ]
 }->assertResult: {
-    "id": "parameter injected through selectRegions.",
+    "id": "ST3: parameter injected through selectRegions.",
     "contains": {
         "showAtLog": {
             "output": "L:1, (0, 1)"
@@ -2197,7 +2204,7 @@ test>clearSelectionとselectors/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "clearSelection with selectors",
+    "id": "ST3: clearSelection with selectors",
     "contains": {
         "showAtLog": {
             "output": "clearSelection.txt + [{(0, 1): ''}]."
@@ -2444,6 +2451,11 @@ test>eventEmitでのaccepts機構のテスト、eventEmit側にinjectsが無いv
     ],
     "reactors": [
         {
+            "showAtLog": {
+                "message": "hereComes"
+            }
+        },
+        {
             "showAtLog<-messageFromEventEmit": {
                 "format": "from [messageFromEventEmit]"
             }
@@ -2635,7 +2647,7 @@ test>フィルタ定義を行い、フィルタが生成されている/defineFi
         }
     ]
 }->assertResult: {
-    "id": "should have filter-info",
+    "id": "ST3: should have filter-info",
     "contains": {
         "showAtLog": {
             "output": "testFilter, ['testPattern']"
@@ -2821,42 +2833,42 @@ test>Clientのidentityを変更する/changeIdentity: {
 }
 
 
-// test>ファイル内容を特定クライアントに配信する。/openFile: {
-//     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample4.txt"
-// }->viewEmit: {
-//     "identity": "send body of file through monocast",
-//     "name": "sample4.txt",
-//     "injects": {
-//         "body": "message"
-//     },
-//     "selectors": [
-//         {
-//             "monocastMessage<-message": {
-//                 "target": "sublimesockettest",
-//                 "injects": {
-//                     "message": "body"
-//                 },
-//                 "selectors": [
-//                     {
-//                         "showAtLog<-target, body": {
-//                             "format": "[target], [body]"
-//                         }
-//                     }
-//                 ]
-//             }
-//         }
-//     ]
-// }->assertResult: {
-//     "id": "monocast message for specific client",
-//     "contains": {
-//         "showAtLog": {
-//             "output": "sublimesockettest, a\nb\n\/\/comment\nc\nd\n\n\ne\nf\n\ng"
-//         }
-//     },
-//     "description": "faild to monocast."
-// }->closeFile: {
-//     "name": "sample4.txt"
-// }
+test>ファイル内容を特定クライアントに配信する。/openFile: {
+    "path": "SUBLIMESOCKET_PATH:tests/testResources/sample4.txt"
+}->viewEmit: {
+    "identity": "send body of file through monocast",
+    "name": "sample4.txt",
+    "injects": {
+        "body": "message"
+    },
+    "selectors": [
+        {
+            "monocastMessage<-message": {
+                "target": "sublimesockettest",
+                "injects": {
+                    "message": "body"
+                },
+                "selectors": [
+                    {
+                        "showAtLog<-target, body": {
+                            "format": "[target], [body]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}->assertResult: {
+    "id": "ST3: monocast message for specific client, not stable in ST2 @ test.",
+    "contains": {
+        "showAtLog": {
+            "output": "sublimesockettest, a\nb\n\/\/comment\nc\nd\n\n\ne\nf\n\ng"
+        }
+    },
+    "description": "faild to monocast."
+}->closeFile: {
+    "name": "sample4.txt"
+}
 
 
 test>メッセージを特定クライアントに配信する。/monocastMessage: {
@@ -2946,7 +2958,7 @@ test>メッセージを全クライアントに配信する/broadcastMessage: {
         }
     ]
 }->assertResult: {
-    "id": "broadcast message for every client",
+    "id": "ST3: broadcast message for every client",
     "contains": {
         "showAtLog": {
             "output": "['sublimesockettest'], broadcasting"
@@ -2967,7 +2979,7 @@ test>メッセージを複数のクライアント(同名でもOK)に配信す�
         }
     ]
 }->assertResult: {
-    "id": "broadcast message for every client 2",
+    "id": "ST3: broadcast message for every client 2",
     "contains": {
         "showAtLog": {
             "output": "['sublimesockettest', 'sublimesockettest'], broadcasting"
@@ -3150,7 +3162,7 @@ test>設定の実行が実行されきったかどうか/runSushiJSON: {
         }
     ]
 }->assertResult: {
-    "id": "setting done",
+    "id": "ST3: setting done",
     "contains": {
         "showAtLog": {
             "output": "runSetting logs:['done.']"
@@ -3170,7 +3182,7 @@ test>設定の実行が実行されきったかどうか/runSushiJSON: {
         }
     ]
 }->assertResult: {
-    "id": "setting done2",
+    "id": "ST3: setting done2",
     "contains": {
         "showAtLog": {
             "output": "runSetting logs:['done.']"
@@ -3322,7 +3334,7 @@ test>eraseAllRegionsでselectors/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "eraseAllRegions with selectors.",
+    "id": "ST3: eraseAllRegions with selectors.",
     "contains": {
         "showAtLog": {
             "output": {
@@ -3369,7 +3381,7 @@ output({\"part1\":part1, \"part2\":part2})
         }
     ]
 }->assertResult: {
-    "id": "eraseAllRegions, two file and each 1 regions will become empty",
+    "id": "ST3: eraseAllRegions, two file and each 1 regions will become empty",
     "contains": {
         "showAtLog": {
             "output": "['ss_(0, 0)'], ['ss_(0, 0)']"
@@ -3379,7 +3391,7 @@ output({\"part1\":part1, \"part2\":part2})
 }
 
 
-test>eraseのテスト、特定のviewのregionすべてを削除する。/createBuffer: {
+test>eraseのテスト、存在しない特定のviewのregionすべてを削除する。/createBuffer: {
     "name": "notexistFileC.txt"
 }->appendRegion: {
     "line": "1",
@@ -3449,7 +3461,7 @@ test>eraseのテスト、直前に閉じられて存在しないファイルのr
         }
     ]
 }->assertResult: {
-    "id": "open, append region, close file then eraseAllRegions. nothing includes",
+    "id": "ST3: open, append region, close file then eraseAllRegions. nothing includes",
     "contains": {
         "showAtLog": {
             "output": "{}"
@@ -3477,7 +3489,7 @@ test>eraseのテスト、直前に閉じられて存在しないバッファのr
         }
     ]
 }->assertResult: {
-    "id": "create, append region, close file then eraseAllRegions. nothing includes",
+    "id": "ST3: create, append region, close file then eraseAllRegions. nothing includes",
     "contains": {
         "showAtLog": {
             "output": "{}"
@@ -3647,7 +3659,7 @@ test>closeAllBufferとselectors/createBuffer: {
         }
     ]
 }->assertResult: {
-    "id": "closeAllBuffer with selectors.",
+    "id": "ST3: closeAllBuffer with selectors.",
     "contains": {
         "showAtLog": {
             "output": ["bufferForCloseAll.txt"]
@@ -3668,7 +3680,7 @@ test>適当に匿名のバッファを作り、現在のバッファとして閉
         }
     ]
 }->assertResult: {
-    "id": "close all buffer succeeded",
+    "id": "ST3: close all buffer succeeded",
     "contains": {
         "showAtLog": {
             "output": "['something']"
@@ -3691,7 +3703,7 @@ test>適当に複数の匿名のバッファを作り、現在のバッファと
         }
     ]
 }->assertResult: {
-    "id": "close all buffer succeeded2",
+    "id": "ST3: close all buffer succeeded2",
     "contains": {
         "showAtLog": {
             "output": "['something', 'something2']"
@@ -4010,9 +4022,4 @@ test>closeAllFiles: {
     "id": "close all files for test in ST2",
     "isnotempty": "showAtLog",
     "description": "is empty."
-}
-
-
-test>openFile: {
-	"path": "SUBLIMESOCKET_PATH:tests/tests.sst"
 }

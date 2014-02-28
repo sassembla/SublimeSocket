@@ -47,7 +47,7 @@ class EditorAPI:
 			if region.a != region.b:
 				regionTupel = (region.a, region.b)
 				selecteds.append(regionTupel)
-		print("generateViewInfo", viewInstance, fileName, name)
+
 		return {
 			viewKey : viewInstance,
 			viewPathKey: fileName,

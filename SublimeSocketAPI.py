@@ -598,20 +598,21 @@ class SublimeSocketAPI:
 		
 		target = params[SublimeSocketAPISettings.MONOCASTMESSAGE_TARGET]
 		message = params[SublimeSocketAPISettings.MONOCASTMESSAGE_MESSAGE]
-		
-		succeeded, reason = self.server.sendMessage(target, message)
 
-		if succeeded:
-			SushiJSONParser.runSelectors(
-				params,
-				SublimeSocketAPISettings.MONOCASTMESSAGE_INJECTIONS,
-				[target, message],
-				self.runAPI
-			)
+		if message:
+			succeeded, reason = self.server.sendMessage(target, message)
 
-		else:
-			self.editorAPI.printMessage("monocastMessage failed. target: " + target + " " + reason)
-			
+			if succeeded:
+				SushiJSONParser.runSelectors(
+					params,
+					SublimeSocketAPISettings.MONOCASTMESSAGE_INJECTIONS,
+					[target, message],
+					self.runAPI
+				)
+
+			else:
+				self.editorAPI.printMessage("monocastMessage failed. target: " + target + " " + reason)
+				
 	
 	def showAtLog(self, params):
 		if SublimeSocketAPISettings.LOG_FORMAT in params:
@@ -1594,6 +1595,7 @@ class SublimeSocketAPI:
 			)
 
 	def modifyView(self, params):
+		print("modify start!")
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.MODIFYVIEW_VIEW, SublimeSocketAPISettings.MODIFYVIEW_NAME)
 		if view == None:
 			return
@@ -1603,7 +1605,7 @@ class SublimeSocketAPI:
 
 		if SublimeSocketAPISettings.MODIFYVIEW_ADD in params:
 			add = params[SublimeSocketAPISettings.MODIFYVIEW_ADD]
-
+			print("modifying!")
 			# insert text to the view with "to" or "line" param, or other.
 			if SublimeSocketAPISettings.MODIFYVIEW_TO in params:
 				to = int(params[SublimeSocketAPISettings.MODIFYVIEW_TO])
@@ -1624,6 +1626,7 @@ class SublimeSocketAPI:
 		if SublimeSocketAPISettings.MODIFYVIEW_REDUCE in params:
 			self.editorAPI.runCommandOn(view, 'reduce_text')
 
+		print("modify end!")
 		SushiJSONParser.runSelectors(
 			params,
 			SublimeSocketAPISettings.MODIFYVIEW_INJECTIONS,
@@ -1952,7 +1955,6 @@ class SublimeSocketAPI:
 		if view == None:
 			return
 
-		
 		completions = params[SublimeSocketAPISettings.RUNCOMPLETION_COMPLETIONS]		
 
 		formatHead = ""
@@ -1978,7 +1980,7 @@ class SublimeSocketAPI:
 		
 		# set completion
 		self.updateCompletion(path, completionStrs)
-
+		print("updated, ", path, completionStrs)
 		# display completions
 		self.editorAPI.runCommandOn(view, "auto_complete")
 
@@ -2267,7 +2269,6 @@ class SublimeSocketAPI:
 			if name:
 				(view, name) = self.internal_detectViewInstance(name)
 				path = self.internal_detectViewPath(view)
-				print("internal_getViewAndPathFromViewOrName last path", path)
 
 		if view != None and path:
 			return (view, path, name)
@@ -2292,17 +2293,14 @@ class SublimeSocketAPI:
 			if not viewSearchSource or len(viewSearchSource) is 0:
 				return None
 
-			print("internal_detectViewInstance name", name)
 			viewSearchSource = viewSearchSource.replace("\\", "&")
 			viewSearchSource = viewSearchSource.replace("/", "&")
-			print("viewSearchSource", viewSearchSource)
 			# straight full match in viewSearchSource. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
 
 				# replace path-expression by component with &.
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
-				print("viewSearchKey", viewSearchKey)
 				if re.findall(viewSearchSource, viewSearchKey):
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
 			
@@ -2310,9 +2308,8 @@ class SublimeSocketAPI:
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
 				if viewBasename in viewSearchSource:
-					print("viewBasename", viewBasename)
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-		print("name is overed. no hit.", name)
+		
 		# totally, return None and do nothing
 		return (None, None)
 
@@ -2486,7 +2483,7 @@ class SublimeSocketAPI:
 			if eventName in SublimeSocketAPISettings.VIEW_EVENTS_DEL:
 				self.runDeletion(eventParam)
 
-			# if reactor exist, run all selectors. not depends on "target".
+			# eventEmit or viewEmit
 			if reactorsDict and eventName in reactorsDict:
 				reactorDict = reactorsDict[eventName]
 				for reactorKey in list(reactorDict):
@@ -2498,7 +2495,7 @@ class SublimeSocketAPI:
 					else:
 						reactorParams = reactorDict[reactorKey]
 						self.runReactor(reactorType, reactorParams, eventParam)
-						
+					
 
 
 	# completion series
@@ -2515,10 +2512,10 @@ class SublimeSocketAPI:
 
 		return None
 
-	def updateCompletion(self, viewIdentity, composedCompletions):
+	def updateCompletion(self, name, composedCompletions):
 		completionsDict = self.server.completionsDict()
 
-		completionsDict[viewIdentity] = composedCompletions
+		completionsDict[name] = composedCompletions
 		self.server.updateCompletionsDict(completionsDict)
 		
 
