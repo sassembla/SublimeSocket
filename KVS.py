@@ -1,3 +1,5 @@
+import copy
+
 ## key-value pool
 class KVS:
 	def __init__(self):

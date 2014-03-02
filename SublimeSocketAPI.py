@@ -328,20 +328,18 @@ class SublimeSocketAPI:
 
 
 	def foundation_noViewFound(self, reactDicts, eventParam):
-		for target in list(reactDicts):
-			params = reactDicts[target]	
-			assert SublimeSocketAPISettings.NOVIEWFOUND_NAME in eventParam, "ss_f_noviewfound require 'name' param."
-			assert SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE in eventParam, "ss_f_noviewfound require 'message' param."
+		assert SublimeSocketAPISettings.NOVIEWFOUND_NAME in eventParam, "ss_f_noviewfound require 'name' param."
+		assert SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE in eventParam, "ss_f_noviewfound require 'message' param."
 
-			name = eventParam[SublimeSocketAPISettings.NOVIEWFOUND_NAME]
-			message = eventParam[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE]
+		name = eventParam[SublimeSocketAPISettings.NOVIEWFOUND_NAME]
+		message = eventParam[SublimeSocketAPISettings.NOVIEWFOUND_MESSAGE]
 
-			SushiJSONParser.runSelectors(
-				params, 
-				SublimeSocketAPISettings.NOVIEWFOUND_INJECTIONS, 
-				[name, message],
-				self.runAPI
-			)
+		SushiJSONParser.runSelectors(
+			reactDicts, 
+			SublimeSocketAPISettings.NOVIEWFOUND_INJECTIONS, 
+			[name, message],
+			self.runAPI
+		)
 
 
 	def afterAsync(self, params):
@@ -598,21 +596,20 @@ class SublimeSocketAPI:
 		
 		target = params[SublimeSocketAPISettings.MONOCASTMESSAGE_TARGET]
 		message = params[SublimeSocketAPISettings.MONOCASTMESSAGE_MESSAGE]
+		print("message", message)
+		succeeded, reason = self.server.sendMessage(target, message)
 
-		if message:
-			succeeded, reason = self.server.sendMessage(target, message)
+		if succeeded:
+			SushiJSONParser.runSelectors(
+				params,
+				SublimeSocketAPISettings.MONOCASTMESSAGE_INJECTIONS,
+				[target, message],
+				self.runAPI
+			)
 
-			if succeeded:
-				SushiJSONParser.runSelectors(
-					params,
-					SublimeSocketAPISettings.MONOCASTMESSAGE_INJECTIONS,
-					[target, message],
-					self.runAPI
-				)
-
-			else:
-				self.editorAPI.printMessage("monocastMessage failed. target: " + target + " " + reason)
-				
+		else:
+			self.editorAPI.printMessage("monocastMessage failed. target: " + target + " " + reason)
+			
 	
 	def showAtLog(self, params):
 		if SublimeSocketAPISettings.LOG_FORMAT in params:
@@ -1563,10 +1560,6 @@ class SublimeSocketAPI:
 
 
 	def viewEmit(self, params):
-		assert SublimeSocketAPISettings.VIEWEMIT_IDENTITY in params, "viewEmit require 'identity' param."
-		
-		identity = params[SublimeSocketAPISettings.VIEWEMIT_IDENTITY]
-
 		# delay
 		delay = 0
 		if SublimeSocketAPISettings.VIEWEMIT_DELAY in params:
@@ -1576,11 +1569,12 @@ class SublimeSocketAPI:
 		if view == None:
 			return
 
-		if not self.isExecutableWithDelay(SublimeSocketAPISettings.SS_FOUNDATION_VIEWEMIT, identity, delay):
+		if not self.isExecutableWithDelay(SublimeSocketAPISettings.SS_FOUNDATION_VIEWEMIT, delay):
 			pass
 
 		else:
 			body = self.editorAPI.bodyOfView(view)
+			print("body", body, name, path)
 
 			modifiedPath = path.replace(":","&").replace("\\", "/")
 
@@ -1590,12 +1584,11 @@ class SublimeSocketAPI:
 			SushiJSONParser.runSelectors(
 				params, 
 				SublimeSocketAPISettings.VIEWEMIT_INJECTIONS, 
-				[body, path, name, modifiedPath, rowColStr, identity],
+				[body, path, name, modifiedPath, rowColStr],
 				self.runAPI
 			)
 
 	def modifyView(self, params):
-		print("modify start!")
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.MODIFYVIEW_VIEW, SublimeSocketAPISettings.MODIFYVIEW_NAME)
 		if view == None:
 			return
@@ -1605,7 +1598,7 @@ class SublimeSocketAPI:
 
 		if SublimeSocketAPISettings.MODIFYVIEW_ADD in params:
 			add = params[SublimeSocketAPISettings.MODIFYVIEW_ADD]
-			print("modifying!")
+
 			# insert text to the view with "to" or "line" param, or other.
 			if SublimeSocketAPISettings.MODIFYVIEW_TO in params:
 				to = int(params[SublimeSocketAPISettings.MODIFYVIEW_TO])
@@ -1626,7 +1619,6 @@ class SublimeSocketAPI:
 		if SublimeSocketAPISettings.MODIFYVIEW_REDUCE in params:
 			self.editorAPI.runCommandOn(view, 'reduce_text')
 
-		print("modify end!")
 		SushiJSONParser.runSelectors(
 			params,
 			SublimeSocketAPISettings.MODIFYVIEW_INJECTIONS,
@@ -1915,10 +1907,8 @@ class SublimeSocketAPI:
 
 
 	def eventEmit(self, params):
-		assert SublimeSocketAPISettings.EVENTEMIT_TARGET in params, "eventEmit require 'target' param."
 		assert SublimeSocketAPISettings.EVENTEMIT_EVENT in params, "eventEmit require 'eventemit' param."
 
-		target = params[SublimeSocketAPISettings.EVENTEMIT_TARGET]
 		eventName = params[SublimeSocketAPISettings.EVENTEMIT_EVENT]
 		assert eventName.startswith(SublimeSocketAPISettings.REACTIVE_PREFIX_USERDEFINED_EVENT), "eventEmit only emit 'user-defined' event such as starts with 'event_' keyword."
 
@@ -1927,7 +1917,7 @@ class SublimeSocketAPI:
 		SushiJSONParser.runSelectors(
 			params,
 			SublimeSocketAPISettings.EVENTEMIT_INJECTIONS,
-			[target, eventName],
+			[eventName],
 			self.runAPI
 		)
 
@@ -1980,7 +1970,7 @@ class SublimeSocketAPI:
 		
 		# set completion
 		self.updateCompletion(path, completionStrs)
-		print("updated, ", path, completionStrs)
+
 		# display completions
 		self.editorAPI.runCommandOn(view, "auto_complete")
 
@@ -2376,7 +2366,6 @@ class SublimeSocketAPI:
 		viewDict[filePath] = viewInfo
 		self.server.updateViewsDict(viewDict)
 
-
 	def runDeletion(self, eventParam):
 		view = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 		path = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH]
@@ -2397,14 +2386,12 @@ class SublimeSocketAPI:
 
 	# reactor series
 	def setReactor(self, params):
-		assert SublimeSocketAPISettings.SETREACTOR_TARGET in params, "set_X_Reactor require 'target' param."
 		assert SublimeSocketAPISettings.SETREACTOR_REACT in params, "set_X_Reactor require 'react' param."
 		assert SublimeSocketAPISettings.SETREACTOR_REACTORS in params, "set_X_Reactor require 'reactors' param."
 
 		reactorsDict = self.server.reactorsDict()
 		reactorsLogDict = self.server.reactorsLogDict()
 
-		target = params[SublimeSocketAPISettings.SETREACTOR_TARGET]
 		reactEventName = params[SublimeSocketAPISettings.SETREACTOR_REACT]
 		reactors = params[SublimeSocketAPISettings.SETREACTOR_REACTORS]
 
@@ -2432,10 +2419,10 @@ class SublimeSocketAPI:
 
 
 		# store reactor			
-		reactorsDict[reactEventName][target] = reactDict
+		reactorsDict[reactEventName] = reactDict
 
 		# reset reactLog too
-		reactorsLogDict[reactEventName][target] = {}
+		reactorsLogDict[reactEventName] = {}
 
 
 		self.server.updateReactorsDict(reactorsDict)
@@ -2444,7 +2431,7 @@ class SublimeSocketAPI:
 		SushiJSONParser.runSelectors(
 			params,
 			SublimeSocketAPISettings.SETREACTOR_INJECTIONS,
-			[target, reactEventName, delay],
+			[reactEventName, delay],
 			self.runAPI
 		)
 
@@ -2454,11 +2441,8 @@ class SublimeSocketAPI:
 
 		reactorsDict = self.server.reactorsDict()
 		
-		# from {'on_post_save': {'someone': {'delay': 0, 'selectors': []}}}
-		# to [{on_post_save:someone}]
-		for react, value in reactorsDict.items():
-			for target in list(value):
-				deletedReactorsList.append({react:target})
+		# from {'on_post_save': {'delay': 0, 'selectors': []}}
+		deletedReactorsList = list(reactorsDict)
 		
 		# erase all
 		self.server.updateReactorsDict({})
@@ -2485,16 +2469,14 @@ class SublimeSocketAPI:
 
 			# eventEmit or viewEmit
 			if reactorsDict and eventName in reactorsDict:
-				reactorDict = reactorsDict[eventName]
-				for reactorKey in list(reactorDict):
+				reactorParams = reactorsDict[eventName]
 					
-					delay = reactorsDict[eventName][reactorKey][SublimeSocketAPISettings.SETREACTOR_DELAY]
-					if not self.isExecutableWithDelay(eventName, reactorKey, delay):
-						pass
+				delay = reactorsDict[eventName][SublimeSocketAPISettings.SETREACTOR_DELAY]
+				if not self.isExecutableWithDelay(eventName, delay):
+					pass
 
-					else:
-						reactorParams = reactorDict[reactorKey]
-						self.runReactor(reactorType, reactorParams, eventParam)
+				else:
+					self.runReactor(reactorType, reactorParams, eventParam)
 					
 
 
@@ -2521,7 +2503,7 @@ class SublimeSocketAPI:
 
 	# other
 
-	def isExecutableWithDelay(self, name, target, elapsedWaitDelay):
+	def isExecutableWithDelay(self, name, elapsedWaitDelay):
 		currentTime = round(int(time.time()*1000))
 		reactorsLogDict = self.server.reactorsLogDict()
 
@@ -2531,8 +2513,8 @@ class SublimeSocketAPI:
 			# check should delay or not.
 
 			# delay log is exist.
-			if name in reactorsLogDict and target in reactorsLogDict[name]:
-				delayedExecuteLog = reactorsLogDict[name][target]
+			if name in reactorsLogDict:
+				delayedExecuteLog = reactorsLogDict[name]
 				if SublimeSocketAPISettings.REACTORSLOG_LATEST in delayedExecuteLog:
 					latest = delayedExecuteLog[SublimeSocketAPISettings.REACTORSLOG_LATEST]
 
@@ -2545,15 +2527,11 @@ class SublimeSocketAPI:
 
 		# create executed log dict if not exist.
 		if name in reactorsLogDict:
-			if target in reactorsLogDict[name]:
-				pass
-			else:
-				reactorsLogDict[name][target] = {}
+			pass
 		else:
 			reactorsLogDict[name] = {}
-			reactorsLogDict[name][target] = {}
 
-		reactorsLogDict[name][target][SublimeSocketAPISettings.REACTORSLOG_LATEST]	= currentTime
+		reactorsLogDict[name][SublimeSocketAPISettings.REACTORSLOG_LATEST]	= currentTime
 		self.server.updateReactorsLogDict(reactorsLogDict)
 		
 		return True

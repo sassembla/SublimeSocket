@@ -141,6 +141,11 @@ class WSServer:
 
 
 	def sendMessage(self, targetId, message):
+		if message:
+			pass
+		else:
+			return (False, "no data to:"+targetId)
+			
 		if targetId in self.clientIds:
 			client = self.clientIds[targetId]
 			buf = self.encoder.text(str(message), mask=0)

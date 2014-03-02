@@ -44,7 +44,6 @@ test>helloWorld/showAtLog: {
 test>regionを現在のviewに表示する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
 }->setViewReactor: {
-    "target": "something",
     "react": "ss_f_noViewFound",
     "reactors": [
         {
@@ -140,7 +139,6 @@ test>バッファを作り、appendRegionし、閉じて、eraseAllRegionssす�
 test>setSelectionと合わせて、toolTipの箇所にscrollする/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
 }->setViewReactor: {
-    "target": "someone",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -663,7 +661,6 @@ test>完了通知が出ない。突破してはいる。組み合わせでエラ
         }
     ]
 }->setViewReactor: {
-    "target": "someone",
     "react": "ss_v_increased",
     "reactors": [
         {
@@ -892,7 +889,6 @@ viewEmit/openFile: {
 test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
 }->setViewReactor: {
-    "target": "viewReactor and inject",
     "react": "ss_on_selection_modified_by_setselection",
     "injects": {
         "name": "message"
@@ -935,7 +931,6 @@ test>deepなレイヤーのviewEmitで、injectを実施する/openFile: {
 test>deepなレイヤーのviewEmitを実行する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
 }->setViewReactor: {
-    "target": "viewEmitTest",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -981,7 +976,6 @@ test>deepなレイヤーのviewEmitを実行する/openFile: {
 
 
 test>そのビューの文字列が増えたら、ss_v_increasedイベントがでる/setViewReactor: {
-    "target": "someone",
     "react": "ss_v_increased",
     "reactors": [
         {
@@ -1009,7 +1003,6 @@ test>そのビューの文字列が増えたら、ss_v_increasedイベントが�
 
 
 test>そのビューの文字列が減ったら、ss_v_decreasedイベントがでる/setViewReactor: {
-    "target": "someone",
     "react": "ss_v_decreased",
     "reactors": [
         {
@@ -1263,7 +1256,6 @@ test>resetCountsのselectors/countUp: {
 test>setSelectionを連続で発生させて、delayがあるのでタイミング内では一度しか発生しない。/createBuffer: {
     "name": "dummy.txt"
 }->ここでのdelayが機能していれば、イベントはdelayされ、countUpが実行されないはず。/setViewReactor: {
-    "target": "delayTest",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1341,7 +1333,6 @@ test>setSelectionで選択範囲を作成する/openFile: {
 
 
 test>setSelectionでselectedRegionsを引き起こし、selectorに値を引き継ぐ/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1395,7 +1386,6 @@ test>setSelectionでselectedRegionsを引き起こし、selectorに値を引き�
 test>setSelectionでたった一つの範囲を作成、イベントヒットからtail位置のselectionを取得する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
 }->setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1438,7 +1428,6 @@ output({\"tail\":str(listOfSelecteds[-1])})
 test>setSelectionで2つの範囲を作成、イベントヒットからtail位置のselectionを取得する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
 }->setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1485,7 +1474,6 @@ output({\"tail\":str(listOfSelecteds[-1])})
 test>setSelectionで2つの範囲を作成、イベントヒットからtail位置のselectionを取得する/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample3.txt"
 }->setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1534,7 +1522,6 @@ output({\"tail\":str(listOfSelecteds[-1])})
 
 
 test>setSelectionでselectedRegionsを引き起こす/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1543,7 +1530,6 @@ test>setSelectionでselectedRegionsを引き起こす/setViewReactor: {
                 "selectors": [
                     {
                         "eventEmit": {
-                            "target": "containsregiontarget",
                             "event": "event_showAtLog"
                         }
                     }
@@ -1552,7 +1538,6 @@ test>setSelectionでselectedRegionsを引き起こす/setViewReactor: {
         }
     ]
 }->setEventReactor: {
-    "target": "containsregiontarget",
     "react": "event_showAtLog",
     "reactors": [
         {
@@ -1590,7 +1575,6 @@ test>setSelectionでselectedRegionsを引き起こす/setViewReactor: {
 
 
 test>regionの2contentsに対して、setSelectionでselectedRegionsを引き起こし、2件の情報を取得する/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1643,7 +1627,6 @@ test>regionの2contentsに対して、setSelectionでselectedRegionsを引き起
 
 
 test>selectedRegionsからの値変形チェック/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1693,7 +1676,6 @@ test>selectedRegionsからの値変形チェック/setViewReactor: {
 
 
 test>transormの応用例、2件のregionDataをそれぞれToolTipに変形する/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1762,7 +1744,6 @@ test>transormの応用例、2件のregionDataをそれぞれToolTipに変形す�
 
 
 test>試験的なtransormerの応用例、2件のregionDataをToolTipに変形、内容は空/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1821,7 +1802,6 @@ test>試験的なtransormerの応用例、2件のregionDataをToolTipに変形�
 
 
 test>setSelectionでselectedRegionsを引き起こし、tooltipへと値を引き継ぐ/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -1891,7 +1871,6 @@ output({\"message\":message})\n
 
 
 test>setSelectionでselectedRegionsを引き起こそうとするが、regionが無い/setViewReactor: {
-    "target": "containsregiontarget",
     "react": "ss_on_selection_modified_by_setselection",
     "reactors": [
         {
@@ -2301,7 +2280,6 @@ test>現在開いているviewを集める。一つ以上のファイルパス�
 
 
 test>noViewFoundを起こし、log出力をassertする/setEventReactor: {
-    "target": "noViewFoundEvent",
     "react": "ss_f_noViewFound",
     "reactors": [
         {
@@ -2442,7 +2420,6 @@ test>現在開いているファイルに対するviewEmitのテスト。特定�
 
 
 test>eventEmitでのaccepts機構のテスト、eventEmit側にinjectsが無いver/setEventReactor: {
-    "target": "acceptTest",
     "react": "event_accept_event",
     "accepts":[
         "messageFromEventEmit"
@@ -2460,7 +2437,6 @@ test>eventEmitでのaccepts機構のテスト、eventEmit側にinjectsが無いv
         }
     ]
 }->eventEmit: {
-    "target": "acceptTest",
     "event": "event_accept_event",
     "messageFromEventEmit": "the message from eventEmit"
 }->assertResult: {
@@ -2475,12 +2451,11 @@ test>eventEmitでのaccepts機構のテスト、eventEmit側にinjectsが無いv
 
 
 test>eventEmitでselectors/eventEmit: {
-    "target": "myEvent",
     "event": "event_testSelectors",
     "selectors": [
         {
-            "showAtLog<-target, event": {
-                "format": "[target] + [event]"
+            "showAtLog<-event": {
+                "format": "the [event]"
             }
         }
     ]
@@ -2488,7 +2463,7 @@ test>eventEmitでselectors/eventEmit: {
     "id": "eventEmit with selectors",
     "contains": {
         "showAtLog": {
-            "output": "myEvent + event_testSelectors"
+            "output": "the event_testSelectors"
         }
     },
     "description": "not match."
@@ -2496,7 +2471,6 @@ test>eventEmitでselectors/eventEmit: {
 
 
 test>eventEmitのテスト/setEventReactor: {
-    "target": "event_EmitTestTarget",
     "react": "event_EmitTestEvent",
     "reactors": [
         {
@@ -2506,7 +2480,6 @@ test>eventEmitのテスト/setEventReactor: {
         }
     ]
 }->eventEmit: {
-    "target": "event_EmitTestTarget",
     "event": "event_EmitTestEvent"
 }->assertResult: {
     "id": "eventEmit has emitted result",
@@ -2522,7 +2495,6 @@ test>eventEmitのテスト/setEventReactor: {
 test>特定のviewに対するreactorのテスト。/openFile: {
     "path": "SUBLIMESOCKET_PATH:tests/testResources/sample.txt"
 }->setViewReactor: {
-    "target": "event_testTarget",
     "react": "on_close",
     "reactors": [
         {
@@ -2841,6 +2813,11 @@ test>ファイル内容を特定クライアントに配信する。/openFile: {
     },
     "selectors": [
         {
+            "showAtLog<-body": {
+                "format": "the [body]"
+            }
+        },
+        {
             "monocastMessage<-message": {
                 "target": "sublimesockettest",
                 "injects": {
@@ -2857,13 +2834,21 @@ test>ファイル内容を特定クライアントに配信する。/openFile: {
         }
     ]
 }->assertResult: {
-    "id": "ST3: monocast message for specific client, not stable in ST2 @ test.",
+    "id": "monocast message for specific client",
+    "contains": {
+        "showAtLog": {
+            "output": "the a\nb\n\/\/comment\nc\nd\n\n\ne\nf\n\ng"
+        }
+    },
+    "description": "faild to monocast 1."
+}->assertResult: {
+    "id": "monocast message for specific client",
     "contains": {
         "showAtLog": {
             "output": "sublimesockettest, a\nb\n\/\/comment\nc\nd\n\n\ne\nf\n\ng"
         }
     },
-    "description": "faild to monocast."
+    "description": "faild to monocast 2."
 }->closeFile: {
     "name": "sample4.txt"
 }
@@ -3008,7 +2993,6 @@ test>reactorをリセットする/resetReactors: {
 
 
 test>適当なreactorをセットしたあと、reactorをリセットする/setViewReactor: {
-    "target": "someone",
     "react": "on_post_save",
     "reactors": []
 }->resetReactors: {
@@ -3021,10 +3005,10 @@ test>適当なreactorをセットしたあと、reactorをリセットする/set
         }
     ]
 }->assertResult: {
-    "id": "reset all reactors2",
+    "id": "reset all reactors 2",
     "contains": {
         "showAtLog": {
-            "output": [{"on_post_save":"someone"}]
+            "output": ["on_post_save"]
         }
     },
     "description": "not match"
@@ -3051,7 +3035,6 @@ test>空のreactorをリセットする/resetReactors: {
 
 
 test>reactorをセットする/setEventReactor: {
-    "target": "testTarget",
     "react": "event_testEvent",
     "delay": 100,
     "reactors": [
@@ -3063,8 +3046,8 @@ test>reactorをセットする/setEventReactor: {
     ],
     "selectors": [
         {
-            "showAtLog<-target, react, delay": {
-                "format": "[target], [react], [delay]"
+            "showAtLog<-react, delay": {
+                "format": "[react], [delay]"
             }
         }
     ]
@@ -3072,7 +3055,7 @@ test>reactorをセットする/setEventReactor: {
     "id": "reactor is set1",
     "contains": {
         "showAtLog": {
-            "output": "testTarget, event_testEvent, 100"
+            "output": "event_testEvent, 100"
         }
     },
     "description": "not match"
@@ -3080,7 +3063,6 @@ test>reactorをセットする/setEventReactor: {
 
 
 test>delayが存在するsetEventReactorを実行、即時実行される/setEventReactor: {
-    "target": "runImmediate",
     "react": "event_runImmediate",
     "delay": 100,
     "reactors": [
@@ -3091,7 +3073,6 @@ test>delayが存在するsetEventReactorを実行、即時実行される/setEve
         }
     ]
 }->eventEmit: {
-    "target": "runImmediate",
     "event": "event_runImmediate"
 }->assertResult: {
     "id": "run once",
@@ -3107,7 +3088,6 @@ test>delayが存在するsetEventReactorを実行、即時実行される/setEve
 test>複数件の同名のevent-targetreactorをセットして、上書きされる。/resetReactors: {
     
 }->setEventReactor: {
-    "target": "testTarget",
     "react": "event_testEvent",
     "delay": 100,
     "reactors": [
@@ -3118,7 +3098,6 @@ test>複数件の同名のevent-targetreactorをセットして、上書きさ�
         }
     ]
 }->setEventReactor: {
-    "target": "testTarget",
     "react": "event_testEvent",
     "delay": 100,
     "reactors": [
@@ -3129,7 +3108,6 @@ test>複数件の同名のevent-targetreactorをセットして、上書きさ�
         }
     ]
 }->eventEmit: {
-    "target": "testTarget",
     "event": "event_testEvent"
 }->assertResult: {
     "id": "reactor is set part2-1",
