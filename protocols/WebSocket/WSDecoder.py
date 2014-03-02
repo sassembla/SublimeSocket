@@ -80,11 +80,9 @@ class WSDecoder:
 			b = client.read(2)
 			if not len(b):
 				raise ValueError(1011, 'Reading length failed.')
-			length_bytes = b
-			print("length_bytes", length_bytes[0])
+			length_bytes = b			
 			length = struct.unpack("!H", length_bytes)[0]
-			# length_bytes 27
-			# length 6999
+
 		# RFC : If length is 127, the following 8 bytes must be interpreted as a 64-bit unsigned integer (the
 	    # most significant bit MUST be 0) are the payload length
 		elif length == 0x7f:
@@ -116,8 +114,8 @@ class WSDecoder:
 				try:
 					if not len(data):
 						raise ValueError(1011, 'Reading data failed.')
-					
-					data = self.unmask(mask_key, data)
+			
+					data = self.unmask(mask_key, str(data))
 					data = data.decode('utf-8')
 				except UnicodeError:
 				  raise ValueError(1003, 'Client text datas MUST be UTF-8 encoded.')
@@ -128,7 +126,7 @@ class WSDecoder:
 
 			if case(OP_BINARY):
 				# unmask
-				data = self.unmask(mask_key, data)
+				data = self.unmask(mask_key, str(data))
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
@@ -149,11 +147,10 @@ class WSDecoder:
 	#  @param mask_key Mask key (always 4 bytes long)
 	#  @param bytes Data bytes to unmask
 	def unmask(self, mask_key, bytes):
-
-		result = bytes#array.array('B', bytes)
-		
-		for i in range(len(bytes)):
-			result[i] ^= mask_key[i%4]
-		
-		return result
+		# new byte[i] = old byte[i] XOR mask_key[i%4]
+		m = array.array('B', mask_key)
+		j = array.array('B', bytes)
+		for i in xrange(len(j)):
+			j[i] ^= m[i % 4]
+		return j.tostring()
 

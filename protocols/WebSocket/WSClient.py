@@ -58,31 +58,22 @@ class WSClient:
 	#  @param bufsize Buffer size to fill.
 	def read(self, bufsize):
 		remaining = bufsize
-		bytes = bytearray()
-
+		bytes = ''
 		while remaining and self.hasStatus('OPEN'):
-			preBytes = self.receive(remaining)
-
-			# recv error raised.
-			if not preBytes:
-				return None
-
-			bytes = bytes + preBytes
-			remaining = bufsize - len(preBytes)
+			bytes += self.receive(remaining)
+			remaining = bufsize - len(bytes)
 		return bytes
 
 	## Read data until line return (used by handshake)
 	def readlineheader(self):
-		line = bytearray()
-
+		line = []
 		while self.hasStatus('CONNECTING') and len(line)<1024:
 			c = self.receive(1)
-			line = line + c
-
-			if c == b'\n':
+			line.append(c)
+			# print 'readlineheader: ', line
+			if c == "\n":
 				break
-				
-		return line.decode('utf-8')
+		return "".join(line)
 
 	## Send handshake according to RFC
 	def handshake(self):
@@ -128,10 +119,9 @@ class WSClient:
 			raise ValueError('Missing parameter "Origin".')
 
 		if (int(headers['sec-websocket-version']) != VERSION):
-			raise ValueError('Wrong protocol version %s.' % SVERSION)
-		
-		accept = base64.b64encode((hashlib.sha1((headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode('utf-8'))).digest())
-		decodedAccept = accept.decode('utf-8')
+			raise ValueError('Wrong protocol version %s.' % VERSION)
+
+		accept = base64.b64encode(hashlib.sha1(headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest())
 
 		currentBytes = ('HTTP/1.1 101 Switching Protocols\r\n'
 			'Upgrade: websocket\r\n'
@@ -140,15 +130,15 @@ class WSClient:
 			'Sec-WebSocket-Location: ws://%s\r\n'
 			'Sec-WebSocket-Accept: %s\r\n'
 			'Sec-WebSocket-Version: %s\r\n'
-			'\r\n') % (headers['origin'], headers['host'], decodedAccept, headers['sec-websocket-version'])
+			'\r\n') % (headers['origin'], headers['host'], accept, headers['sec-websocket-version'])
 
 		handshakeMessage = '--- HANDSHAKE ---\r\n'
 		handshakeMessage = handshakeMessage + '-----------------\r\n'
 		handshakeMessage = handshakeMessage + currentBytes + '\r\n'
 		handshakeMessage = handshakeMessage + '-----------------\r\n'
 		
-		bufferdBytes = bytes(currentBytes)
-		self.send(bufferdBytes)
+		
+		self.send(currentBytes)
 		
 
 	## Handle incoming datas
