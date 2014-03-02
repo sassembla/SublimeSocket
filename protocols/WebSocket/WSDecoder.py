@@ -81,8 +81,10 @@ class WSDecoder:
 			if not len(b):
 				raise ValueError(1011, 'Reading length failed.')
 			length_bytes = b
+			print("length_bytes", length_bytes[0])
 			length = struct.unpack("!H", length_bytes)[0]
-
+			# length_bytes 27
+			# length 6999
 		# RFC : If length is 127, the following 8 bytes must be interpreted as a 64-bit unsigned integer (the
 	    # most significant bit MUST be 0) are the payload length
 		elif length == 0x7f:
