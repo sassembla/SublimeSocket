@@ -1574,7 +1574,6 @@ class SublimeSocketAPI:
 
 		else:
 			body = self.editorAPI.bodyOfView(view)
-			print("body", body, name, path)
 
 			modifiedPath = path.replace(":","&").replace("\\", "/")
 
@@ -2205,6 +2204,7 @@ class SublimeSocketAPI:
 
 		for key in params:
 			if key != formatKey:
+				print("日本語で苦しんでいる。currentParams[key]", currentParams[key])
 				currentParam = str(currentParams[key])
 				currentFormat = currentFormat.replace("["+key+"]", currentParam)
 

@@ -60,8 +60,12 @@ class WSClient:
 		remaining = bufsize
 		bytes = ''
 		while remaining and self.hasStatus('OPEN'):
-			bytes += self.receive(remaining)
-			remaining = bufsize - len(bytes)
+			recv = self.receive(remaining)
+			if recv:
+				bytes += recv
+				remaining = bufsize - len(bytes)
+			else:
+				break
 		return bytes
 
 	## Read data until line return (used by handshake)

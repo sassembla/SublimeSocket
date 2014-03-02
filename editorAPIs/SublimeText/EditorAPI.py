@@ -85,10 +85,25 @@ class EditorAPI:
 		sublime.message_dialog(message)
 
 	def showPopupMenu(self, view, items, reactor):
-		pass
+		if 0 < len(items):
+			messages = items[0]
+			for item in items[1:]:
+				messages += "\n\n" + item
+			
+			messages += "\n\n\n"
+		
+		
+		def runInMainThread():
+			openedView = self.openFile("popview")
+			self.runAfterDelay(lambda: self.showOnOtherView(openedView, messages), 0)
+
+		self.runAfterDelay(runInMainThread, 0)
+		# sublime.message_dialog(message)
 		# view.show_popup_menu(items, reactor); ST2 has no popup. 
-		# run "open new view", write "items" each line, append region for each line and set event.
-		# future...
+
+	def showOnOtherView(self, view, messages):
+		self.runCommandOn(view, 'insert_text', {'string': messages})
+		view.set_scratch(True)
 
 	def openFile(self, name):
 		return sublime.active_window().open_file(name)
