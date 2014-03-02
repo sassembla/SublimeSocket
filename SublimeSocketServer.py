@@ -76,7 +76,9 @@ class SublimeSocketServer:
 	# main API data incoming method.
 	def transferInputted(self, data, clientId):
 		apiData = data.split(SublimeSocketAPISettings.SSAPI_DEFINE_DELIM, 1)[1]
-		self.api.parse(apiData, clientId)
+		def runInMainThread():
+			self.api.parse(apiData, clientId)
+		self.api.editorAPI.runAfterDelay(lambda: runInMainThread(), 0)
 		
 
 	def showTransferInfo(self):
