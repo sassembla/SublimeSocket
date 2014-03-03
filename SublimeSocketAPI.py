@@ -596,7 +596,7 @@ class SublimeSocketAPI:
 		
 		target = params[SublimeSocketAPISettings.MONOCASTMESSAGE_TARGET]
 		message = params[SublimeSocketAPISettings.MONOCASTMESSAGE_MESSAGE]
-		print("message", message)
+		
 		succeeded, reason = self.server.sendMessage(target, message)
 
 		if succeeded:
@@ -2204,14 +2204,11 @@ class SublimeSocketAPI:
 
 		for key in params:
 			if key != formatKey:
-				print("日本語で苦しんでいる。currentParams[key]", currentParams[key])
-				currentParam = str(currentParams[key])
+				currentParam = currentParams[key]
 				currentFormat = currentFormat.replace("["+key+"]", currentParam)
-
 		
 		currentParams[outputKey] = currentFormat
 		del currentParams[formatKey]
-
 		return currentParams
 
 	def getKeywordBasedPath(self, path, keyword, replace):
