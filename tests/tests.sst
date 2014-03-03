@@ -3389,7 +3389,7 @@ beforeafter>thebeforeafterselectors/selector: {
 //         }
 //     ]
 // }->assertResult: {
-//     "id": "erase specific view regions",
+//     "id": "ST3: erase specific view regions",
 //     "contains": {
 //         "showAtLog": {
 //             "output": "{'notexistFileC.txt': ['ss_(0, 0)']}"
@@ -3476,7 +3476,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの出力/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "1.-1.0",
 //     "injects": {
 //         "code": "code",
@@ -3501,7 +3501,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの精査、apiVersionmajorが一致、minorが低いのでクライアントのUpdateを勧められる+突破/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "1.-1.0",
 //     "injects": {
 //         "message": "reason"
@@ -3525,7 +3525,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの精査、apiVersionmajorが一致、minorが一致、verifyの突破/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "1.4.0",
 //     "injects": {
 //         "message": "reason"
@@ -3541,7 +3541,7 @@ beforeafter>thebeforeafterselectors/selector: {
 //     "id": "situation-latest version",
 //     "contains": {
 //         "showAtLog": {
-//             "output": "1, VERIFIED:\tThe current running SublimeSocket api version = 1.4.0, SublimeSocket 3"
+//             "output": "1, VERIFIED:\tThe current running SublimeSocket api version = 1.4.0, SublimeSocket 2"
 //         }
 //     },
 //     "description": "not match."
@@ -3549,7 +3549,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの精査、apiVersionmajorが一致、minorが高いので、SSをupdateするアドレスを渡して切断される。/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "1.100.0",
 //     "dryrun": true,
 //     "injects": {
@@ -3574,7 +3574,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの精査、apiVersionmajorが低いので、クライアント側へとupdateを求めるシグナル+切断/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "0.0.0",
 //     "dryrun": true,
 //     "injects": {
@@ -3599,7 +3599,7 @@ beforeafter>thebeforeafterselectors/selector: {
 
 
 // test>バージョンの精査、apiVersionmajorが高いので、SSをupdateするアドレスを渡して切断/versionVerify: {
-//     "socketVersion": 3,
+//     "socketVersion": 2,
 //     "apiVersion": "2.0.0",
 //     "dryrun": true,
 //     "injects": {
@@ -4026,7 +4026,7 @@ test>viewEmitでUTF8的な文字列を処理する/openFile: {
 }->wait: {
     "ms": 300
 }->assertResult: {
-    "id": "viewEmit with utf-8 body",
+    "id": "ST3: viewEmit with utf-8 body",
     "contains": {
         "showAtLog": {
             "output": "日本語です"
@@ -4034,4 +4034,10 @@ test>viewEmitでUTF8的な文字列を処理する/openFile: {
     },
     "description": "not match.",
     "debug": true
+}->closeFile: {
+    "name": "sample5.txt"
 }
+
+
+
+

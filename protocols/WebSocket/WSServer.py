@@ -148,7 +148,7 @@ class WSServer:
 			
 		if targetId in self.clientIds:
 			client = self.clientIds[targetId]
-			buf = self.encoder.text(str(message), mask=0)
+			buf = self.encoder.text(message, mask=0)
 			client.send(buf)
 			return (True, "done")
 			

@@ -868,7 +868,8 @@ class SublimeSocketAPI:
 		if start in naturalResultList:
 			pass
 		else:
-			assert False, "at:" + transformerName + " failed to get result. reason:"+str(naturalResultList)
+			self.printMessage("transform failed at:" + transformerName + " failed to get result. reason:" + str(naturalResultList))
+			return
 		
 		index = naturalResultList.index(start)+1 #next to start
 
@@ -1573,7 +1574,8 @@ class SublimeSocketAPI:
 			pass
 
 		else:
-			body = self.editorAPI.bodyOfView(view)
+			bodySource = self.editorAPI.bodyOfView(view)
+			body = str(bodySource.encode('utf-8'))
 
 			modifiedPath = path.replace(":","&").replace("\\", "/")
 
@@ -2204,7 +2206,16 @@ class SublimeSocketAPI:
 
 		for key in params:
 			if key != formatKey:
-				currentParam = currentParams[key]
+				currentParam = ""
+
+				source = currentParams[key]
+				if type(source) == unicode:
+					currentParam = source
+				if type(source) == str:
+					currentParam = source.decode('utf-8')
+				else:
+					currentParam = str(source)
+					
 				currentFormat = currentFormat.replace("["+key+"]", currentParam)
 		
 		currentParams[outputKey] = currentFormat
