@@ -58,7 +58,7 @@ SSAPI_DEFINE_DELIM			= "@"	# sublimesocket@commandA:{}->commandB:{}->commandC:[]
 
 
 SSAPI_VERSION				= "1.4.0"
-SSSOCKET_VERSION			= 3	# for Sublime Text 3
+SSSOCKET_VERSION			= 2	# for Sublime Text 2
 
 
 # SublimeSocket internal event definition
