@@ -118,7 +118,7 @@ class EditorAPI:
 		self.runAfterDelay(lambda: sublime.status_message(message), 0)
 
 	def printMessage(self, message):
-		print(SublimeSocketAPISettings.LOG_prefix, message)
+		print SublimeSocketAPISettings.LOG_prefix, message.encode("utf-8")
 
 	def addRegionToView(self, view, identity, regions, condition, color):
 		if color == "sublime.DRAW_OUTLINED":
