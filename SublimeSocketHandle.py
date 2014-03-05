@@ -266,17 +266,17 @@ class CaptureEditing(sublime_plugin.EventListener):
 
 
     def updateViewInfo(self, view):
-        if self.currentViewInfo and self.currentViewInfo["view"] == view:
-                beforeSize = self.currentViewInfo["size"]
-                
-                self.currentViewInfo["view"] = view
-                self.currentViewInfo["size"] = view.size()
+        if self.currentViewInfo and self.currentViewInfo["view"].file_name() == view.file_name():
+            beforeSize = self.currentViewInfo["size"]
+            
+            self.currentViewInfo["view"] = view
+            self.currentViewInfo["size"] = view.size()
 
-                if beforeSize > self.currentViewInfo["size"]:
-                        self.update(SublimeSocketAPISettings.REACTABLE_VIEW_SS_V_DECREASED, view)
-                
-                if beforeSize < self.currentViewInfo["size"]:
-                        self.update(SublimeSocketAPISettings.REACTABLE_VIEW_SS_V_INCREASED, view)
+            if beforeSize > self.currentViewInfo["size"]:
+                self.update(SublimeSocketAPISettings.REACTABLE_VIEW_SS_V_DECREASED, view)
+            
+            if beforeSize < self.currentViewInfo["size"]:
+                self.update(SublimeSocketAPISettings.REACTABLE_VIEW_SS_V_INCREASED, view)
                     
         else:
             self.currentViewInfo["view"] = view
