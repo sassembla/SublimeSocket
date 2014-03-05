@@ -144,6 +144,9 @@ class SublimeSocketServer:
 	def broadcastMessage(self, targetIds, message):
 		return self.transfer.broadcastMessage(targetIds, message)
 
+	# purge
+	def purgeConnection(self, targetId):
+		self.transfer.purgeConnection(targetId)
 
 
 	# other series
