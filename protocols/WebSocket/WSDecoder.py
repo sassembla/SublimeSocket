@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
 import struct, array
-import SublimeWSSettings
 
 from PythonSwitch import PythonSwitch
 
-class SublimeWSDecoder:
+# Protocole version	see-> http://tools.ietf.org/html/rfc6455
+VERSION = 13
+
+# Operation codes
+OP_CONTINUATION = 0x0
+OP_TEXT = 0x1
+OP_BINARY = 0x2
+OP_CLOSE = 0x8
+OP_PING = 0x9
+OP_PONG = 0xA
+
+class WSDecoder:
 
 	## Decode on the fly data from SublimeWSClient
 	#  @param client WebSocket Client - we use the read() function to get data bytes
@@ -32,13 +42,20 @@ class SublimeWSDecoder:
 		# 1003: UNSUPPORTED_DATA_TYPE
 		# 1007: INVALID_PAYLOAD
 		# 1011: UNEXPECTED_CONDITION_ENCOUTERED_ON_SERVER
-
+		
 		# decode first byte
 		b = client.read(1)
-		if not len(b):
-			raise ValueError(1011, 'Reading first byte failed.')
+
+		# recv error raised in client.
+		if not b:
 			return (None, None)
+
+		if not len(b):
+			# raise ValueError(1011, 'Reading first byte failed.')
+			return (None, None)
+
 		b1 = ord(b)
+
 		fin = b1 >> 7 & 1
 		rsv1 = b1 >> 6 & 1
 		rsv2 = b1 >> 5 & 1
@@ -63,7 +80,7 @@ class SublimeWSDecoder:
 			b = client.read(2)
 			if not len(b):
 				raise ValueError(1011, 'Reading length failed.')
-			length_bytes = b
+			length_bytes = b			
 			length = struct.unpack("!H", length_bytes)[0]
 
 		# RFC : If length is 127, the following 8 bytes must be interpreted as a 64-bit unsigned integer (the
@@ -84,16 +101,16 @@ class SublimeWSDecoder:
 		
 		# python-switch
 		for case in PythonSwitch(opcode):
-			if case(SublimeWSSettings.OP_PING):
+			if case(OP_PING):
 				break
 
-			if case(SublimeWSSettings.OP_PONG):
+			if case(OP_PONG):
 				break
 
-			if case(SublimeWSSettings.OP_CLOSE):
+			if case(OP_CLOSE):
 				break
 		
-			if case(SublimeWSSettings.OP_TEXT):
+			if case(OP_TEXT):
 				try:
 					if not len(data):
 						raise ValueError(1011, 'Reading data failed.')
@@ -104,16 +121,16 @@ class SublimeWSDecoder:
 				  raise ValueError(1003, 'Client text datas MUST be UTF-8 encoded.')
 				break
 
-			if case(SublimeWSSettings.OP_CONTINUATION):
+			if case(OP_CONTINUATION):
 				break
 
-			if case(SublimeWSSettings.OP_BINARY):
+			if case(OP_BINARY):
 				# unmask
 				data = self.unmask(mask_key, str(data))
 				break
 
 			if case(): # default, could also just omit condition or 'if True'
-				print "default,,, should not be"
+				print("default,,, should not be")
 
 
 		ctrl = {

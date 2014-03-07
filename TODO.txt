@@ -1,6 +1,29 @@
 TODO
 
-ST3対応
+1.5.x
+
+ST2/3　Both target mode launch
+	use six
+
+
+√	injects & accepts
+	injectsをparamsにセットすると、selectors内のAPIに値をinjectする
+	injectされた値は、APIの実行直前にacceptする形で行われる
+	paramsはinjectによって上書きされる
+
+
+√	Write All API Tests
+	複合系のAPIはまとめてしまうのがいいような気がする。
+	Dobe
+
+1.4.x
+√	Assertion API
+	KVSに関するAssertionを作成し、Testableにする。
+	Resultに関するAssertionを作成し、Testableにする。
+	TestSuiteを作成する。
+
+
+√	ST3対応
 	betaに挑む→region周りがよくわかってないけどそれ以外だいたい何とかなったんじゃないだろうか。
 	
 
@@ -34,11 +57,6 @@ TimerEvent ほか、SS上で動くもの
 √	monocastMessage
 		√リスナに対して簡単なメッセージをセット可能
 		マルチバイト情報の送付
-
-√	eval エラーハンドリング
-		√エラー出たとき封印せねば。
-
-		√eval 変数の定義を自力でできるのか？→無理。名前が異なるヤツを数種類用意しておくんだなー。
 
 √	MessagePack
 		√ちょうどよくハッカソンあったので積んでみた。
@@ -95,16 +113,14 @@ TimerEvent ほか、SS上で動くもの
 
 	
 
-APIヘのコメント機構
+√	APIヘのコメント機構
 	ss@コメント/API:JSON
-	で実現できると思う。 ->の間には入らない。
+	->コメント/API:JSON
 
 
 やりたいけどどうやったらいいか判らないもの
-	STのConsoleの内容をそのまま送る
-		printとかを使っての出力は可能だけど、めんどいし、、
 
-	サジェストからのアクション
+√	サジェストからのアクション
 		やりたい。イテレーションを区別出来れば可能なはず。
 		→3系だと選択肢を明示的にツールチップで出せるので、使える。
 
@@ -120,5 +136,9 @@ APIヘのコメント機構
 			実装自体はrunShellを使用している。
 			→notifyに変更できた。
 
+		→内部チップも見てみたら、ものすごく可能性一杯あった。
+		これはこれで仕上げる。
 
-
+	Console
+		Pythonのstdoutをねじ曲げれば作れる事に気づいた。
+		まあやんないけど。

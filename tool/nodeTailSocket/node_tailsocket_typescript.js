@@ -204,9 +204,9 @@ ws.on('open', function() {
             }
         ] 
     };
-    var setUpDone = [
-        "sublime.status_message('SublimeSocket : typescript-compilation sequence ready!')"
-    ];
+    var setUpDone = {
+        "message": "SublimeSocket : typescript-compilation sequence ready!"
+    };
 
 	ws.send("ss@inputIdentity:"+JSON.stringify(inputIdentityJSON)
         +"->defineFilter:"+JSON.stringify(defineFilterJSON)
@@ -214,7 +214,7 @@ ws.on('open', function() {
         +"->setReactor:"+JSON.stringify(errorReactorJSON)
         +"->setReactor:"+JSON.stringify(modifyReactJSON)
         +"->setReactor:"+JSON.stringify(saveReactorJSON)
-        +"->eval:"+JSON.stringify(setUpDone)
+        +"->showAtLog:"+JSON.stringify(setUpDone)
     );
 });
 

@@ -1,13 +1,17 @@
 {
 	"schema_version": "1.0",
 
-	"host" : "127.0.0.1",
-	"port" : 8823,
+	"defaultTransferMethod": "WebSocketServer",
 
+	"WebSocketServer": {
+		"host" : "127.0.0.1",
+		"port" : 8823
+	},
+
+	"testSuiteFilePath": "tests/tests.sst",
 
 	"preference browser" : "Safari.app",
 
-	//run when server start
-	"loadSettings" : ["collectViews"]
-	
+	//run when transfer restart
+	"onTransferRenew" : ["collectViews"]
 }
