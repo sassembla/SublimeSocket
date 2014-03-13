@@ -44,7 +44,7 @@ test
 
 	SublimeSocket: on > test
 	
-	show SublimeSocket's status and current connections.
+	run SublimeSocket's test on current view..
 	
 teardown
 
