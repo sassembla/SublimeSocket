@@ -28,7 +28,7 @@ see [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
 
 ##installation
 1. DL.
-2. move SublimeSocket3 folder to Sublime Text's packages folder.
+2. move SublimeSocket3 folder to Sublime Text 2's packages folder.
 3. that's all.
 
 
