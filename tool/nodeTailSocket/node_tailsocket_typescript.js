@@ -1,4 +1,4 @@
-// TypeScript ver 0.7.0
+// for TypeScript ver 1.0.0
 
 // process.argv.forEach(function (val, index, array) {
 //   console.log(index + ': ' + val);
@@ -16,62 +16,41 @@ var tscwithenvPath = process.argv[2];
 var targetFilePath = process.argv[3]+"/*.ts";
 var logPath = process.argv[3] + "/tscompile.log";
 
+console.log("connecting to SublimeSocket...");
 
 tail = new Tail(logPath);
 
 ws.on('open', function() {
-	console.log("OPENED");
-	
+    console.log("connected to SublimeSocket.");
+    
     var inputIdentityJSON = 
     {
-        "id" : "nodetail"
+        "to" : "nodetail"
     }
-	var defineFilterJSON = 
+    var defineFilterJSON = 
     {
         "name": "typescript",
-        "patterns": [
+        "filters": [
             {
-                "(.*)[.]ts[ ][(]([0-9]*),.*: (.*)": {
+                "(.*?)[(]([0-9].*?)[,].*: error .*: (.*)": {
+                    "injects": {
+                        "groups[0]": "name",
+                        "groups[1]": "line",
+                        "groups[2]": "message"
+                    },
                     "selectors": [
                         {
-                            "showStatusMessage": {
-                                "message": "groups[0]"
+                            "showStatusMessage<-message": {
+                                
                             }
                         },
                         {
-                            "showAtLog": {
-                                "message": "groups[0]"
+                            "showAtLog<-message": {
+
                             }
                         },
                         {
-                            "appendRegion": {
-                                "line": "groups[2]",
-                                "message": "\"groups[3]\"",
-                                "view": "groups[1].ts",
-                                "condition": "keyword"
-                            }
-                        }
-                    ]
-                }
-            },
-            {
-                "(.*)[.]ts[(]([0-9]*),.*: (.*)": {
-                    "selectors": [
-                        {
-                            "showStatusMessage": {
-                                "message": "groups[0]"
-                            }
-                        },
-                        {
-                            "showAtLog": {
-                                "message": "groups[0]"
-                            }
-                        },
-                        {
-                            "appendRegion": {
-                                "line": "groups[2]",
-                                "message": "\"groups[3]\"",
-                                "view": "groups[1].ts",
+                            "appendRegion<-name, line, message": {
                                 "condition": "keyword"
                             }
                         }
@@ -82,7 +61,7 @@ ws.on('open', function() {
                  "^start": {
                     "selectors": [
                         {
-                            "eraseAllRegion":{}
+                            "eraseAllRegions":{}
                         }
                     ]
                 }
@@ -122,117 +101,107 @@ ws.on('open', function() {
         ]
     };
     var cursorModifyReactorJSON = {
-        "target": "typescript",
-        "event": "on_selection_modified",
-        "replacefromto": {
-            "view": "view"
-        },
-        "interval": 100,
-        // "debug":true,
-        "selectors": [
+        "react": "on_selection_modified",
+        "delay": 100,
+        "reactors": [
             {
-                "containsRegions": {
-                    "target": "typescript",
-                    "emit": "ss_errorEmitted",
-                    // "debug": true,
-                    "view": "replace"
-                }
-            }
-        ]
-    };
-    var errorReactorJSON = {
-        "target": "typescript",
-        "event": "ss_errorEmitted",
-        "replacefromto": {
-            "message": "-message",
-            "line": "-title"
-        },
-        "selectors": [
-            {
-                "runShell": {
-                    "main": "terminal-notifier",
-                    "-message": "\"default message\"",
-                    "-title": "\"default title\"",
-                    // "debug":true,
-                    "-execute": "\"open -a 'Sublime Text 2.App'\""
+                "selectedRegions<-name, selecteds": {
+                    "selectors":[
+                        {
+                            "generate filtring source for quickfix/transform<-path, crossed, messages, to, line": {
+                                "code": "import os\nname = os.path.basename(inputs[\"path\"])\nonselected = []\nmessages = inputs[\"messages\"]\nto = inputs[\"to\"]\nline = inputs[\"line\"]\nfor message in messages:\n\tselector = []\n\tfilteringContents = {\"name\":\"quickfix\", \"source\":message+\" @to \"+str(to)+\"  @line \"+str(line)+\" @on \"+name}\n\tfilteringAPI = {\"filtering\":filteringContents}\n\tselector.append(filteringAPI)\n\ttooltipItem = {}\n\ttooltipItem[message] = selector\n\tonselected.append(tooltipItem)\noutput({\"name\":name, \"onselected\":onselected, \"message\": messages[0]})\n",
+                                "selectors": [
+                                    {
+                                        "clearSelection<-name": {
+
+                                        }
+                                    },
+                                    {
+                                        "afterAsync<-name, onselected": {
+                                            "identity": "waitForClearSelection",
+                                            "ms": 100,
+                                            "selectors": [
+                                                {
+                                                    "showToolTip<-name, onselected": {
+                                                        "oncancelled": [
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 }
             }
         ]
     };
 
-    var modifyReactJSON = {
-        "target": "typescript",
-        "event": "on_modified",
-        "interval": 1000,
-        "selectors": [
-            {
-                "runShell": {
-                    "main": "/bin/sh",
-                    "":[
-                        tscwithenvPath,
-                        targetFilePath,
-                        logPath
-                    ]
-                }
-            }
-        ]
-    };
     var saveReactorJSON = {
-        "target": "typescript",
-        "event": "on_post_save",
-        "interval": 100,
-        "selectors": [
+        "react": "on_post_save",
+        "delay": 100,
+        "reactors": [
             {
-                "showStatusMessage": {
-                    "message": "typescript compiling..."
-                }
-            },
-            {
-                "showAtLog": {
-                    "message": "typescript compiling..."
-                }
-            },
-            {
-                "runShell": {
-                    "main": "/bin/sh",
-                    "":[
-                        tscwithenvPath,
-                        targetFilePath,
-                        logPath
+                "afterAsync": {
+                    "identity": "typescript-compilation",
+                    "ms": 1,
+                    "selectors": [
+                        {
+                            "showStatusMessage": {
+                                "message": "typescript compiling..."
+                            }
+                        },
+                        {
+                            "showAtLog": {
+                                "message": "typescript compiling..."
+                            }
+                        },
+                        {
+                            "runShell": {
+                                "main": "/bin/sh",
+                                "":[
+                                    tscwithenvPath,
+                                    targetFilePath,
+                                    logPath
+                                ]
+                            }
+                        }
                     ]
                 }
             }
+            
         ] 
     };
+    
     var setUpDone = {
         "message": "SublimeSocket : typescript-compilation sequence ready!"
     };
 
-	ws.send("ss@inputIdentity:"+JSON.stringify(inputIdentityJSON)
+    ws.send("ss@changeIdentity:"+JSON.stringify(inputIdentityJSON)
         +"->defineFilter:"+JSON.stringify(defineFilterJSON)
-        +"->setReactor:"+JSON.stringify(cursorModifyReactorJSON)
-        +"->setReactor:"+JSON.stringify(errorReactorJSON)
-        +"->setReactor:"+JSON.stringify(modifyReactJSON)
-        +"->setReactor:"+JSON.stringify(saveReactorJSON)
+        +"->setViewReactor:"+JSON.stringify(cursorModifyReactorJSON)
+        +"->setViewReactor:"+JSON.stringify(saveReactorJSON)
         +"->showAtLog:"+JSON.stringify(setUpDone)
     );
 });
 
 tail.on("line", function(message) {
-	console.log("original	"+message);
+    console.log("original   "+message);
 
-	var json = 
+    var json = 
     {
         "name": "typescript",
         "source": message
         // "debug": true
     };
     
-	apiModifiedData = "ss@filtering:" + JSON.stringify(json);
-	
- 	ws.send(apiModifiedData);
+    apiModifiedData = "ss@filtering:" + JSON.stringify(json);
+    
+    ws.send(apiModifiedData);
 });
 
 ws.on('message', function(data, flags) {
-	console.log("input:"+data);    
+    console.log("input:"+data);    
 });

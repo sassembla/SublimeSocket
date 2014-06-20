@@ -1,0 +1,25 @@
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(2,1): error TS2095: Could not find symbol 'adasd'.
+typescript compile failure.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+typescript compile succeeded.
+start
+start
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(2,1): error TS2095: Could not find symbol 'asdad'.
+typescript compile failure.
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(2,1): error TS2095: Could not find symbol 'asdad'.
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(4,1): error TS2095: Could not find symbol 'dasd'.
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(5,1): error TS2095: Could not find symbol 'adsd'.
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(6,1): error TS2095: Could not find symbol 'ads'.
+/Users/highvision/Desktop/nodeTailSocket/sample/Greet.ts(7,1): error TS2095: Could not find symbol 's'.
+typescript compile failure.
+start
+typescript compile succeeded.
