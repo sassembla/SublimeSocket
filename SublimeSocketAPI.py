@@ -2016,10 +2016,13 @@ class SublimeSocketAPI:
 		# set completion
 		self.updateCompletion(path, completionStrs)
 
-		# self.editorAPI.runCommandOn(view, "hide_auto_complete")
+		self.editorAPI.runCommandOn(view, "hide_auto_complete")
+		
+		def thenShow ():
+			# display completions
+			self.editorAPI.runCommandOn(view, "auto_complete")
 
-		# display completions
-		self.editorAPI.runCommandOn(view, "auto_complete")
+		self.editorAPI.runAfterDelay(lambda: thenShow(), 0)
 
 		SushiJSONParser.runSelectors(
 			params,
