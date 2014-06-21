@@ -37,6 +37,8 @@ class SublimeSocketAPI:
 
 		self.setSublimeSocketWindowBasePath({})
 
+		self.completionPool = {}
+
 
 	## initialize results as the part of globalResults.
 	def addResultContext(self, resultIdentity):
@@ -178,6 +180,10 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_MODIFYVIEW):
 				self.modifyView(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_GETVIEWSETTING):
+				self.getViewSetting(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_SETSELECTION):
@@ -655,18 +661,24 @@ class SublimeSocketAPI:
 		else:
 			return
 
+		print("hereComes")
+		
 		assert SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED in params, "showToolTip require 'oncancelled' param."
 		cancelled = params[SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED]
+		print("hereComes1")
 		
 		finallyBlock = []
 		if SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY in params:
 			finallyBlock = params[SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY]
 
-
+		print("hereComes2")
+		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SHOWTOOLTIP_VIEW, SublimeSocketAPISettings.SHOWTOOLTIP_NAME)
 		if view == None:
 			return
 
+		print("hereComes3")
+		
 		def getItemKey(item):
 			itemList = list(item)
 			assert len(itemList) == 1, "multiple items found in one items. not valid. at:"+str(item)
@@ -676,7 +688,8 @@ class SublimeSocketAPI:
 		tooltipTitles = [getItemKey(item) for item in selects]
 
 		selectedTitle = "not yet"
-
+		print("hereComesqqq")
+		
 		# run after the tooltip selected or cancelled.
 		def toolTipClosed(index):
 			selectedTitle = "cancelled"
@@ -722,6 +735,8 @@ class SublimeSocketAPI:
 					[path, name, tooltipTitles, selectedTitle],
 					self.runAPI
 				)
+		
+		print("hereComes2")
 		
 		# run before lock
 		SushiJSONParser.runSelectors(
@@ -1626,6 +1641,21 @@ class SublimeSocketAPI:
 			self.runAPI
 		)
 
+	def getViewSetting(self, params):
+		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.GETVIEWSETTING_VIEW, SublimeSocketAPISettings.GETVIEWSETTING_NAME)
+
+		if view == None:
+			return
+
+		(indentationsize, usingspace) = self.editorAPI.getViewSetting(view)
+
+		SushiJSONParser.runSelectors(
+			params,
+			SublimeSocketAPISettings.GETVIEWSETTING_INJECTIONS,
+			[indentationsize, usingspace],
+			self.runAPI
+		)
+
 	## generate selection to view
 	def setSelection(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SETSELECTION_VIEW, SublimeSocketAPISettings.SETSELECTION_NAME)
@@ -1929,6 +1959,9 @@ class SublimeSocketAPI:
 			# hide completion
 			self.editorAPI.runCommandOn(view, "hide_auto_complete")
 
+			# reset
+			self.completionPool = {}
+
 			SushiJSONParser.runSelectors(
 				params,
 				SublimeSocketAPISettings.CANCELCOMPLETION_INJECTIONS,
@@ -1967,9 +2000,34 @@ class SublimeSocketAPI:
 			
 		completionStrs = list(map(transformToFormattedTuple, completions))
 		
+		if SublimeSocketAPISettings.RUNCOMPLETION_POOL in params:
+			poolIdentity = params[SublimeSocketAPISettings.RUNCOMPLETION_POOL]
+
+			if poolIdentity in self.completionPool:
+				self.completionPool[poolIdentity] = list(set(self.completionPool[poolIdentity] + completionStrs))
+
+			else:
+				self.completionPool = {}
+				self.completionPool[poolIdentity] = completionStrs # set list
+
+			if SublimeSocketAPISettings.RUNCOMPLETION_SHOW in params:
+				
+				showIdentity = params[SublimeSocketAPISettings.RUNCOMPLETION_SHOW]
+				if self.completionPool and showIdentity in self.completionPool:
+					completionStrs = list(set(self.completionPool[showIdentity]))
+					
+					# exhaust
+					self.completionPool = {}
+
+			else:
+				# return if identity is exist but showIdentity is not.
+				return
+
 		
 		# set completion
 		self.updateCompletion(path, completionStrs)
+
+		# self.editorAPI.runCommandOn(view, "hide_auto_complete")
 
 		# display completions
 		self.editorAPI.runCommandOn(view, "auto_complete")
@@ -1980,7 +2038,7 @@ class SublimeSocketAPI:
 			[path, name],
 			self.runAPI
 		)
-			
+
 
 	def forcelySave(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.FORCELYSAVE_VIEW, SublimeSocketAPISettings.FORCELYSAVE_NAME)
@@ -2300,13 +2358,19 @@ class SublimeSocketAPI:
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
 				if re.findall(viewSearchSource, viewSearchKey):
-					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+					if viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]:
+						return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+					else:
+						return (None, None)
 			
 			# partial match in viewSearchSource. "ccc.d" vs "********* ccc.d ************"
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
 				if viewBasename in viewSearchSource:
-					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+					if viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]:
+						return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+					else:
+						return (None, None)
 		
 		# totally, return None and do nothing
 		return (None, None)
@@ -2355,7 +2419,13 @@ class SublimeSocketAPI:
 	def runRenew(self, eventParam):
 		viewInstance = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 		filePath = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH]
-		
+
+		if self.editorAPI.isBuffer(filePath):
+			if self.editorAPI.isNamed(viewInstance):
+				pass
+			else:
+				# no name buffer view will ignore.
+				return
 			
 		# update or append if exist.
 		viewDict = self.server.viewsDict()
@@ -2496,9 +2566,9 @@ class SublimeSocketAPI:
 		if completions:
 			if viewIdentity in list(completions):
 				completion = completions[viewIdentity]
-				
-				self.server.deleteCompletion(viewIdentity)
-				return completion
+				if completion:
+					self.server.deleteCompletion(viewIdentity)
+					return completion
 
 		return None
 
