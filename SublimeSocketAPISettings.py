@@ -57,8 +57,9 @@ SSAPI_PREFIX_SUB			= "ss"
 SSAPI_DEFINE_DELIM			= "@"	# sublimesocket@commandA:{}->commandB:{}->commandC:[]->
 
 
-SSAPI_VERSION				= "1.4.0"
+SSAPI_VERSION				= "1.5.0"
 SSSOCKET_VERSION			= 2	# for Sublime Text 2
+
 
 
 # SublimeSocket internal event definition
@@ -252,6 +253,62 @@ MODIFYVIEW_REDUCE			= "reduce"
 MODIFYVIEW_INJECTIONS		= [MODIFYVIEW_PATH, MODIFYVIEW_NAME, MODIFYVIEW_LINE, MODIFYVIEW_TO]
 
 
+"""
+@apiGroup getViewSetting
+@api {SushiJSON} getViewSetting:{JSON} get setting of the file.
+
+@apiExample [example]
+getViewSetting: {
+    "name": "sample.txt",
+    "selectors": [
+        {
+            "showAtLog<-indentationsize, usingspace": {
+                "format": "size?:[indentationsize], is using tab?:[usingspace]"
+            }
+        }
+    ]
+}
+
+@apiParam {String} name the target file's last part of file path or fullpath or parts.
+@apiParam {Selectors(Optional)} selectors selectors.
+
+@apiSuccess {String} indentationsize size of indentation tab.
+@apiSuccess {Bool} usingspace using space for indentation or not.
+"""
+API_GETVIEWSETTING          = "getViewSetting"
+GETVIEWSETTING_VIEW         = "view"
+GETVIEWSETTING_NAME         = "name"
+GETVIEWSETTING_PATH         = "path"
+GETVIEWSETTING_INDENTATIONSIZE  = "indentationsize"
+GETVIEWSETTING_USINGSPACE   = "usingspace"
+GETVIEWSETTING_INJECTIONS   = [GETVIEWSETTING_INDENTATIONSIZE, GETVIEWSETTING_USINGSPACE]
+
+
+"""
+@apiGroup setSelection
+@api {SushiJSON} setSelection:{JSON} set selection to the file.
+
+@apiExample [example]
+setSelection: {
+    "name": "sample.txt",
+    "selections": [
+        {
+            "from": 10,
+            "to": 11
+        }
+    ]
+}
+
+@apiParam {String} name the target file's last part of file path or fullpath or parts.
+@apiParam {Dictionary} selections pair of key-value of selecting regions. [from]:Int and [to]:Int
+@apiParam {Selectors(Optional)} selectors selectors.
+
+@apiSuccess {Event} ss_on_selection_modified_by_setselection the ss_on_selection_modified_by_setselection event will raise.
+
+@apiSuccess {String} path selected file's path.
+@apiSuccess {String} name selected file's name.
+@apiSuccess {Array} selecteds the list of [from] and [to].
+"""
 API_SETSELECTION			= "setSelection"
 SETSELECTION_VIEW			= "view"
 SETSELECTION_NAME			= "name"
@@ -427,7 +484,45 @@ CANCELCOMPLETION_VIEW		= "view"
 CANCELCOMPLETION_NAME		= "name"
 CANCELCOMPLETION_INJECTIONS = []
 
-	
+
+"""
+@apiGroup runCompletion
+@api {SushiJSON} runCompletion:{JSON} show completion candidate datas. 
+
+@apiExample [example]
+runCompletion: {
+    "name": "completionTestView.txt",
+    "completion": [
+        {
+            "HEAD": "DrawLine",
+            "paramsTargetFmt": "(${1:start}, ${2:end}, ${3:color}, ${4:duration}, ${5:depthTest})",
+            "return": "Void",
+            "paramsTypeDef": "(Vector3,Vector3,Color,Single,Boolean)",
+            "head": "DrawLine"
+        }
+    ],
+    "formathead": "HEADparamsTypeDef\treturn",
+    "formattail": "headparamsTargetFmt$0",
+    "selectors": [
+        {
+            "showAtLog<-name": {
+                "format": "[name]"
+            }
+        }
+    ]
+}
+
+@apiParam {String} name the target file's last part of file path or fullpath or parts.
+@apiParam {String} completion parts of completion string sources. Will become completion string.
+@apiParam {String} formathead header part of completion string. constructed bt the contents of completion's key-value.
+@apiParam {String} formattail footer part of completion string. constructed bt the contents of completion's key-value.
+@apiParam {String(Optional)} pool identity of completion pool. use for pooling completion resource. Will show when 'show' parameter appended.
+@apiParam {String(Optional)} show key identity of showing pooled completions. if identity & this 'show' param exist and has same value, show pooled completions.
+@apiParam {Selectors(Optional)} selectors selectors.
+
+@apiSuccess {String} path file's path.
+@apiSuccess {String} name file's name.
+"""	
 API_RUNCOMPLETION			= "runCompletion"
 RUNCOMPLETION_VIEW			= "view"
 RUNCOMPLETION_PATH			= "path"
@@ -435,7 +530,8 @@ RUNCOMPLETION_NAME			= "name"
 RUNCOMPLETION_COMPLETIONS	= "completion"
 RUNCOMPLETION_FORMATHEAD	= "formathead"
 RUNCOMPLETION_FORMATTAIL	= "formattail"
-RUNCOMPLETION_ID			= "id"
+RUNCOMPLETION_POOL          = "pool"
+RUNCOMPLETION_SHOW          = "show"
 RUNCOMPLETION_INJECTIONS	= [RUNCOMPLETION_PATH, RUNCOMPLETION_NAME]
 
 

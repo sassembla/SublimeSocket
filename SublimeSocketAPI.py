@@ -37,6 +37,8 @@ class SublimeSocketAPI:
 
 		self.setSublimeSocketWindowBasePath({})
 
+		self.completionPool = {}
+
 
 	## initialize results as the part of globalResults.
 	def addResultContext(self, resultIdentity):
@@ -178,6 +180,10 @@ class SublimeSocketAPI:
 
 			if case(SublimeSocketAPISettings.API_MODIFYVIEW):
 				self.modifyView(params)
+				break
+
+			if case(SublimeSocketAPISettings.API_GETVIEWSETTING):
+				self.getViewSetting(params)
 				break
 
 			if case(SublimeSocketAPISettings.API_SETSELECTION):
@@ -657,11 +663,9 @@ class SublimeSocketAPI:
 
 		assert SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED in params, "showToolTip require 'oncancelled' param."
 		cancelled = params[SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED]
-		
 		finallyBlock = []
 		if SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY in params:
 			finallyBlock = params[SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY]
-
 
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SHOWTOOLTIP_VIEW, SublimeSocketAPISettings.SHOWTOOLTIP_NAME)
 		if view == None:
@@ -1626,6 +1630,21 @@ class SublimeSocketAPI:
 			self.runAPI
 		)
 
+	def getViewSetting(self, params):
+		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.GETVIEWSETTING_VIEW, SublimeSocketAPISettings.GETVIEWSETTING_NAME)
+
+		if view == None:
+			return
+
+		(indentationsize, usingspace) = self.editorAPI.getViewSetting(view)
+
+		SushiJSONParser.runSelectors(
+			params,
+			SublimeSocketAPISettings.GETVIEWSETTING_INJECTIONS,
+			[indentationsize, usingspace],
+			self.runAPI
+		)
+
 	## generate selection to view
 	def setSelection(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SETSELECTION_VIEW, SublimeSocketAPISettings.SETSELECTION_NAME)
@@ -1929,6 +1948,9 @@ class SublimeSocketAPI:
 			# hide completion
 			self.editorAPI.runCommandOn(view, "hide_auto_complete")
 
+			# reset
+			self.completionPool = {}
+
 			SushiJSONParser.runSelectors(
 				params,
 				SublimeSocketAPISettings.CANCELCOMPLETION_INJECTIONS,
@@ -1967,12 +1989,40 @@ class SublimeSocketAPI:
 			
 		completionStrs = list(map(transformToFormattedTuple, completions))
 		
+		if SublimeSocketAPISettings.RUNCOMPLETION_POOL in params:
+			poolIdentity = params[SublimeSocketAPISettings.RUNCOMPLETION_POOL]
+
+			if poolIdentity in self.completionPool:
+				self.completionPool[poolIdentity] = list(set(self.completionPool[poolIdentity] + completionStrs))
+
+			else:
+				self.completionPool = {}
+				self.completionPool[poolIdentity] = completionStrs # set list
+
+			if SublimeSocketAPISettings.RUNCOMPLETION_SHOW in params:
+				
+				showIdentity = params[SublimeSocketAPISettings.RUNCOMPLETION_SHOW]
+				if self.completionPool and showIdentity in self.completionPool:
+					completionStrs = list(set(self.completionPool[showIdentity]))
+					
+					# exhaust
+					self.completionPool = {}
+
+			else:
+				# return if identity is exist but showIdentity is not.
+				return
+
 		
 		# set completion
 		self.updateCompletion(path, completionStrs)
 
-		# display completions
-		self.editorAPI.runCommandOn(view, "auto_complete")
+		self.editorAPI.runCommandOn(view, "hide_auto_complete")
+		
+		def thenShow ():
+			# display completions
+			self.editorAPI.runCommandOn(view, "auto_complete")
+
+		self.editorAPI.runAfterDelay(lambda: thenShow(), 0)
 
 		SushiJSONParser.runSelectors(
 			params,
@@ -1980,7 +2030,7 @@ class SublimeSocketAPI:
 			[path, name],
 			self.runAPI
 		)
-			
+
 
 	def forcelySave(self, params):
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.FORCELYSAVE_VIEW, SublimeSocketAPISettings.FORCELYSAVE_NAME)
@@ -2254,10 +2304,8 @@ class SublimeSocketAPI:
 	def internal_getViewAndPathFromViewOrName(self, params, viewParamKey, nameParamKey):
 		view = None
 		path = None
-
 		if viewParamKey and viewParamKey in params:
 			view = params[viewParamKey]
-			
 			path = self.internal_detectViewPath(view)
 			
 				
@@ -2280,7 +2328,6 @@ class SublimeSocketAPI:
 		# if specific path used, load current filename of the view.
 		if SublimeSocketAPISettings.SS_VIEWKEY_CURRENTVIEW == name:
 			return self.internal_detectViewInstance(self.editorAPI.getFileName())
-
 		viewDict = self.server.viewsDict()
 		if viewDict:
 			viewKeys = viewDict.keys()
@@ -2289,25 +2336,25 @@ class SublimeSocketAPI:
 
 			# remove empty and 1 length string pattern.
 			if not viewSearchSource or len(viewSearchSource) is 0:
-				return None
+				return (None, None)
 
 			viewSearchSource = viewSearchSource.replace("\\", "&")
 			viewSearchSource = viewSearchSource.replace("/", "&")
 			# straight full match in viewSearchSource. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
-
 				# replace path-expression by component with &.
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
 				if re.findall(viewSearchSource, viewSearchKey):
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-			
+
 			# partial match in viewSearchSource. "ccc.d" vs "********* ccc.d ************"
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
 				if viewBasename in viewSearchSource:
 					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-		
+			
+			
 		# totally, return None and do nothing
 		return (None, None)
 
@@ -2355,7 +2402,13 @@ class SublimeSocketAPI:
 	def runRenew(self, eventParam):
 		viewInstance = eventParam[SublimeSocketAPISettings.VIEW_SELF]
 		filePath = eventParam[SublimeSocketAPISettings.REACTOR_VIEWKEY_PATH]
-		
+
+		if self.editorAPI.isBuffer(filePath):
+			if self.editorAPI.isNamed(viewInstance):
+				pass
+			else:
+				# no name buffer view will ignore.
+				return
 			
 		# update or append if exist.
 		viewDict = self.server.viewsDict()
@@ -2496,9 +2549,9 @@ class SublimeSocketAPI:
 		if completions:
 			if viewIdentity in list(completions):
 				completion = completions[viewIdentity]
-				
-				self.server.deleteCompletion(viewIdentity)
-				return completion
+				if completion:
+					self.server.deleteCompletion(viewIdentity)
+					return completion
 
 		return None
 

@@ -250,3 +250,6 @@ class EditorAPI:
 		
 	def getLineFromPoint(self, view, count):
 		return view.rowcol(count)
+
+	def getViewSetting(self, view):
+		return (view.settings().get('tab_size'), view.settings().get('translate_tabs_to_spaces'))	

@@ -8,7 +8,7 @@ Control EditorAPI by inputted **JSON string**.
 
 You can construct **the chain of filters and events** that you want to do. 
 
-ver 1.4._(Final)
+ver 1.5._(Final)
 
 
 #!notice!
@@ -19,12 +19,17 @@ Because the ST3 or the other editor (e.g. Atom by github) is very good and they 
 see [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
 
 
-##demos
-* [Construct and run compilation for ]
+##demos & samples
+* [Ruby show runtime error on code sample](https://vimeo.com/88961966) 
+	[https://github.com/sassembla/SublimeSocket3/tree/master/samples/rubySample](https://github.com/sassembla/SublimeSocket3/tree/master/samples/rubySample)
+	
+* [Work with Unity	:	Build and show parameters and errors](https://vimeo.com/71323225)  
 
-* [Work with Unity	:	Build and show parameters and errors](https://vimeo.com/62957311)  
-* [Work with TypeScript	:	Build and show errors with Chrome Ext](https://vimeo.com/63188211)  
 
+##installation
+1. DL.
+2. move SublimeSocket3 folder to Sublime Text 2's packages folder.
+3. that's all.
 
 
 ##usage: CommandPalette >  
@@ -44,7 +49,7 @@ test
 
 	SublimeSocket: on > test
 	
-	run SublimeSocket's test on current view..
+	run SublimeSocket's test on current view.
 	
 teardown
 
@@ -52,12 +57,14 @@ teardown
 	
 	teardown.
 
+##APIs
+now loading...
 
-#Purpose/Motivation
+
+##Purpose/Motivation
 * Control SublimeText API from the other process, data, input.
 * Pick out all heavy-process from SublimeText to the outside & keep async.
 
 
-#Done
-* (Done)ST3 adopt -> go to [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
-* (Done)Windows support -> go to [SublimeSocket3](https://github.com/sassembla/SublimeSocket3)
+##Next
+* Atom adopt.
