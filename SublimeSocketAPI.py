@@ -661,24 +661,16 @@ class SublimeSocketAPI:
 		else:
 			return
 
-		print("hereComes")
-		
 		assert SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED in params, "showToolTip require 'oncancelled' param."
 		cancelled = params[SublimeSocketAPISettings.SHOWTOOLTIP_ONCANCELLED]
-		print("hereComes1")
-		
 		finallyBlock = []
 		if SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY in params:
 			finallyBlock = params[SublimeSocketAPISettings.SHOWTOOLTIP_FINALLY]
 
-		print("hereComes2")
-		
 		(view, path, name) = self.internal_getViewAndPathFromViewOrName(params, SublimeSocketAPISettings.SHOWTOOLTIP_VIEW, SublimeSocketAPISettings.SHOWTOOLTIP_NAME)
 		if view == None:
 			return
 
-		print("hereComes3")
-		
 		def getItemKey(item):
 			itemList = list(item)
 			assert len(itemList) == 1, "multiple items found in one items. not valid. at:"+str(item)
@@ -688,8 +680,7 @@ class SublimeSocketAPI:
 		tooltipTitles = [getItemKey(item) for item in selects]
 
 		selectedTitle = "not yet"
-		print("hereComesqqq")
-		
+
 		# run after the tooltip selected or cancelled.
 		def toolTipClosed(index):
 			selectedTitle = "cancelled"
@@ -735,8 +726,6 @@ class SublimeSocketAPI:
 					[path, name, tooltipTitles, selectedTitle],
 					self.runAPI
 				)
-		
-		print("hereComes2")
 		
 		# run before lock
 		SushiJSONParser.runSelectors(
@@ -2312,10 +2301,8 @@ class SublimeSocketAPI:
 	def internal_getViewAndPathFromViewOrName(self, params, viewParamKey, nameParamKey):
 		view = None
 		path = None
-
 		if viewParamKey and viewParamKey in params:
 			view = params[viewParamKey]
-			
 			path = self.internal_detectViewPath(view)
 			
 				
@@ -2338,7 +2325,6 @@ class SublimeSocketAPI:
 		# if specific path used, load current filename of the view.
 		if SublimeSocketAPISettings.SS_VIEWKEY_CURRENTVIEW == name:
 			return self.internal_detectViewInstance(self.editorAPI.getFileName())
-
 		viewDict = self.server.viewsDict()
 		if viewDict:
 			viewKeys = viewDict.keys()
@@ -2347,31 +2333,25 @@ class SublimeSocketAPI:
 
 			# remove empty and 1 length string pattern.
 			if not viewSearchSource or len(viewSearchSource) is 0:
-				return None
+				return (None, None)
 
 			viewSearchSource = viewSearchSource.replace("\\", "&")
 			viewSearchSource = viewSearchSource.replace("/", "&")
 			# straight full match in viewSearchSource. "/aaa/bbb/ccc.d something..." vs "*********** /aaa/bbb/ccc.d ***********"
 			for viewKey in viewKeys:
-
 				# replace path-expression by component with &.
 				viewSearchKey = viewKey.replace("\\", "&")
 				viewSearchKey = viewSearchKey.replace("/", "&")
 				if re.findall(viewSearchSource, viewSearchKey):
-					if viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]:
-						return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-					else:
-						return (None, None)
-			
+					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+
 			# partial match in viewSearchSource. "ccc.d" vs "********* ccc.d ************"
 			for viewKey in viewKeys:
 				viewBasename = viewDict[viewKey][SublimeSocketAPISettings.VIEW_NAME]
 				if viewBasename in viewSearchSource:
-					if viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF]:
-						return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
-					else:
-						return (None, None)
-		
+					return (viewDict[viewKey][SublimeSocketAPISettings.VIEW_SELF], name)
+			
+			
 		# totally, return None and do nothing
 		return (None, None)
 
